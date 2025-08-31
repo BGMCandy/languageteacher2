@@ -25,14 +25,10 @@ function AuthCallbackContent() {
       
       const err = params.get('error_description') || params.get('error')
       const code = params.get('code')
-      const next = params.get('next') || '/account'
-      const state = params.get('state')
       
       console.log('Parsed parameters:', {
         error: err,
-        code: code ? `Present (length: ${code.length})` : 'Missing',
-        next,
-        state: state ? 'Present' : 'Missing'
+        code: code ? `Present (length: ${code.length})` : 'Missing'
       })
 
       if (err) {
@@ -81,23 +77,17 @@ function AuthCallbackContent() {
           console.log('Session created successfully!')
           console.log('User email:', data.user?.email)
           console.log('Session expires:', data.session.expires_at)
+          
+          // Redirect to account page on success
+          if (!alive) return
+          router.replace('/account')
+          return
         }
-        
-        if (!alive) return
-        console.log('Redirecting to:', next)
-        router.replace(next)
-        return
       }
 
-      // No code: direct visit or lost PKCE — if already signed in, continue.
-      console.log('No code found, checking existing session...')
-      const { data: { session } } = await supabase.auth.getSession()
-      console.log('Existing session:', session ? 'Found' : 'None')
-      
+      // No code or no session - redirect to login
       if (!alive) return
-      const redirectTarget = session ? next : '/login'
-      console.log('Redirecting to:', redirectTarget)
-      router.replace(redirectTarget)
+      router.replace('/login')
       
       console.log('=== AUTH CALLBACK DEBUG END ===')
     })()

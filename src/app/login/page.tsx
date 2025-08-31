@@ -42,22 +42,16 @@ function LoginContent() {
       console.log('Site URL from env:', process.env.NEXT_PUBLIC_SITE_URL)
       
       const supabase = createClientBrowser()
-      const redirectTo = new URL(`/auth/callback?next=${encodeURIComponent(getRedirectPath())}`, window.location.origin).toString()
       
-      console.log('Constructed redirectTo:', redirectTo)
-      console.log('Full URL object:', new URL(`/auth/callback?next=${encodeURIComponent(getRedirectPath())}`, window.location.origin))
-      
-      console.log('Starting OAuth with options:', {
-        provider: 'google',
-        redirectTo,
-        queryParams: { access_type: 'offline', prompt: 'consent' }
-      })
-      
+      // Use the proper Supabase OAuth flow
       const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo,
-          queryParams: { access_type: 'offline', prompt: 'consent' }
+          redirectTo: `${window.location.origin}/auth/callback`,
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent'
+          }
         }
       })
       
@@ -65,7 +59,7 @@ function LoginContent() {
       
       if (error) throw error
       
-      console.log('OAuth initiated successfully, should redirect to:', redirectTo)
+      console.log('OAuth initiated successfully')
       console.log('=== GOOGLE OAUTH DEBUG END ===')
       
     } catch (error) {
