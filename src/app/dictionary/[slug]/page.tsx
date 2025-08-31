@@ -89,36 +89,36 @@ export default function DictionaryPage({ params }: { params: Promise<{ slug: str
   }
 
   const renderWordResult = (entry: DictionaryEntry) => (
-    <div key={entry.seq} className="bg-white rounded-lg shadow-md p-4 mb-4 border-l-4 border-blue-500">
+    <div key={entry.seq} className="border-2 border-black bg-white p-6 mb-6">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center gap-4 mb-4">
             {entry.headwords.length > 0 && (
-              <span className="text-2xl font-bold text-gray-800">
+              <span className="text-3xl font-bold text-black">
                 {entry.headwords[0]}
               </span>
             )}
             {entry.readings.length > 0 && (
-              <span className="text-lg text-gray-600">
+              <span className="text-xl text-gray-600">
                 {entry.readings[0]}
               </span>
             )}
             {entry.is_common && (
-              <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
-                Common
+              <span className="bg-green-100 text-green-800 text-xs px-3 py-2 border-2 border-green-300 tracking-wider font-medium">
+                COMMON
               </span>
             )}
           </div>
           
-          <div className="text-gray-700 mb-2">
+          <div className="text-black mb-4 text-lg">
             {entry.glosses_en.slice(0, 3).join(', ')}
             {entry.glosses_en.length > 3 && '...'}
           </div>
           
           {entry.pos_tags.length > 0 && (
-            <div className="flex flex-wrap gap-1 mb-2">
+            <div className="flex flex-wrap gap-2 mb-4">
               {entry.pos_tags.slice(0, 5).map((pos, idx) => (
-                <span key={idx} className="bg-gray-100 text-gray-600 text-xs px-2 py-1 rounded">
+                <span key={idx} className="bg-gray-100 text-black text-xs px-3 py-2 border-2 border-gray-300 tracking-wider font-medium">
                   {pos}
                 </span>
               ))}
@@ -126,8 +126,8 @@ export default function DictionaryPage({ params }: { params: Promise<{ slug: str
           )}
           
           {entry.freq_tags.length > 0 && (
-            <div className="text-xs text-gray-500">
-              Frequency: {entry.freq_tags.join(', ')}
+            <div className="text-sm text-gray-600 tracking-wide">
+              <span className="font-medium">FREQUENCY:</span> {entry.freq_tags.join(', ')}
             </div>
           )}
         </div>
@@ -136,45 +136,45 @@ export default function DictionaryPage({ params }: { params: Promise<{ slug: str
   )
 
   const renderKanjiResult = (entry: KanjiEntry) => (
-    <div key={entry.kanji} className="bg-white rounded-lg shadow-md p-4 mb-4 border-l-4 border-purple-500">
+    <div key={entry.kanji} className="border-2 border-black bg-white p-6 mb-6">
       <div className="flex items-start justify-between">
         <div className="flex-1">
-          <div className="flex items-center gap-3 mb-2">
-            <span className="text-4xl font-bold text-gray-800">
+          <div className="flex items-center gap-4 mb-4">
+            <span className="text-5xl font-bold text-black">
               {entry.kanji}
             </span>
             {entry.jouyou && (
-              <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
-                Jouyou
+              <span className="bg-blue-100 text-blue-800 text-xs px-3 py-2 border-2 border-blue-300 tracking-wider font-medium">
+                JOUYOU
               </span>
             )}
           </div>
           
-          <div className="text-gray-700 mb-2">
+          <div className="text-black mb-4 text-lg">
             {entry.meanings_en.slice(0, 3).join(', ')}
             {entry.meanings_en.length > 3 && '...'}
           </div>
           
-          <div className="grid grid-cols-2 gap-4 text-sm">
+          <div className="grid grid-cols-2 gap-6 text-base mb-4">
             {entry.on_readings.length > 0 && (
               <div>
-                <span className="font-semibold text-gray-600">On-yomi:</span>
-                <div className="text-gray-700">{entry.on_readings.slice(0, 3).join(', ')}</div>
+                <span className="font-semibold text-black tracking-wider uppercase">ON-YOMI:</span>
+                <div className="text-black mt-1">{entry.on_readings.slice(0, 3).join(', ')}</div>
               </div>
             )}
             
             {entry.kun_readings.length > 0 && (
               <div>
-                <span className="font-semibold text-gray-600">Kun-yomi:</span>
-                <div className="text-gray-700">{entry.kun_readings.slice(0, 3).join(', ')}</div>
+                <span className="font-semibold text-black tracking-wider uppercase">KUN-YOMI:</span>
+                <div className="text-black mt-1">{entry.kun_readings.slice(0, 3).join(', ')}</div>
               </div>
             )}
           </div>
           
-          <div className="flex gap-4 text-xs text-gray-500 mt-2">
-            {entry.grade && <span>Grade: {entry.grade}</span>}
-            {entry.jlpt && <span>JLPT: N{entry.jlpt}</span>}
-            {entry.strokes && <span>Strokes: {entry.strokes}</span>}
+          <div className="flex gap-6 text-sm text-gray-600 mt-4">
+            {entry.grade && <span className="tracking-wider"><span className="font-medium">GRADE:</span> {entry.grade}</span>}
+            {entry.jlpt && <span className="tracking-wider"><span className="font-medium">JLPT:</span> N{entry.jlpt}</span>}
+            {entry.strokes && <span className="tracking-wider"><span className="font-medium">STROKES:</span> {entry.strokes}</span>}
           </div>
         </div>
       </div>
@@ -182,21 +182,29 @@ export default function DictionaryPage({ params }: { params: Promise<{ slug: str
   )
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-6xl mx-auto px-4 py-8">
+    <div className="bg-white">
+      <div className="max-w-6xl mx-auto px-8 py-16">
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            {language} Dictionary
-          </h1>
-          <p className="text-lg text-gray-600">
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center space-x-4 mb-8">
+            {/* Sharp geometric logo */}
+            <div className="w-12 h-12 bg-black relative">
+              <div className="absolute inset-0 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)' }}></div>
+              <div className="absolute inset-0 bg-black" style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0 100%)' }}></div>
+            </div>
+            <h1 className="text-4xl font-bold text-black tracking-wider">
+              {language.toUpperCase()} DICTIONARY
+            </h1>
+          </div>
+          <div className="h-px w-32 bg-black mx-auto mb-6"></div>
+          <p className="text-gray-600 tracking-wide">
             Search for words and kanji in the {language.toLowerCase()} language
           </p>
         </div>
 
         {/* Search Form */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <form onSubmit={handleSearch} className="space-y-4">
+        <div className="border-2 border-black bg-white p-8 mb-12">
+          <form onSubmit={handleSearch} className="space-y-6">
             <div className="flex gap-4">
               <div className="flex-1">
                 <input
@@ -204,28 +212,28 @@ export default function DictionaryPage({ params }: { params: Promise<{ slug: str
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Enter a word, kanji, or meaning..."
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                  className="w-full px-6 py-4 border-2 border-black bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-600 transition-colors duration-200 text-lg"
                 />
               </div>
               <button
                 type="submit"
                 disabled={loading || !searchQuery.trim()}
-                className="px-8 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+                className="px-8 py-4 bg-black text-white border-2 border-black hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed font-semibold tracking-wider transition-all duration-200"
               >
-                {loading ? 'Searching...' : 'Search'}
+                {loading ? 'SEARCHING...' : 'SEARCH'}
               </button>
             </div>
             
-            <div className="flex gap-4">
+            <div className="flex gap-6">
               <label className="flex items-center">
                 <input
                   type="radio"
                   value="words"
                   checked={searchType === 'words'}
                   onChange={(e) => setSearchType(e.target.value as 'words' | 'kanji')}
-                  className="mr-2"
+                  className="mr-3 w-4 h-4 text-black border-2 border-black focus:ring-black"
                 />
-                <span className="text-gray-700">Words</span>
+                <span className="text-black font-medium tracking-wider">WORDS</span>
               </label>
               <label className="flex items-center">
                 <input
@@ -233,29 +241,29 @@ export default function DictionaryPage({ params }: { params: Promise<{ slug: str
                   value="kanji"
                   checked={searchType === 'kanji'}
                   onChange={(e) => setSearchType(e.target.value as 'words' | 'kanji')}
-                  className="mr-2"
+                  className="mr-3 w-4 h-4 text-black border-2 border-black focus:ring-black"
                 />
-                <span className="text-gray-700">Kanji</span>
+                <span className="text-black font-medium tracking-wider">KANJI</span>
               </label>
             </div>
           </form>
         </div>
 
         {/* Results */}
-        <div className="space-y-4">
+        <div className="space-y-6">
           {loading && (
-            <div className="text-center py-8">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-              <p className="mt-4 text-gray-600">Searching...</p>
+            <div className="text-center py-12">
+              <div className="inline-block w-12 h-12 border-2 border-black border-t-transparent rounded-full animate-spin mb-4"></div>
+              <p className="text-gray-600 tracking-wide">SEARCHING...</p>
             </div>
           )}
           
           {!loading && results.length > 0 && (
-            <div className="mb-4">
-              <h2 className="text-xl font-semibold text-gray-800 mb-4">
-                Found {results.length} {searchType === 'words' ? 'words' : 'kanji'}
+            <div className="mb-6">
+              <h2 className="text-xl font-semibold text-black mb-6 tracking-wider">
+                FOUND {results.length} {searchType === 'words' ? 'WORDS' : 'KANJI'}
               </h2>
-              <div className="space-y-4">
+              <div className="space-y-6">
                 {searchType === 'words' 
                   ? (results as DictionaryEntry[]).map(renderWordResult)
                   : (results as KanjiEntry[]).map(renderKanjiResult)
@@ -265,17 +273,17 @@ export default function DictionaryPage({ params }: { params: Promise<{ slug: str
           )}
           
           {!loading && results.length === 0 && searchQuery && (
-            <div className="text-center py-8">
-              <p className="text-gray-600">No {searchType} found for &ldquo;{searchQuery}&rdquo;</p>
-              <p className="text-sm text-gray-500 mt-2">
+            <div className="text-center py-12">
+              <p className="text-gray-600 tracking-wide">NO {searchType.toUpperCase()} FOUND FOR &ldquo;{searchQuery}&rdquo;</p>
+              <p className="text-sm text-gray-500 mt-3 tracking-wide">
                 Try searching with different terms or check your spelling
               </p>
             </div>
           )}
           
           {!loading && !searchQuery && (
-            <div className="text-center py-8">
-              <p className="text-gray-600">Enter a search term to find {searchType === 'words' ? 'words' : 'kanji'}</p>
+            <div className="text-center py-12">
+              <p className="text-gray-600 tracking-wide">ENTER A SEARCH TERM TO FIND {searchType === 'words' ? 'WORDS' : 'KANJI'}</p>
             </div>
           )}
         </div>

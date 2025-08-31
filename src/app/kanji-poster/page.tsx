@@ -46,7 +46,6 @@ export default function KanjiPoster() {
         }
         
         console.log(`Total kanji in database: ${count}`)
-        setTotalCount(count || 0)
         
         // Fetch all data in chunks to bypass any limits
         let allKanji: JapaneseKanji[] = []
@@ -299,10 +298,10 @@ export default function KanjiPoster() {
 
   return (
     <div className="bg-white">
-      <div className="max-w-7xl mx-auto px-8 py-16">
+      <div className="max-w-7xl mx-auto px-8 py-12">
         {/* Header */}
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center space-x-4 mb-8">
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center space-x-4 mb-6">
             {/* Sharp geometric logo */}
             <div className="w-12 h-12 bg-black relative">
               <div className="absolute inset-0 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)' }}></div>
@@ -312,19 +311,14 @@ export default function KanjiPoster() {
               JAPANESE KANJI POSTER
             </h1>
           </div>
-          <div className="h-px w-32 bg-black mx-auto mb-6"></div>
+          <div className="h-px w-32 bg-black mx-auto mb-4"></div>
           <p className="text-gray-600 tracking-wide">
             Interactive visual learning with comprehensive character coverage
           </p>
         </div>
         
-        {/* Debug Info */}
-        <div className="text-center mb-8 text-gray-600">
-          Displaying {kanji.length} of {totalCount || 'unknown'} kanji characters
-        </div>
-        
         {/* View Toggle */}
-        <div className="flex justify-center mb-12 gap-6">
+        <div className="flex justify-center mb-8 gap-6">
           {/* View Mode Toggle */}
           <div className="border-2 border-black p-1 inline-flex">
             <button
