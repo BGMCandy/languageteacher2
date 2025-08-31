@@ -44,16 +44,21 @@ function LoginContent() {
       const supabase = createClientBrowser()
       
       // Use the proper Supabase OAuth flow
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+      const oauthOptions = {
+        provider: 'google' as const,
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
           queryParams: {
             access_type: 'offline',
-            prompt: 'consent'
+            prompt: 'consent',
+            response_type: 'code'
           }
         }
-      })
+      }
+      
+      console.log('OAuth options being sent:', oauthOptions)
+      
+      const { data, error } = await supabase.auth.signInWithOAuth(oauthOptions)
       
       console.log('OAuth response:', { data, error })
       
