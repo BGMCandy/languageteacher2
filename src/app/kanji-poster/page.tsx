@@ -3,6 +3,18 @@
 import { useEffect, useState } from 'react'
 import { createClientBrowser, JapaneseKanji } from '@/lib/supabase'
 
+interface DictionaryEntry {
+  seq: number
+  headwords: string[]
+  readings: string[]
+  glosses_en: string[]
+  is_common: boolean
+  pos_tags: string[]
+  freq_tags: string[]
+  search_text: string
+  raw: Record<string, unknown>
+}
+
 export default function KanjiPoster() {
   const [kanji, setKanji] = useState<JapaneseKanji[]>([])
   const [loading, setLoading] = useState(true)
@@ -15,6 +27,8 @@ export default function KanjiPoster() {
   const [condensedView, setCondensedView] = useState<'comfortable' | 'super-condensed'>('comfortable')
   const [showAllKanji, setShowAllKanji] = useState(false)
   const [grouping, setGrouping] = useState<'none' | '5' | '10' | '20'>('none')
+  const [kanjiWords, setKanjiWords] = useState<DictionaryEntry[]>([])
+  const [loadingWords, setLoadingWords] = useState(false)
 
   useEffect(() => {
     const fetchKanji = async () => {
@@ -96,7 +110,7 @@ export default function KanjiPoster() {
         // Process performance data
         const performanceMap: Record<string, { totalAttempts: number; correctAttempts: number; successRate: number }> = {}
         
-        performanceData?.forEach(item => {
+        performanceData?.forEach((item: { kanji_character: string; total_attempts: number; correct_attempts: number }) => {
           const successRate = item.total_attempts > 0 ? (item.correct_attempts / item.total_attempts) * 100 : 0
           performanceMap[item.kanji_character] = {
             totalAttempts: item.total_attempts,
@@ -116,6 +130,13 @@ export default function KanjiPoster() {
     fetchKanji()
     fetchUserPerformance()
   }, [])
+
+  // Fetch words when a kanji is selected
+  useEffect(() => {
+    if (selectedKanji) {
+      fetchKanjiWords(selectedKanji.letter)
+    }
+  }, [selectedKanji])
 
   // Helper function to create grouped kanji with borders
   const createGroupedKanji = (kanjiList: string[], groupSize: number) => {
@@ -190,6 +211,74 @@ export default function KanjiPoster() {
 
   const getKanjiColor = (kanji: JapaneseKanji) => {
     return viewMode === 'level' ? getLevelColor(kanji.level) : getPerformanceColor(kanji.letter)
+  }
+
+  // Fetch words containing the selected kanji
+  const fetchKanjiWords = async (kanjiChar: string) => {
+    if (!kanjiChar) return
+    
+    setLoadingWords(true)
+    setKanjiWords([])
+    
+    try {
+      const supabase = createClientBrowser()
+      
+      // Try multiple search methods to find words containing this kanji
+              let words: DictionaryEntry[] = []
+        let error: Error | null = null
+      
+      // Method 1: Search in search_text field (most reliable)
+      const { data: searchResults, error: searchError } = await supabase
+        .from('jmdict_entries')
+        .select('*')
+        .ilike('search_text', `%${kanjiChar}%`)
+        .limit(20)
+      
+      if (searchError) {
+        console.log('Search method 1 failed, trying alternative...', searchError)
+        
+        // Method 2: Try searching in headwords array using text search
+        const { data: headwordResults, error: headwordError } = await supabase
+          .from('jmdict_entries')
+          .select('*')
+          .textSearch('headwords', kanjiChar)
+          .limit(20)
+        
+        if (headwordError) {
+          console.log('Search method 2 failed, trying final method...', headwordError)
+          
+          // Method 3: Use raw SQL-like search in any text field
+          const { data: rawResults, error: rawError } = await supabase
+            .from('jmdict_entries')
+            .select('*')
+            .or(`headwords.cs.{${kanjiChar}},readings.cs.{${kanjiChar}}`)
+            .limit(20)
+          
+          if (rawError) {
+            error = rawError
+          } else {
+            words = rawResults || []
+          }
+        } else {
+          words = headwordResults || []
+        }
+      } else {
+        words = searchResults || []
+      }
+      
+      if (error) {
+        console.error('All search methods failed:', error)
+        return
+      }
+      
+      setKanjiWords(words)
+      console.log(`Found ${words.length} words containing kanji: ${kanjiChar}`)
+      
+    } catch (err) {
+      console.error('Error fetching kanji words:', err)
+    } finally {
+      setLoadingWords(false)
+    }
   }
 
   if (loading) {
@@ -522,11 +611,68 @@ export default function KanjiPoster() {
                     <div className="text-lg text-gray-800">{selectedKanji.sound_equiv}</div>
                   </div>
                 </div>
+
+                {/* Words containing this kanji */}
+                <div className="mt-6 pt-6 border-t border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                    Words containing 「{selectedKanji.letter}」
+                  </h3>
+                  
+                  {loadingWords ? (
+                    <div className="text-center py-4">
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
+                      <p className="text-sm text-gray-500 mt-2">Finding words...</p>
+                    </div>
+                  ) : kanjiWords.length > 0 ? (
+                    <div className="space-y-3 max-h-64 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+                      {kanjiWords.map((word, index) => (
+                        <div key={index} className="bg-gray-50 rounded-lg p-3 border border-gray-200 hover:bg-gray-100 transition-colors">
+                          <div className="flex items-center gap-2 mb-2">
+                            {word.headwords && word.headwords.length > 0 && (
+                              <span className="text-lg font-bold text-gray-800">
+                                {word.headwords[0]}
+                              </span>
+                            )}
+                            {word.readings && word.readings.length > 0 && (
+                              <span className="text-sm text-gray-600">
+                                {word.readings[0]}
+                              </span>
+                            )}
+                            {word.is_common && (
+                              <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                                Common
+                              </span>
+                            )}
+                          </div>
+                          
+                          <div className="text-sm text-gray-700 mb-2">
+                            {word.glosses_en && word.glosses_en.length > 0 
+                              ? word.glosses_en.slice(0, 2).join(', ')
+                              : 'No English definition'
+                            }
+                          </div>
+                          
+                          {word.pos_tags && word.pos_tags.length > 0 && (
+                            <div className="flex flex-wrap gap-1">
+                              {word.pos_tags.slice(0, 3).map((pos: string, idx: number) => (
+                                <span key={idx} className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded">
+                                  {pos}
+                                </span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="text-center py-4 text-gray-500">
+                      <p className="text-sm">No words found containing this kanji</p>
+                    </div>
+                  )}
+                </div>
               </>
             ) : (
               <div className="text-center text-gray-500">
-                <div className="text-4xl mb-2">👆</div>
-                <div className="text-sm">Hover over a kanji to see details</div>
               </div>
             )}
           </div>
