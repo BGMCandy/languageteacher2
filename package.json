@@ -3,28 +3,45 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build --turbopack",
+    "dev": "next dev",
+    "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint",
+    "aozora:download": "ts-node scripts/aozora/download.ts",
+    "aozora:prepare": "ts-node scripts/aozora/prepareStarter.ts",
+    "aozora:ingest": "ts-node scripts/aozora/ingest.ts",
+    "dict:jmdict": "ts-node scripts/dict/import-jmdict.ts ./data/dict/jmdict-eng-3.6.1.json",
+    "dict:kanji": "ts-node scripts/dict/import-kanjidic2.ts ./data/dict/kanjidic2-full.xml",
+    "dict:download": "ts-node scripts/dict/download-sources.ts",
+    "dict:find-words": "ts-node scripts/dict/find-words-for-kanji.ts",
+    "dict:download-full": "ts-node scripts/dict/download-full-dicts.ts"
   },
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.56.1",
+    "cheerio": "^1.1.2",
+    "csv-parse": "^6.1.0",
+    "dotenv": "^17.2.1",
+    "fast-xml-parser": "^5.2.5",
     "next": "15.5.2",
+    "node-fetch": "^2.7.0",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "unzipper": "^0.12.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
-    "@types/node": "^20",
+    "@types/node": "^20.19.11",
+    "@types/node-fetch": "^2.6.13",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/unzipper": "^0.10.11",
     "eslint": "^9",
     "eslint-config-next": "15.5.2",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
   }
 }

@@ -12,8 +12,9 @@ export default function KanjiPoster() {
   const [viewMode, setViewMode] = useState<'level' | 'performance'>('level')
   const [userPerformance, setUserPerformance] = useState<Record<string, { totalAttempts: number; correctAttempts: number; successRate: number }>>({})
   const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [condensedView, setCondensedView] = useState<'comfortable' | 'condensed' | 'super-condensed'>('comfortable')
+  const [condensedView, setCondensedView] = useState<'comfortable' | 'super-condensed'>('comfortable')
   const [showAllKanji, setShowAllKanji] = useState(false)
+  const [grouping, setGrouping] = useState<'none' | '5' | '10' | '20'>('none')
 
   useEffect(() => {
     const fetchKanji = async () => {
@@ -116,14 +117,21 @@ export default function KanjiPoster() {
     fetchUserPerformance()
   }, [])
 
-  // Group kanji by level for rendering separators
-  const groupedKanji = kanji.reduce((groups, k) => {
-    const level = k.level
-    if (!groups[level]) {
-      groups[level] = []
+  // Helper function to create grouped kanji with borders
+  const createGroupedKanji = (kanjiList: string[], groupSize: number) => {
+    const groups: string[][] = []
+    for (let i = 0; i < kanjiList.length; i += groupSize) {
+      groups.push(kanjiList.slice(i, i + groupSize))
     }
-    groups[level].push(k)
     return groups
+  }
+
+  // Group kanji by level for level view
+  const groupedKanji = kanji.reduce((acc, k) => {
+    const level = k.level || 'Unknown'
+    if (!acc[level]) acc[level] = []
+    acc[level].push(k)
+    return acc
   }, {} as Record<string, JapaneseKanji[]>)
 
   const getLevelColor = (level: string) => {
@@ -229,7 +237,7 @@ export default function KanjiPoster() {
             </button>
           </div>
 
-          {/* Condensed View Toggle */}
+          {/* Density View Toggle */}
           <div className="bg-white rounded-lg shadow-md p-1 inline-flex">
             <button
               onClick={() => setCondensedView('comfortable')}
@@ -239,17 +247,7 @@ export default function KanjiPoster() {
                   : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
               }`}
             >
-              Comfortable
-            </button>
-            <button
-              onClick={() => setCondensedView('condensed')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
-                condensedView === 'condensed'
-                  ? 'bg-green-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
-              }`}
-            >
-              Condensed
+              Large
             </button>
             <button
               onClick={() => setCondensedView('super-condensed')}
@@ -259,7 +257,7 @@ export default function KanjiPoster() {
                   : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
               }`}
             >
-              Super Condensed
+              Compact
             </button>
           </div>
 
@@ -286,6 +284,50 @@ export default function KanjiPoster() {
               Show All
             </button>
           </div>
+
+          {/* Grouping Toggle */}
+          <div className="bg-white rounded-lg shadow-md p-1 inline-flex">
+            <button
+              onClick={() => setGrouping('none')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                grouping === 'none'
+                  ? 'bg-orange-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+              }`}
+            >
+              No Groups
+            </button>
+            <button
+              onClick={() => setGrouping('5')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                grouping === '5'
+                  ? 'bg-orange-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+              }`}
+            >
+              Groups of 5
+            </button>
+            <button
+              onClick={() => setGrouping('10')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                grouping === '10'
+                  ? 'bg-orange-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+              }`}
+            >
+              Groups of 10
+            </button>
+            <button
+              onClick={() => setGrouping('20')}
+              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                grouping === '20'
+                  ? 'bg-orange-600 text-white shadow-sm'
+                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+              }`}
+            >
+              Groups of 20
+            </button>
+          </div>
         </div>
         
         {viewMode === 'performance' && !isAuthenticated && (
@@ -296,58 +338,53 @@ export default function KanjiPoster() {
           </div>
         )}
         
-        {viewMode === 'performance' && isAuthenticated && (
-          <div className="text-center mb-4 text-blue-600 bg-blue-50 p-3 rounded-lg">
-            <div className="text-sm">
-              <strong>Performance Legend:</strong> 
-              <span className="text-green-600"> Green = Good</span> | 
-              <span className="text-yellow-600"> Yellow = Okay</span> | 
-              <span className="text-orange-600"> Orange = Needs Work</span> | 
-              <span className="text-red-600"> Red = Struggling</span>
-              <br />
-              <span className="text-gray-600">Brighter = More practice attempts</span>
-            </div>
-          </div>
-        )}
         
         <div className="flex gap-8">
           {/* Kanji Grid */}
           <div className="flex-1">
             {showAllKanji ? (
-              /* All Kanji View - Single condensed grid */
+              /* All Kanji View - Single condensed grid with optional grouping */
               <div className={`grid ${
                 condensedView === 'super-condensed'
                   ? 'gap-1 grid-cols-40 md:grid-cols-50 lg:grid-cols-60 xl:grid-cols-80 2xl:grid-cols-100'
-                  : condensedView === 'condensed'
-                    ? 'gap-0.5 grid-cols-45 md:grid-cols-55 lg:grid-cols-70 xl:grid-cols-85 2xl:grid-cols-110'
-                    : 'gap-1 grid-cols-25 md:grid-cols-30 lg:grid-cols-35 xl:grid-cols-40'
+                  : 'gap-1 grid-cols-25 md:grid-cols-30 lg:grid-cols-35 xl:grid-cols-40'
               }`}>
-                {kanji.map((k) => (
-                  <div
-                    key={k.id}
-                    className={`
-                      aspect-square flex items-center justify-center 
-                      cursor-pointer transition-all duration-200
-                      ${condensedView === 'super-condensed' ? 'hover:bg-blue-100' : 'hover:bg-gray-100'}
-                      ${getKanjiColor(k)}
-                    `}
-                    onClick={() => setSelectedKanji(k)}
-                    onMouseEnter={(e) => {
-                      setTooltip({ kanji: k, x: e.clientX, y: e.clientY })
-                    }}
-                    onMouseLeave={() => setTooltip(null)}
-                  >
-                    <span className={`font-bold leading-none ${
-                      condensedView === 'super-condensed'
-                        ? 'text-[10px]'
-                        : condensedView === 'condensed'
-                          ? 'text-[11px] md:text-[12px] lg:text-[13px] xl:text-[14px]'
+                {kanji.map((k, index) => {
+                  const groupSize = grouping !== 'none' ? parseInt(grouping) : 0
+                  const isInGroup = groupSize > 0
+                  const groupIndex = Math.floor(index / groupSize)
+                  const isAlternateGroup = groupIndex % 2 === 1
+                  const isGroupEnd = isInGroup && ((index + 1) % groupSize === 0)
+                  const isLastInRow = (index + 1) % (groupSize * Math.ceil(groupSize / 10)) === 0
+                  
+                  return (
+                    <div
+                      key={k.id}
+                      className={`
+                        aspect-square flex items-center justify-center 
+                        cursor-pointer transition-all duration-200
+                        ${condensedView === 'super-condensed' ? 'hover:bg-blue-100' : 'hover:bg-gray-100'}
+                        ${getKanjiColor(k)}
+                        ${isInGroup && isAlternateGroup ? 'bg-gray-50/30' : ''}
+                        ${isInGroup && isGroupEnd ? 'mr-2' : ''}
+                        ${isInGroup && isLastInRow ? 'mb-2' : ''}
+                      `}
+                      onClick={() => setSelectedKanji(k)}
+                      onMouseEnter={(e) => {
+                        setTooltip({ kanji: k, x: e.clientX, y: e.clientY })
+                      }}
+                      onMouseLeave={() => setTooltip(null)}
+                    >
+                      <span className={`font-bold leading-none ${
+                        condensedView === 'super-condensed'
+                          ? 'text-[10px]'
                           : 'text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]'
-                    }`}>
-                      {k.letter}
-                    </span>
-                  </div>
-                ))}
+                      }`}>
+                        {k.letter}
+                      </span>
+                    </div>
+                  )
+                })}
               </div>
             ) : (
               /* Level View - Grouped by level */
@@ -363,40 +400,92 @@ export default function KanjiPoster() {
                       <div className="flex-1 h-px bg-gray-300"></div>
                     </div>
                     
-                    {/* Kanji Grid for this level */}
-                    <div className={`grid ${
-                      condensedView === 'super-condensed'
-                        ? 'gap-1 grid-cols-30 md:grid-cols-35 lg:grid-cols-40 xl:grid-cols-50 2xl:grid-cols-60'
-                        : condensedView === 'condensed'
-                          ? 'gap-0.5 grid-cols-35 md:grid-cols-40 lg:grid-cols-45 xl:grid-cols-55 2xl:grid-cols-70'
-                          : 'gap-1 grid-cols-8 md:grid-cols-12 lg:grid-cols-16 xl:grid-cols-20'
-                    }`}>
-                      {levelKanji.map((k) => (
-                        <div
-                          key={k.id}
-                          className={`
-                            aspect-square flex items-center justify-center 
-                            cursor-pointer transition-all duration-200
-                            ${condensedView === 'super-condensed' ? 'hover:bg-blue-100' : 'hover:bg-gray-100'}
-                            ${getKanjiColor(k)}
-                          `}
-                          onClick={() => setSelectedKanji(k)}
-                          onMouseEnter={(e) => {
-                            setTooltip({ kanji: k, x: e.clientX, y: e.clientY })
-                          }}
-                          onMouseLeave={() => setTooltip(null)}
-                        >
-                          <span className={`font-bold leading-none ${
-                            condensedView === 'super-condensed'
-                              ? 'text-[10px]'
-                              : condensedView === 'condensed'
-                                ? 'text-[11px] md:text-[12px] lg:text-[13px] xl:text-[14px]'
-                                : 'text-[18px] md:text-[20px] lg:text-[22px] xl:text-[24px]'
-                          }`}>
-                            {k.letter}
-                          </span>
+                    {/* Kanji Grid for this level with optional grouping */}
+                    <div className="space-y-2">
+                      {grouping === 'none' ? (
+                        /* No grouping - show all kanji for this level */
+                        <div className={`grid ${
+                          condensedView === 'super-condensed'
+                            ? 'gap-1 grid-cols-30 md:grid-cols-35 lg:grid-cols-40 xl:grid-cols-50 2xl:grid-cols-60'
+                            : 'gap-1 grid-cols-8 md:grid-cols-12 lg:grid-cols-16 xl:grid-cols-20'
+                        }`}>
+                          {levelKanji.map((k, index) => {
+                            const groupSize = grouping !== 'none' ? parseInt(grouping) : 0
+                            const isInGroup = groupSize > 0
+                            const groupIndex = Math.floor(index / groupSize)
+                            const isAlternateGroup = groupIndex % 2 === 1
+                            const isGroupEnd = isInGroup && ((index + 1) % groupSize === 0)
+                            const isLastInRow = (index + 1) % (groupSize * Math.ceil(groupSize / 10)) === 0
+                            
+                            return (
+                              <div
+                                key={k.id}
+                                className={`
+                                  aspect-square flex items-center justify-center 
+                                  cursor-pointer transition-all duration-200
+                                  ${condensedView === 'super-condensed' ? 'hover:bg-blue-100' : 'hover:bg-gray-100'}
+                                  ${getKanjiColor(k)}
+                                  ${isInGroup && isAlternateGroup ? 'bg-gray-50/30' : ''}
+                                  ${isInGroup && isGroupEnd ? 'mr-2' : ''}
+                                  ${isInGroup && isLastInRow ? 'mb-2' : ''}
+                                `}
+                                onClick={() => setSelectedKanji(k)}
+                                onMouseEnter={(e) => {
+                                  setTooltip({ kanji: k, x: e.clientX, y: e.clientY })
+                                }}
+                                onMouseLeave={() => setTooltip(null)}
+                              >
+                                <span className={`font-bold leading-none ${
+                                  condensedView === 'super-condensed'
+                                    ? 'text-[10px]'
+                                    : 'text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]'
+                                }`}>
+                                  {k.letter}
+                                </span>
+                              </div>
+                            )
+                          })}
                         </div>
-                      ))}
+                      ) : (
+                        /* With grouping - show kanji in groups for this level */
+                        createGroupedKanji(levelKanji.map(k => k.letter), parseInt(grouping)).map((group, groupIndex) => (
+                          <div key={groupIndex} className="border border-gray-200 rounded p-1">
+                            <div className={`grid ${
+                              condensedView === 'super-condensed'
+                                ? 'gap-1 grid-cols-30 md:grid-cols-35 lg:grid-cols-40 xl:grid-cols-50 2xl:grid-cols-60'
+                                : 'gap-1 grid-cols-8 md:grid-cols-12 lg:grid-cols-16 xl:grid-cols-20'
+                            }`}>
+                              {group.map((k) => (
+                                <div
+                                  key={k}
+                                  className={`
+                                    aspect-square flex items-center justify-center 
+                                    cursor-pointer transition-all duration-200
+                                    ${condensedView === 'super-condensed' ? 'hover:bg-blue-100' : 'hover:bg-gray-100'}
+                                    ${getKanjiColor({ letter: k, level: 'Unknown', reading: '', name: '', sound_equiv: '' } as JapaneseKanji)}
+                                  `}
+                                  onClick={() => setSelectedKanji({ letter: k, level: 'Unknown', reading: '', name: '', sound_equiv: '' } as JapaneseKanji)}
+                                  onMouseEnter={(e) => {
+                                    setTooltip({ kanji: { letter: k, level: 'Unknown', reading: '', name: '', sound_equiv: '' } as JapaneseKanji, x: e.clientX, y: e.clientY })
+                                  }}
+                                  onMouseLeave={() => setTooltip(null)}
+                                >
+                                  <span className={`font-bold leading-none ${
+                                    condensedView === 'super-condensed'
+                                      ? 'text-[10px]'
+                                      : 'text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]'
+                                  }`}>
+                                    {k}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                            <div className="text-center mt-1 text-xs text-gray-400">
+                              Group {groupIndex + 1} ({group.length} kanji)
+                            </div>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </div>
                 ))}
