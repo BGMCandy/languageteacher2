@@ -46,7 +46,6 @@ Master Japanese, Thai, and other languages with our interactive flashcard system
    ```
 
 5. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
 
 ## Auth Setup & URLs
 
