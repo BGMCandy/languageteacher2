@@ -48,6 +48,21 @@ function AuthCallbackContent() {
         console.log('About to exchange code for session...')
         console.log('Supabase client created:', !!supabase)
         
+        // Check if we already have a session first
+        const { data: existingSession } = await supabase.auth.getSession()
+        console.log('Existing session check:', {
+          hasSession: !!existingSession.session,
+          user: existingSession.session?.user?.email
+        })
+        
+        if (existingSession.session) {
+          console.log('Session already exists, redirecting to account')
+          if (!alive) return
+          router.replace('/account')
+          return
+        }
+        
+        // Only try to exchange if no session exists
         const { data, error } = await supabase.auth.exchangeCodeForSession(code)
         
         console.log('Exchange result:', {

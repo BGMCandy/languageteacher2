@@ -16,6 +16,7 @@ const Header = () => {
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           {/* Logo and Title */}
+          <Link href="/">
           <div className="flex items-center space-x-4">
             <div className="w-10 h-10 bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
               <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -28,9 +29,10 @@ const Header = () => {
               </h1>
               <p className="text-sm text-slate-600 dark:text-slate-400">
                 Master Japanese, Thai, and more
-              </p>
+                </p>
             </div>
           </div>
+          </Link>
 
           {/* Navigation */}
           <nav className="hidden md:flex items-center space-x-8">

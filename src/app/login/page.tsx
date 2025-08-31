@@ -43,7 +43,7 @@ function LoginContent() {
       
       const supabase = createClientBrowser()
       
-      // Use the proper Supabase OAuth flow
+      // Try to bypass PKCE by using a different OAuth approach
       const oauthOptions = {
         provider: 'google' as const,
         options: {
@@ -51,12 +51,16 @@ function LoginContent() {
           queryParams: {
             access_type: 'offline',
             prompt: 'consent',
-            response_type: 'code'
-          }
+            include_granted_scopes: 'true'
+          },
+          skipBrowserRedirect: false
         }
       }
       
       console.log('OAuth options being sent:', oauthOptions)
+      
+      // Clear any existing auth state before starting OAuth
+      await supabase.auth.signOut()
       
       const { data, error } = await supabase.auth.signInWithOAuth(oauthOptions)
       
