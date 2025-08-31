@@ -1,11 +1,10 @@
-import { NextResponse } from 'next/server'
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 import { ENV } from '@/lib/env'
 
-export async function POST() {
+export async function createClientServer() {
   const cookieStore = await cookies()
-  const supabase = createServerClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON, {
+  return createServerClient(ENV.SUPABASE_URL, ENV.SUPABASE_ANON, {
     cookies: {
       get: (name: string) => cookieStore.get(name)?.value,
       set: (name: string, value: string, options: Record<string, unknown>) => {
@@ -16,8 +15,4 @@ export async function POST() {
       },
     },
   })
-  
-  await supabase.auth.signOut()
-  
-  return NextResponse.redirect(new URL('/login', ENV.SITE_URL || 'http://localhost:3000'))
-}
+} 

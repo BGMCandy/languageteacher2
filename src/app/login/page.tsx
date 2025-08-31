@@ -1,33 +1,75 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect, Suspense } from 'react'
 import { createClientBrowser } from '@/lib/supabase/clients'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
 
-export default function LoginPage() {
+function LoginContent() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
+  const [messageType, setMessageType] = useState<'info' | 'error' | 'success'>('info')
   const router = useRouter()
-  const supabase = createClientBrowser()
+  const searchParams = useSearchParams()
+
+  useEffect(() => {
+    // Handle error parameters from URL
+    const error = searchParams.get('error')
+    
+    if (error) {
+      setMessage(`Authentication error: ${decodeURIComponent(error)}`)
+      setMessageType('error')
+    }
+  }, [searchParams])
+
+  const getRedirectPath = () => {
+    const redirect = searchParams.get('redirect')
+    return redirect || '/'
+  }
 
   const handleGoogleSignIn = async () => {
     try {
       setLoading(true)
-      const { error } = await supabase.auth.signInWithOAuth({
+      setMessage('')
+      
+      console.log('=== GOOGLE OAUTH DEBUG START ===')
+      console.log('Current origin:', window.location.origin)
+      console.log('Current pathname:', window.location.pathname)
+      console.log('Redirect path:', getRedirectPath())
+      
+      const supabase = createClientBrowser()
+      const redirectTo = new URL(`/auth/callback?next=${encodeURIComponent(getRedirectPath())}`, window.location.origin).toString()
+      
+      console.log('Constructed redirectTo:', redirectTo)
+      console.log('Full URL object:', new URL(`/auth/callback?next=${encodeURIComponent(getRedirectPath())}`, window.location.origin))
+      
+      console.log('Starting OAuth with options:', {
+        provider: 'google',
+        redirectTo,
+        queryParams: { access_type: 'offline', prompt: 'consent' }
+      })
+      
+      const { data, error } = await supabase.auth.signInWithOAuth({
         provider: 'google',
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`
+          redirectTo,
+          queryParams: { access_type: 'offline', prompt: 'consent' },
         }
       })
       
+      console.log('OAuth response:', { data, error })
+      
       if (error) throw error
+      
+      console.log('OAuth initiated successfully, should redirect to:', redirectTo)
+      console.log('=== GOOGLE OAUTH DEBUG END ===')
+      
     } catch (error) {
       console.error('Google sign in error:', error)
-      setMessage('Error signing in with Google')
-    } finally {
+      setMessage('Error starting Google sign in. Please try again.')
+      setMessageType('error')
       setLoading(false)
     }
   }
@@ -36,6 +78,7 @@ export default function LoginPage() {
     e.preventDefault()
     try {
       setLoading(true)
+      const supabase = createClientBrowser()
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password
@@ -43,10 +86,12 @@ export default function LoginPage() {
       
       if (error) throw error
       
-      router.push('/account')
+      // Redirect to intended destination or homepage
+      router.push(getRedirectPath())
     } catch (error) {
       console.error('Email sign in error:', error)
       setMessage('Error signing in with email')
+      setMessageType('error')
     } finally {
       setLoading(false)
     }
@@ -56,27 +101,41 @@ export default function LoginPage() {
     e.preventDefault()
     try {
       setLoading(true)
+      const supabase = createClientBrowser()
       const { error } = await supabase.auth.signUp({
         email,
         password,
         options: {
-          emailRedirectTo: `${window.location.origin}/auth/callback`
+          emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(getRedirectPath())}`
         }
       })
       
       if (error) throw error
       
       setMessage('Check your email for confirmation link!')
+      setMessageType('success')
     } catch (error) {
       console.error('Sign up error:', error)
       setMessage('Error signing up')
+      setMessageType('error')
     } finally {
       setLoading(false)
     }
   }
 
+  const getMessageStyles = () => {
+    switch (messageType) {
+      case 'error':
+        return 'bg-red-50 dark:bg-red-900/20 border-red-200 dark:border-red-800 text-red-800 dark:text-red-200'
+      case 'success':
+        return 'bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800 text-green-800 dark:text-green-200'
+      default:
+        return 'bg-blue-50 dark:bg-blue-900/20 border-blue-200 dark:border-blue-800 text-blue-800 dark:text-blue-200'
+    }
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900">
       <div className="max-w-md w-full space-y-8 p-8">
         <div className="text-center">
           <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
@@ -108,7 +167,7 @@ export default function LoginPage() {
               <div className="w-full border-t border-gray-300 dark:border-gray-600" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 text-gray-500 dark:text-gray-400">
+              <span className="px-2 bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900 text-gray-500 dark:text-gray-400">
                 Or continue with email
               </span>
             </div>
@@ -145,7 +204,7 @@ export default function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
                 placeholder="Enter your password"
               />
             </div>
@@ -180,12 +239,29 @@ export default function LoginPage() {
           </form>
 
           {message && (
-            <div className="mt-4 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-              <p className="text-sm text-blue-800 dark:text-blue-200">{message}</p>
+            <div className={`mt-4 p-3 rounded-lg border ${getMessageStyles()}`}>
+              <p className="text-sm">{message}</p>
             </div>
           )}
         </div>
       </div>
     </div>
+  )
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            Loading...
+          </h2>
+        </div>
+      </div>
+    }>
+      <LoginContent />
+    </Suspense>
   )
 }

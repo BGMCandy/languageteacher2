@@ -1,7 +1,7 @@
 'use client'
 
 import { useAuth } from '@/contexts/AuthContext'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
 interface ProtectedRouteProps {
@@ -12,16 +12,19 @@ interface ProtectedRouteProps {
 export default function ProtectedRoute({ children, fallback }: ProtectedRouteProps) {
   const { user, loading } = useAuth()
   const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     if (!loading && !user) {
-      router.push('/login')
+      // Redirect to login with the current path as redirect parameter
+      const redirectPath = encodeURIComponent(pathname)
+      router.push(`/login?redirect=${redirectPath}`)
     }
-  }, [user, loading, router])
+  }, [user, loading, router, pathname])
 
   if (loading) {
     return fallback || (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-indigo-900">
         <div className="text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600 dark:text-gray-300">Loading...</p>

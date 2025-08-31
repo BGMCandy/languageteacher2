@@ -1,10 +1,12 @@
-import ProtectedRoute from '@/components/auth/ProtectedRoute'
+import { redirect } from 'next/navigation'
+import { createClientServer } from '@/lib/supabase/server'
 import AccountContent from './AccountContent'
 
-export default function AccountPage() {
-  return (
-    <ProtectedRoute>
-      <AccountContent />
-    </ProtectedRoute>
-  )
+export default async function AccountPage() {
+  const supabase = await createClientServer()
+  const { data: { session } } = await supabase.auth.getSession()
+  
+  if (!session) redirect('/login')
+
+  return <AccountContent />
 }

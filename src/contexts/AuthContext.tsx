@@ -17,9 +17,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
   const [session, setSession] = useState<Session | null>(null)
   const [loading, setLoading] = useState(true)
-  const supabase = createClientBrowser()
 
   useEffect(() => {
+    const supabase = createClientBrowser()
+
     // Get initial session
     const getSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
@@ -32,7 +33,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
+      async (event: string, session: Session | null) => {
         setSession(session)
         setUser(session?.user ?? null)
         setLoading(false)
@@ -40,9 +41,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     )
 
     return () => subscription.unsubscribe()
-  }, [supabase.auth])
+  }, [])
 
   const signOut = async () => {
+    const supabase = createClientBrowser()
     await supabase.auth.signOut()
   }
 

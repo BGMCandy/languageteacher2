@@ -54,6 +54,12 @@ const Header = () => {
               <>
                 {user ? (
                   <div className="flex items-center space-x-4">
+                    <div className="text-right">
+                      <div className="text-sm text-slate-500 dark:text-slate-400">Signed in as</div>
+                      <div className="text-slate-700 dark:text-slate-300 font-medium truncate max-w-48">
+                        {user.email}
+                      </div>
+                    </div>
                     <Link
                       href="/account"
                       className="text-slate-700 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 font-medium transition-colors duration-200"

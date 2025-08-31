@@ -1,9 +1,16 @@
-import { createClient } from '@supabase/supabase-js'
+import { createBrowserClient } from '@supabase/ssr'
+import { ENV } from './env'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+export function createClientBrowser() {
+  const supabaseUrl = ENV.SUPABASE_URL
+  const supabaseAnonKey = ENV.SUPABASE_ANON
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Missing Supabase environment variables. Please check your .env.local file.')
+  }
+
+  return createBrowserClient(supabaseUrl, supabaseAnonKey)
+}
 
 // Types for your language data
 export interface JapaneseKanji {
