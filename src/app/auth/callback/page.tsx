@@ -16,6 +16,8 @@ function AuthCallbackContent() {
       console.log('Current URL:', window.location.href)
       console.log('Current origin:', window.location.origin)
       console.log('Current pathname:', window.location.pathname)
+      console.log('Environment:', process.env.NODE_ENV)
+      console.log('Site URL from env:', process.env.NEXT_PUBLIC_SITE_URL)
       
       // Log ALL search parameters
       const allParams = Object.fromEntries(params.entries())

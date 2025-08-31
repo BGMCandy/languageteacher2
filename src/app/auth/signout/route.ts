@@ -19,5 +19,11 @@ export async function POST() {
   
   await supabase.auth.signOut()
   
-  return NextResponse.redirect(new URL('/login', ENV.SITE_URL || 'http://localhost:3000'))
+  // Use the environment variable without hardcoded fallback
+  const siteUrl = ENV.SITE_URL
+  if (!siteUrl) {
+    throw new Error('NEXT_PUBLIC_SITE_URL environment variable is required')
+  }
+  
+  return NextResponse.redirect(new URL('/login', siteUrl))
 }
