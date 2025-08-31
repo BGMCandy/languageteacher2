@@ -38,6 +38,8 @@ function LoginContent() {
       console.log('Current origin:', window.location.origin)
       console.log('Current pathname:', window.location.pathname)
       console.log('Redirect path:', getRedirectPath())
+      console.log('Supabase URL from env:', process.env.NEXT_PUBLIC_SUPABASE_URL)
+      console.log('Site URL from env:', process.env.NEXT_PUBLIC_SITE_URL)
       
       const supabase = createClientBrowser()
       const redirectTo = new URL(`/auth/callback?next=${encodeURIComponent(getRedirectPath())}`, window.location.origin).toString()
