@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { createClientBrowser, JapaneseKanji } from '@/lib/supabase'
 
 interface QuizConfig {
@@ -30,20 +30,9 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [userAnswers, setUserAnswers] = useState<QuizResult[]>([])
   const [loading, setLoading] = useState(true)
-  const [startTime, setStartTime] = useState<number>(0)
   const [questionStartTime, setQuestionStartTime] = useState<number>(0)
 
-  useEffect(() => {
-    generateQuiz()
-  }, [config])
-
-  useEffect(() => {
-    if (questions.length > 0) {
-      setQuestionStartTime(Date.now())
-    }
-  }, [currentQuestion, questions])
-
-  const generateQuiz = async () => {
+  const generateQuiz = useCallback(async () => {
     try {
       setLoading(true)
       const supabase = createClientBrowser()
@@ -105,14 +94,23 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
       }
       
       setQuestions(quizQuestions)
-      setStartTime(Date.now())
       setQuestionStartTime(Date.now())
       setLoading(false)
     } catch (err) {
       console.error('Error generating quiz:', err)
       setLoading(false)
     }
-  }
+  }, [config])
+
+  useEffect(() => {
+    generateQuiz()
+  }, [generateQuiz])
+
+  useEffect(() => {
+    if (questions.length > 0) {
+      setQuestionStartTime(Date.now())
+    }
+  }, [currentQuestion, questions])
 
   const generatePronunciationOptions = (correctReading: string, allKanji: JapaneseKanji[]): string[] => {
     const options = [correctReading]

@@ -1,9 +1,9 @@
 'use client'
 
 import { useState } from 'react'
-import Link from 'next/link'
 import KanjiQuiz from './components/KanjiQuiz'
 import QuizResults from './components/QuizResults'
+import { QuizResult } from './components/KanjiQuiz'
 
 interface QuizConfig {
   language: string
@@ -22,7 +22,7 @@ export default function QuizPage() {
     quizType: 'mixed'
   })
   const [quizStarted, setQuizStarted] = useState(false)
-  const [quizResults, setQuizResults] = useState<any[]>([])
+  const [quizResults, setQuizResult] = useState<QuizResult[]>([])
   const [showResults, setShowResults] = useState(false)
 
   const languages = [
@@ -83,9 +83,9 @@ export default function QuizPage() {
     setQuizStarted(true)
   }
 
-  const handleQuizComplete = (results: any[]) => {
+  const handleQuizComplete = (results: QuizResult[]) => {
     console.log('Quiz completed with results:', results)
-    setQuizResults(results)
+    setQuizResult(results)
     setQuizStarted(false)
     setShowResults(true)
     
@@ -100,7 +100,7 @@ export default function QuizPage() {
 
   const handleBackToQuiz = () => {
     setShowResults(false)
-    setQuizResults([])
+    setQuizResult([])
   }
 
   // If quiz is started, show the quiz component
@@ -204,7 +204,7 @@ export default function QuizPage() {
                 {quizTypes.map((type) => (
                   <button
                     key={type.id}
-                    onClick={() => setConfig({ ...config, quizType: type.id as any })}
+                    onClick={() => setConfig({ ...config, quizType: type.id as 'pronunciation' | 'meaning' | 'mixed' })}
                     className={`p-3 rounded-lg border-2 text-left transition-all ${
                       config.quizType === type.id
                         ? 'border-blue-500 bg-blue-50'

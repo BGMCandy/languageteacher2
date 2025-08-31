@@ -28,7 +28,7 @@ export default function QuizResults({ results, onRetake, onBackToQuiz }: QuizRes
       const supabase = createClientBrowser()
       const { data: { user } } = await supabase.auth.getUser()
       setIsAuthenticated(!!user)
-    } catch (error) {
+    } catch {
       setIsAuthenticated(false)
     }
   }
@@ -40,8 +40,8 @@ export default function QuizResults({ results, onRetake, onBackToQuiz }: QuizRes
   }
 
   const getAccuracyMessage = (acc: number) => {
-    if (acc >= 90) return 'Excellent! You\'re a kanji master!'
-    if (acc >= 80) return 'Great job! You\'re doing really well!'
+    if (acc >= 90) return 'Excellent! You&apos;re a kanji master!'
+    if (acc >= 80) return 'Great job! You&apos;re doing really well!'
     if (acc >= 70) return 'Good work! Keep practicing!'
     if (acc >= 60) return 'Not bad! More practice will help!'
     return 'Keep studying! Practice makes perfect!'
@@ -58,7 +58,7 @@ export default function QuizResults({ results, onRetake, onBackToQuiz }: QuizRes
         {!isAuthenticated && (
           <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 text-center">
             <div className="text-yellow-800">
-              <strong>Note:</strong> You're not signed in, so your results weren't saved. 
+              <strong>Note:</strong> You&apos;re not signed in, so your results weren&apos;t saved. 
               <br />
               <Link href="/login" className="text-blue-600 hover:underline">
                 Sign in to track your progress
