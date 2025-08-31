@@ -20,7 +20,9 @@ export default function RootLayout({
       <body className={`antialiased`}>
         <AuthProvider>
           <Header />
-          {children}
+          <main className="min-h-screen pt-20 pb-48">
+            {children}
+          </main>
           <Footer />
         </AuthProvider>
       </body>

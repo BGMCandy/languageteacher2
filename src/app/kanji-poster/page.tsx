@@ -282,151 +282,174 @@ export default function KanjiPoster() {
   }
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">
-      <div className="text-2xl text-gray-600">Loading kanji...</div>
-    </div>
+    return (
+      <div className="bg-white flex items-center justify-center py-16">
+        <div className="text-center">
+          <div className="w-12 h-12 bg-black relative mb-6">
+            <div className="absolute inset-0 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)' }}></div>
+            <div className="absolute inset-0 bg-black" style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0 100%)' }}></div>
+          </div>
+          <h2 className="text-xl font-bold text-black tracking-wider">
+            LOADING KANJI...
+          </h2>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">
-          Japanese Kanji Poster
-        </h1>
+    <div className="bg-white">
+      <div className="max-w-7xl mx-auto px-8 py-16">
+        {/* Header */}
+        <div className="text-center mb-16">
+          <div className="flex items-center justify-center space-x-4 mb-8">
+            {/* Sharp geometric logo */}
+            <div className="w-12 h-12 bg-black relative">
+              <div className="absolute inset-0 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)' }}></div>
+              <div className="absolute inset-0 bg-black" style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0 100%)' }}></div>
+            </div>
+            <h1 className="text-4xl font-bold text-black tracking-wider">
+              JAPANESE KANJI POSTER
+            </h1>
+          </div>
+          <div className="h-px w-32 bg-black mx-auto mb-6"></div>
+          <p className="text-gray-600 tracking-wide">
+            Interactive visual learning with comprehensive character coverage
+          </p>
+        </div>
         
         {/* Debug Info */}
-        <div className="text-center mb-4 text-gray-600">
+        <div className="text-center mb-8 text-gray-600">
           Displaying {kanji.length} of {totalCount || 'unknown'} kanji characters
         </div>
         
         {/* View Toggle */}
-        <div className="flex justify-center mb-6 gap-4">
+        <div className="flex justify-center mb-12 gap-6">
           {/* View Mode Toggle */}
-          <div className="bg-white rounded-lg shadow-md p-1 inline-flex">
+          <div className="border-2 border-black p-1 inline-flex">
             <button
               onClick={() => setViewMode('level')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              className={`w-32 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
                 viewMode === 'level'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+                  ? 'bg-black text-white'
+                  : 'text-black hover:bg-gray-100'
               }`}
             >
-              Level View
+              LEVEL VIEW
             </button>
             <button
               onClick={() => setViewMode('performance')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              className={`w-36 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
                 viewMode === 'performance'
-                  ? 'bg-blue-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+                  ? 'bg-black text-white'
+                  : 'text-black hover:bg-gray-100'
               }`}
               disabled={!isAuthenticated}
             >
-              Performance View
+              PERFORMANCE VIEW
             </button>
           </div>
 
           {/* Density View Toggle */}
-          <div className="bg-white rounded-lg shadow-md p-1 inline-flex">
+          <div className="border-2 border-black p-1 inline-flex">
             <button
               onClick={() => setCondensedView('comfortable')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              className={`w-20 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
                 condensedView === 'comfortable'
-                  ? 'bg-green-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+                  ? 'bg-black text-white'
+                  : 'text-black hover:bg-gray-100'
               }`}
             >
-              Large
+              LARGE
             </button>
             <button
               onClick={() => setCondensedView('super-condensed')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              className={`w-24 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
                 condensedView === 'super-condensed'
-                  ? 'bg-green-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+                  ? 'bg-black text-white'
+                  : 'text-black hover:bg-gray-100'
               }`}
             >
-              Compact
+              COMPACT
             </button>
           </div>
 
           {/* Show All Toggle */}
-          <div className="bg-white rounded-lg shadow-md p-1 inline-flex">
+          <div className="border-2 border-black p-1 inline-flex">
             <button
               onClick={() => setShowAllKanji(false)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              className={`w-24 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
                 !showAllKanji
-                  ? 'bg-purple-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+                  ? 'bg-black text-white'
+                  : 'text-black hover:bg-gray-100'
               }`}
             >
-              By Level
+              BY LEVEL
             </button>
             <button
               onClick={() => setShowAllKanji(true)}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              className={`w-24 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
                 showAllKanji
-                  ? 'bg-purple-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+                  ? 'bg-black text-white'
+                  : 'text-black hover:bg-gray-100'
               }`}
             >
-              Show All
+              SHOW ALL
             </button>
           </div>
 
           {/* Grouping Toggle */}
-          <div className="bg-white rounded-lg shadow-md p-1 inline-flex">
+          <div className="border-2 border-black p-1 inline-flex">
             <button
               onClick={() => setGrouping('none')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              className={`w-24 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
                 grouping === 'none'
-                  ? 'bg-orange-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+                  ? 'bg-black text-white'
+                  : 'text-black hover:bg-gray-100'
               }`}
             >
-              No Groups
+              NO GROUPS
             </button>
             <button
               onClick={() => setGrouping('5')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              className={`w-28 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
                 grouping === '5'
-                  ? 'bg-orange-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+                  ? 'bg-black text-white'
+                  : 'text-black hover:bg-gray-100'
               }`}
             >
-              Groups of 5
+              GROUPS OF 5
             </button>
             <button
               onClick={() => setGrouping('10')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              className={`w-32 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
                 grouping === '10'
-                  ? 'bg-orange-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+                  ? 'bg-black text-white'
+                  : 'text-black hover:bg-gray-100'
               }`}
             >
-              Groups of 10
+              GROUPS OF 10
             </button>
             <button
               onClick={() => setGrouping('20')}
-              className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+              className={`w-32 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
                 grouping === '20'
-                  ? 'bg-orange-600 text-white shadow-sm'
-                  : 'text-gray-600 hover:text-gray-800 hover:bg-gray-100'
+                  ? 'bg-black text-white'
+                  : 'text-black hover:bg-gray-100'
               }`}
             >
-              Groups of 20
+              GROUPS OF 20
             </button>
           </div>
         </div>
         
         {viewMode === 'performance' && !isAuthenticated && (
-          <div className="text-center mb-4 text-yellow-600 bg-yellow-50 p-3 rounded-lg">
-            <div className="text-sm">
-              <strong>Performance View:</strong> Sign in to see your quiz performance heatmap
+          <div className="text-center mb-8 text-yellow-600 bg-yellow-50 p-4 border-2 border-yellow-200">
+            <div className="text-sm tracking-wide">
+              <strong>PERFORMANCE VIEW:</strong> Sign in to see your quiz performance heatmap
             </div>
           </div>
         )}
-        
         
         <div className="flex gap-8">
           {/* Kanji Grid */}
@@ -482,11 +505,11 @@ export default function KanjiPoster() {
                   <div key={level}>
                     {/* Level Separator */}
                     <div className="flex items-center mb-2">
-                      <div className="flex-1 h-px bg-gray-300"></div>
-                      <div className={`px-3 py-1 mx-3 rounded-full text-xs font-medium ${getLevelColor(level)}`}>
+                      <div className="flex-1 h-px bg-black"></div>
+                      <div className={`px-3 py-1 mx-3 text-xs font-medium tracking-wider ${getLevelColor(level)}`}>
                         {level}
                       </div>
-                      <div className="flex-1 h-px bg-gray-300"></div>
+                      <div className="flex-1 h-px bg-black"></div>
                     </div>
                     
                     {/* Kanji Grid for this level with optional grouping */}
@@ -538,7 +561,7 @@ export default function KanjiPoster() {
                       ) : (
                         /* With grouping - show kanji in groups for this level */
                         createGroupedKanji(levelKanji.map(k => k.letter), parseInt(grouping)).map((group, groupIndex) => (
-                          <div key={groupIndex} className="border border-gray-200 rounded p-1">
+                          <div key={groupIndex} className="border-2 border-black p-1">
                             <div className={`grid ${
                               condensedView === 'super-condensed'
                                 ? 'gap-1 grid-cols-30 md:grid-cols-35 lg:grid-cols-40 xl:grid-cols-50 2xl:grid-cols-60'
@@ -569,7 +592,7 @@ export default function KanjiPoster() {
                                 </div>
                               ))}
                             </div>
-                            <div className="text-center mt-1 text-xs text-gray-400">
+                            <div className="text-center mt-1 text-xs text-gray-400 tracking-wide">
                               Group {groupIndex + 1} ({group.length} kanji)
                             </div>
                           </div>
@@ -583,53 +606,53 @@ export default function KanjiPoster() {
           </div>
 
           {/* Details Panel */}
-          <div className="w-80 bg-white p-6 rounded-lg shadow-lg border-l-4 border-blue-500 h-fit sticky top-28">
+          <div className="w-80 bg-white p-8 border-2 border-black h-fit sticky top-28">
             {selectedKanji ? (
               <>
-                <div className="text-center mb-4">
-                  <div className="text-6xl font-bold text-gray-800 mb-2">
+                <div className="text-center mb-8">
+                  <div className="text-6xl font-bold text-black mb-4">
                     {selectedKanji.letter}
                   </div>
-                  <div className={`inline-block px-3 py-1 rounded-full text-sm font-medium ${getKanjiColor(selectedKanji)}`}>
+                  <div className={`inline-block px-4 py-2 text-sm font-medium tracking-wider ${getKanjiColor(selectedKanji)}`}>
                     {viewMode === 'level' ? `Level ${selectedKanji.level}` : `Performance: ${Math.round(userPerformance[selectedKanji.letter]?.successRate || 0)}%`}
                   </div>
                 </div>
                 
-                <div className="space-y-3">
+                <div className="space-y-4">
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Reading</label>
-                    <div className="text-lg text-gray-800">{selectedKanji.reading}</div>
+                    <label className="text-sm font-medium text-black tracking-wider uppercase">Reading</label>
+                    <div className="text-lg text-black font-medium">{selectedKanji.reading}</div>
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Meaning</label>
-                    <div className="text-lg text-gray-800">{selectedKanji.name}</div>
+                    <label className="text-sm font-medium text-black tracking-wider uppercase">Meaning</label>
+                    <div className="text-lg text-black font-medium">{selectedKanji.name}</div>
                   </div>
                   
                   <div>
-                    <label className="text-sm font-medium text-gray-500">Sound Equivalent</label>
-                    <div className="text-lg text-gray-800">{selectedKanji.sound_equiv}</div>
+                    <label className="text-sm font-medium text-black tracking-wider uppercase">Sound Equivalent</label>
+                    <div className="text-lg text-black font-medium">{selectedKanji.sound_equiv}</div>
                   </div>
                 </div>
 
                 {/* Words containing this kanji */}
-                <div className="mt-6 pt-6 border-t border-gray-200">
-                  <h3 className="text-lg font-semibold text-gray-800 mb-3">
+                <div className="mt-8 pt-8 border-t-2 border-black">
+                  <h3 className="text-lg font-semibold text-black mb-4 tracking-wider">
                     Words containing 「{selectedKanji.letter}」
                   </h3>
                   
                   {loadingWords ? (
                     <div className="text-center py-4">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-blue-600 mx-auto"></div>
-                      <p className="text-sm text-gray-500 mt-2">Finding words...</p>
+                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black mx-auto"></div>
+                      <p className="text-sm text-gray-500 mt-2 tracking-wide">Finding words...</p>
                     </div>
                   ) : kanjiWords.length > 0 ? (
                     <div className="space-y-3 max-h-64 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
                       {kanjiWords.map((word, index) => (
-                        <div key={index} className="bg-gray-50 rounded-lg p-3 border border-gray-200 hover:bg-gray-100 transition-colors">
-                          <div className="flex items-center gap-2 mb-2">
+                        <div key={index} className="bg-gray-50 border-2 border-gray-200 p-4 hover:bg-gray-100 transition-colors">
+                          <div className="flex items-center gap-2 mb-3">
                             {word.headwords && word.headwords.length > 0 && (
-                              <span className="text-lg font-bold text-gray-800">
+                              <span className="text-lg font-bold text-black">
                                 {word.headwords[0]}
                               </span>
                             )}
@@ -639,13 +662,13 @@ export default function KanjiPoster() {
                               </span>
                             )}
                             {word.is_common && (
-                              <span className="bg-green-100 text-green-800 text-xs px-2 py-1 rounded-full">
+                              <span className="bg-green-100 text-green-800 text-xs px-2 py-1 border border-green-200 tracking-wide">
                                 Common
                               </span>
                             )}
                           </div>
                           
-                          <div className="text-sm text-gray-700 mb-2">
+                          <div className="text-sm text-gray-700 mb-3">
                             {word.glosses_en && word.glosses_en.length > 0 
                               ? word.glosses_en.slice(0, 2).join(', ')
                               : 'No English definition'
@@ -655,7 +678,7 @@ export default function KanjiPoster() {
                           {word.pos_tags && word.pos_tags.length > 0 && (
                             <div className="flex flex-wrap gap-1">
                               {word.pos_tags.slice(0, 3).map((pos: string, idx: number) => (
-                                <span key={idx} className="bg-blue-100 text-blue-700 text-xs px-2 py-1 rounded">
+                                <span key={idx} className="bg-blue-100 text-blue-700 text-xs px-2 py-1 border border-blue-200 tracking-wide">
                                   {pos}
                                 </span>
                               ))}
@@ -666,13 +689,17 @@ export default function KanjiPoster() {
                     </div>
                   ) : (
                     <div className="text-center py-4 text-gray-500">
-                      <p className="text-sm">No words found containing this kanji</p>
+                      <p className="text-sm tracking-wide">No words found containing this kanji</p>
                     </div>
                   )}
                 </div>
               </>
             ) : (
               <div className="text-center text-gray-500">
+                <div className="w-16 h-16 bg-gray-100 border-2 border-gray-200 mx-auto mb-4 flex items-center justify-center">
+                  <span className="text-2xl text-gray-400">字</span>
+                </div>
+                <p className="text-sm tracking-wide">Select a kanji to view details</p>
               </div>
             )}
           </div>
@@ -682,18 +709,18 @@ export default function KanjiPoster() {
       {/* Tooltip */}
       {tooltip && (
         <div 
-          className="fixed z-50 bg-gray-900 text-white px-3 py-2 rounded-lg shadow-lg text-sm pointer-events-none"
+          className="fixed z-50 bg-black text-white px-4 py-3 border-2 border-white shadow-lg text-sm pointer-events-none"
           style={{
             left: tooltip.x + 10,
             top: tooltip.y + 20,
             transform: 'translateX(-50%)'
           }}
         >
-          <div className="font-bold text-lg mb-1">{tooltip.kanji.letter}</div>
-          <div className="text-gray-300">{tooltip.kanji.reading}</div>
+          <div className="font-bold text-lg mb-2">{tooltip.kanji.letter}</div>
+          <div className="text-gray-300 mb-1">{tooltip.kanji.reading}</div>
           <div className="text-gray-300">{tooltip.kanji.name}</div>
           {viewMode === 'performance' && userPerformance[tooltip.kanji.letter] && (
-            <div className="text-gray-300 mt-1 pt-1 border-t border-gray-600">
+            <div className="text-gray-300 mt-2 pt-2 border-t border-gray-600">
               <div>Attempts: {userPerformance[tooltip.kanji.letter].totalAttempts}</div>
               <div>Success: {Math.round(userPerformance[tooltip.kanji.letter].successRate)}%</div>
             </div>

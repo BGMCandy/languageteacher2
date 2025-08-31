@@ -33,58 +33,80 @@ export default function ForgotPasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="max-w-md w-full space-y-8 p-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Reset Password
-          </h2>
-                      <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              Enter your email address and we&apos;ll send you a link to reset your password
-            </p>
+    <div className="bg-white flex items-center justify-center px-8 py-16">
+      <div className="max-w-md w-full">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center space-x-4 mb-8">
+            {/* Sharp geometric logo */}
+            <div className="w-12 h-12 bg-black relative">
+              <div className="absolute inset-0 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)' }}></div>
+              <div className="absolute inset-0 bg-black" style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0 100%)' }}></div>
+            </div>
+            <h1 className="text-3xl font-bold text-black tracking-wider">
+              RESET PASSWORD
+            </h1>
+          </div>
+          <div className="h-px w-24 bg-black mx-auto mb-6"></div>
+          <p className="text-gray-600 tracking-wide">
+            Enter your email address and we&apos;ll send you a link to reset your password
+          </p>
         </div>
 
-        <form className="space-y-6" onSubmit={handleResetPassword}>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Email address
-            </label>
-            <input
-              id="email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
-              placeholder="Enter your email"
-            />
-          </div>
+        {/* Form Container */}
+        <div className="border-2 border-black p-12">
+          <form className="space-y-8" onSubmit={handleResetPassword}>
+            <div>
+              <label htmlFor="email" className="block text-sm font-medium text-black mb-3 tracking-wider uppercase">
+                Email Address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full px-4 py-3 border-2 border-black bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-600 transition-colors duration-200"
+                placeholder="Enter your email"
+              />
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {loading ? 'Sending...' : 'Send Reset Link'}
-          </button>
-
-          <div className="text-center">
-            <Link
-              href="/login"
-              className="text-sm text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 px-6 bg-black text-white hover:bg-gray-800 transition-all duration-200 font-medium tracking-wider border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed hover:font-fugaz"
             >
-              Back to Sign In
-            </Link>
-          </div>
-        </form>
+              {loading ? 'SENDING...' : 'SEND RESET LINK'}
+            </button>
 
-        {message && (
-          <div className="mt-4 p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-            <p className="text-sm text-blue-800 dark:text-blue-200">{message}</p>
+            <div className="text-center">
+              <Link
+                href="/login"
+                className="text-black hover:text-gray-600 transition-colors duration-200 tracking-wide font-medium hover:font-fugaz"
+              >
+                BACK TO SIGN IN
+              </Link>
+            </div>
+          </form>
+
+          {/* Message Display */}
+          {message && (
+            <div className="mt-8 p-4 bg-blue-50 border-2 border-blue-200 text-blue-800">
+              <p className="text-sm font-medium">{message}</p>
+            </div>
+          )}
+        </div>
+
+        {/* Bottom accent */}
+        <div className="text-center mt-8">
+          <div className="flex justify-center space-x-4">
+            <div className="w-2 h-2 bg-black"></div>
+            <div className="w-2 h-2 bg-black"></div>
+            <div className="w-2 h-2 bg-black"></div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   )

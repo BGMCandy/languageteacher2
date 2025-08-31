@@ -65,72 +65,95 @@ export default function UpdatePasswordPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
-      <div className="max-w-md w-full space-y-8 p-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-            Set New Password
-          </h2>
-          <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
+    <div className="bg-white flex items-center justify-center px-8 py-16">
+      <div className="max-w-md w-full">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center space-x-4 mb-8">
+            {/* Sharp geometric logo */}
+            <div className="w-12 h-12 bg-black relative">
+              <div className="absolute inset-0 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)' }}></div>
+              <div className="absolute inset-0 bg-black" style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0 100%)' }}></div>
+            </div>
+            <h1 className="text-3xl font-bold text-black tracking-wider">
+              SET NEW PASSWORD
+            </h1>
+          </div>
+          <div className="h-px w-24 bg-black mx-auto mb-6"></div>
+          <p className="text-gray-600 tracking-wide">
             Choose a new password for your account
           </p>
         </div>
 
-        <form className="space-y-6" onSubmit={handleUpdatePassword}>
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              New Password
-            </label>
-            <input
-              id="password"
-              name="password"
-              type="password"
-              autoComplete="new-password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
-              placeholder="Enter new password"
-            />
-          </div>
+        {/* Form Container */}
+        <div className="border-2 border-black p-12">
+          <form className="space-y-8" onSubmit={handleUpdatePassword}>
+            <div>
+              <label htmlFor="password" className="block text-sm font-medium text-black mb-3 tracking-wider uppercase">
+                New Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="new-password"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 border-2 border-black bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-600 transition-colors duration-200"
+                placeholder="Enter new password"
+              />
+            </div>
 
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Confirm New Password
-            </label>
-            <input
-              id="confirmPassword"
-              name="confirmPassword"
-              type="password"
-              autoComplete="new-password"
-              required
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-800 dark:text-white"
-              placeholder="Confirm new password"
-            />
-          </div>
+            <div>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-black mb-3 tracking-wider uppercase">
+                Confirm New Password
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className="w-full px-4 py-3 border-2 border-black bg-white text-black placeholder-gray-500 focus:outline-none focus:border-gray-600 transition-colors duration-200"
+                placeholder="Confirm new password"
+              />
+            </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            {loading ? 'Updating...' : 'Update Password'}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 px-6 bg-black text-white hover:bg-gray-800 transition-all duration-200 font-medium tracking-wider border-2 border-black disabled:opacity-50 disabled:cursor-not-allowed hover:font-fugaz"
+            >
+              {loading ? 'UPDATING...' : 'UPDATE PASSWORD'}
+            </button>
+          </form>
 
-        {error && (
-          <div className="mt-4 p-3 rounded-lg bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800">
-            <p className="text-sm text-red-800 dark:text-red-200">{error}</p>
-          </div>
-        )}
+          {/* Error Display */}
+          {error && (
+            <div className="mt-8 p-4 bg-red-50 border-2 border-red-200 text-red-800">
+              <p className="text-sm font-medium">{error}</p>
+            </div>
+          )}
 
-        {message && (
-          <div className="mt-4 p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
-            <p className="text-sm text-green-800 dark:text-green-200">{message}</p>
+          {/* Success Message Display */}
+          {message && (
+            <div className="mt-8 p-4 bg-green-50 border-2 border-green-200 text-green-800">
+              <p className="text-sm font-medium">{message}</p>
+            </div>
+          )}
+        </div>
+
+        {/* Bottom accent */}
+        <div className="text-center mt-8">
+          <div className="flex justify-center space-x-4">
+            <div className="w-2 h-2 bg-black"></div>
+            <div className="w-2 h-2 bg-black"></div>
+            <div className="w-2 h-2 bg-black"></div>
           </div>
-        )}
+        </div>
       </div>
     </div>
   )
