@@ -5,11 +5,105 @@ import { useState, useEffect, useCallback } from 'react'
 import { createClientBrowser } from '@/lib/supabase/clients'
 import Link from 'next/link'
 
+interface QuizResult {
+  id: number
+  user_id: string
+  quiz_type: string
+  total_questions: number
+  correct_answers: number
+  total_time_ms: number
+  average_time_ms: number
+  created_at: string
+}
+
+interface ProgressStats {
+  charactersStudied: number
+  masteryLevel: string
+  accuracy: number
+  totalQuizzes: number
+}
+
 export default function AccountContent() {
   const { user, signOut } = useAuth()
   const [displayName, setDisplayName] = useState('')
   const [isEditing, setIsEditing] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+  const [progressData, setProgressData] = useState({
+    japanese: { charactersStudied: 0, masteryLevel: 'Beginner', accuracy: 0, totalQuizzes: 0 } as ProgressStats,
+    thai: { charactersStudied: 0, masteryLevel: 'Beginner', accuracy: 0, totalQuizzes: 0 } as ProgressStats
+  })
+  const [progressLoading, setProgressLoading] = useState(true)
+
+  const calculateProgress = useCallback((quizzes: QuizResult[]): ProgressStats => {
+    if (quizzes.length === 0) {
+      return { charactersStudied: 0, masteryLevel: 'Beginner', accuracy: 0, totalQuizzes: 0 }
+    }
+
+    const totalQuestions = quizzes.reduce((sum, q) => sum + q.total_questions, 0)
+    const totalCorrect = quizzes.reduce((sum, q) => sum + q.correct_answers, 0)
+    const accuracy = totalQuestions > 0 ? Math.round((totalCorrect / totalQuestions) * 100) : 0
+    
+    // Calculate mastery level based on accuracy and total quizzes
+    let masteryLevel = 'Beginner'
+    if (totalQuestions >= 100 && accuracy >= 80) masteryLevel = 'Advanced'
+    else if (totalQuestions >= 50 && accuracy >= 70) masteryLevel = 'Intermediate'
+    else if (totalQuestions >= 20 && accuracy >= 60) masteryLevel = 'Elementary'
+    else if (totalQuestions >= 5) masteryLevel = 'Beginner'
+    else masteryLevel = 'New'
+
+    return {
+      charactersStudied: totalQuestions,
+      masteryLevel,
+      accuracy,
+      totalQuizzes: quizzes.length
+    }
+  }, [])
+
+  const loadProgressData = useCallback(async () => {
+    if (!user) return
+    
+    setProgressLoading(true)
+    try {
+      const supabase = createClientBrowser()
+      
+      console.log('Fetching quiz results for user:', user.id)
+      
+      // Get quiz results for the user
+      const { data: quizResults, error } = await supabase
+        .from('quiz_results')
+        .select('*')
+        .eq('user_id', user.id)
+      
+      console.log('Quiz results response:', { data: quizResults, error })
+      
+      if (error) {
+        console.error('Error loading quiz results:', error)
+        return
+      }
+
+      // Calculate Japanese progress
+      const japaneseQuizzes = quizResults?.filter(q => q.quiz_type === 'kanji') || []
+      console.log('Japanese quizzes found:', japaneseQuizzes)
+      
+      const japaneseStats = calculateProgress(japaneseQuizzes)
+      console.log('Japanese stats calculated:', japaneseStats)
+      
+      // Calculate Thai progress (placeholder for now)
+      const thaiQuizzes = quizResults?.filter(q => q.quiz_type === 'thai') || []
+      const thaiStats = calculateProgress(thaiQuizzes)
+
+      setProgressData({
+        japanese: japaneseStats,
+        thai: thaiStats
+      })
+      
+      console.log('Final progress data set:', { japanese: japaneseStats, thai: thaiStats })
+    } catch (error) {
+      console.error('Error loading progress data:', error)
+    } finally {
+      setProgressLoading(false)
+    }
+  }, [user, calculateProgress])
 
   const loadProfile = useCallback(async () => {
     if (!user) return
@@ -34,12 +128,15 @@ export default function AccountContent() {
       } else {
         setDisplayName(user.user_metadata?.display_name || '')
       }
+
+      // Load progress data
+      await loadProgressData()
     } catch (error) {
       console.error('Error loading profile:', error)
       // Fall back to user metadata
       setDisplayName(user.user_metadata?.display_name || '')
     }
-  }, [user])
+  }, [user, loadProgressData])
 
   useEffect(() => {
     if (user) {
@@ -205,35 +302,58 @@ export default function AccountContent() {
             <h2 className="text-2xl font-bold text-black tracking-wider mb-6">
               LEARNING PROGRESS
             </h2>
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="border-2 border-blue-200 p-6 bg-blue-50">
-                <h3 className="text-lg font-semibold text-black mb-4 tracking-wider">JAPANESE KANJI</h3>
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-sm font-medium text-gray-600 tracking-wider uppercase">Characters Studied</span>
-                    <p className="text-2xl font-bold text-black">0</p>
+            {progressLoading ? (
+              <div className="text-center py-8">
+                <div className="inline-block w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin mb-4"></div>
+                <p className="text-gray-600">Loading your progress...</p>
+              </div>
+            ) : (
+              <div className="grid md:grid-cols-2 gap-6">
+                <div className="border-2 border-blue-200 p-6 bg-blue-50">
+                  <h3 className="text-lg font-semibold text-black mb-4 tracking-wider">JAPANESE KANJI</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <span className="text-sm font-medium text-gray-600 tracking-wider uppercase">Characters Studied</span>
+                      <p className="text-2xl font-bold text-black">{progressData.japanese.charactersStudied}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-600 tracking-wider uppercase">Mastery Level</span>
+                      <p className="text-lg font-semibold text-black">{progressData.japanese.masteryLevel}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-600 tracking-wider uppercase">Accuracy</span>
+                      <p className="text-lg font-semibold text-black">{progressData.japanese.accuracy}%</p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-600 tracking-wider uppercase">Total Quizzes</span>
+                      <p className="text-lg font-semibold text-black">{progressData.japanese.totalQuizzes}</p>
+                    </div>
                   </div>
-                  <div>
-                    <span className="text-sm font-medium text-gray-600 tracking-wider uppercase">Mastery Level</span>
-                    <p className="text-lg font-semibold text-black">Beginner</p>
+                </div>
+                
+                <div className="border-2 border-green-200 p-6 bg-green-50">
+                  <h3 className="text-lg font-semibold text-black mb-4 tracking-wider">THAI CHARACTERS</h3>
+                  <div className="space-y-3">
+                    <div>
+                      <span className="text-sm font-medium text-gray-600 tracking-wider uppercase">Characters Studied</span>
+                      <p className="text-2xl font-bold text-black">{progressData.thai.charactersStudied}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-600 tracking-wider uppercase">Mastery Level</span>
+                      <p className="text-lg font-semibold text-black">{progressData.thai.masteryLevel}</p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-600 tracking-wider uppercase">Accuracy</span>
+                      <p className="text-lg font-semibold text-black">{progressData.thai.accuracy}%</p>
+                    </div>
+                    <div>
+                      <span className="text-sm font-medium text-gray-600 tracking-wider uppercase">Total Quizzes</span>
+                      <p className="text-lg font-semibold text-black">{progressData.thai.totalQuizzes}</p>
+                    </div>
                   </div>
                 </div>
               </div>
-              
-              <div className="border-2 border-green-200 p-6 bg-green-50">
-                <h3 className="text-lg font-semibold text-black mb-4 tracking-wider">THAI CHARACTERS</h3>
-                <div className="space-y-3">
-                  <div>
-                    <span className="text-sm font-medium text-gray-600 tracking-wider uppercase">Characters Studied</span>
-                    <p className="text-2xl font-bold text-black">0</p>
-                  </div>
-                  <div>
-                    <span className="text-sm font-medium text-gray-600 tracking-wider uppercase">Mastery Level</span>
-                    <p className="text-lg font-semibold text-black">Beginner</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Quick Actions */}
