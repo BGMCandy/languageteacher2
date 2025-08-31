@@ -24,7 +24,7 @@ const Header = () => {
             </div>
             <div>
               <h1 className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                Language Teacher
+                Language Teacher v2
               </h1>
               <p className="text-sm text-slate-600 dark:text-slate-400">
                 Master Japanese, Thai, and more
