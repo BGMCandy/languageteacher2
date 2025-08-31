@@ -1,103 +1,181 @@
-import Image from "next/image";
+import FlashcardGrid from './components/layout/study/flashcardGrid'
+import Link from 'next/link'
 
 export default function Home() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-indigo-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900">
+      {/* Hero Section */}
+      <div className="text-center py-16 px-4">
+        <h1 className="text-4xl md:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+          Language Teacher
+        </h1>
+        <p className="text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-8">
+          Master Japanese, Thai, and other languages with our interactive flashcard system. 
+          Learn characters, readings, and meanings through spaced repetition.
+        </p>
+        <div className="flex flex-wrap justify-center gap-4 mb-8">
+          <div className="px-6 py-3 bg-blue-600 text-white rounded-full font-medium hover:bg-blue-700 transition-colors">
+            Japanese
+          </div>
+          <div className="px-6 py-3 bg-green-600 text-white rounded-full font-medium hover:bg-green-700 transition-colors">
+            Thai
+          </div>
+          <div className="px-6 py-3 bg-purple-600 text-white rounded-full font-medium hover:bg-purple-700 transition-colors">
+            More Coming Soon
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        
+        {/* Navigation Links */}
+        <div className="flex flex-wrap justify-center gap-4">
+          <Link 
+            href="/kanji-poster"
+            className="px-6 py-3 bg-indigo-600 text-white rounded-full font-medium hover:bg-indigo-700 transition-colors flex items-center gap-2"
+          >
+            <span>🗺️</span>
+            View Kanji Poster
+          </Link>
+          <Link 
+            href="/practice"
+            className="px-6 py-3 bg-green-600 text-white rounded-full font-medium hover:bg-green-700 transition-colors flex items-center gap-2"
+          >
+            <span>📚</span>
+            Practice Kanji
+          </Link>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 pb-16">
+        {/* Japanese Section */}
+        <section className="mb-16">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              Japanese Learning
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300">
+              Start with the basics and progress through different difficulty levels
+            </p>
+          </div>
+          
+          <div className="space-y-12">
+            {/* Kanji */}
+            <div>
+              <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
+                Kanji Characters
+              </h3>
+              <FlashcardGrid 
+                language="japanese" 
+                script="kanji" 
+                limit={8}
+              />
+            </div>
+
+            {/* Hiragana */}
+            <div>
+              <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
+                Hiragana
+              </h3>
+              <FlashcardGrid 
+                language="japanese" 
+                script="hiragana" 
+                limit={8}
+              />
+            </div>
+
+            {/* Katakana */}
+            <div>
+              <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
+                Katakana
+              </h3>
+              <FlashcardGrid 
+                language="japanese" 
+                script="katakana" 
+                limit={8}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Thai Section */}
+        <section className="mb-16">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+              Thai Learning
+            </h2>
+            <p className="text-gray-600 dark:text-gray-300">
+              Master Thai script with consonants, vowels, and tones
+            </p>
+          </div>
+          
+          <div className="space-y-12">
+            {/* Thai Consonants */}
+            <div>
+              <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
+                Thai Consonants
+              </h3>
+              <FlashcardGrid 
+                language="thai" 
+                script="consonants" 
+                limit={8}
+              />
+            </div>
+
+            {/* Thai Vowels */}
+            <div>
+              <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
+                Thai Vowels
+              </h3>
+              <FlashcardGrid 
+                language="thai" 
+                script="vowels" 
+                limit={8}
+              />
+            </div>
+
+            {/* Thai Tones */}
+            <div>
+              <h3 className="text-2xl font-semibold text-gray-800 dark:text-white mb-6 text-center">
+                Thai Tones
+              </h3>
+              <FlashcardGrid 
+                language="thai" 
+                script="tones" 
+                limit={8}
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section className="text-center py-16">
+          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-8">
+            Features
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+              <div className="text-3xl mb-4">🎯</div>
+              <h3 className="text-xl font-semibold mb-2">Spaced Repetition</h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                Learn efficiently with scientifically proven repetition intervals
+              </p>
+            </div>
+            <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+              <div className="text-3xl mb-4">🌍</div>
+              <h3 className="text-xl font-semibold mb-2">Multiple Languages</h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                Support for Japanese, Thai, and more languages coming soon
+              </p>
+            </div>
+            <div className="p-6 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
+              <div className="text-3xl mb-4">📱</div>
+              <h3 className="text-xl font-semibold mb-2">Interactive Cards</h3>
+              <p className="text-gray-600 dark:text-gray-300">
+                Click to flip cards and reveal meanings, readings, and pronunciations
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
     </div>
-  );
+  )
 }
