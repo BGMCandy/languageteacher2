@@ -296,7 +296,7 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
     return (
       <div className="bg-white py-16">
         <div className="text-center">
-          <div className="w-8 h-8 border-2 border-black border-t-transparent animate-spin mx-auto mb-4"></div>
+          <div className="w-8 h-8 border-2 border-black border-t-transparent animate-spin mx-auto mb-2 sm:mb-4"></div>
           <div className="text-lg text-black tracking-wider">GENERATING QUIZ...</div>
         </div>
       </div>
@@ -307,7 +307,7 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
     return (
       <div className="bg-white py-16">
         <div className="text-center">
-          <div className="text-xl text-black mb-2 tracking-wider">ERROR GENERATING QUIZ</div>
+          <div className="text-lg sm:text-xl text-black mb-1 sm:mb-2 tracking-wider">ERROR GENERATING QUIZ</div>
           <div className="text-sm text-gray-600">Please try again</div>
         </div>
       </div>
@@ -347,7 +347,7 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
               }}
             >
               {/* "Let&apos;s go!" Text */}
-              <div className="text-center mb-4">
+              <div className="text-center mb-2 sm:mb-4">
                 <div className="text-2xl font-bold text-black font-fugaz">
                   Let&apos;s go!
                 </div>
@@ -369,23 +369,23 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
         )}
       </AnimatePresence>
 
-      <div className="w-full max-w-4xl mx-auto px-8">
+      <div className="w-full max-w-4xl mx-auto px-4 sm:px-8">
         {/* Header */}
-        <div className="text-center mb-6">
-          <div className="flex items-center justify-center space-x-3 mb-2">
+        <div className="text-center mb-3 sm:mb-6">
+          <div className="flex items-center justify-center space-x-3 mb-1 sm:mb-2">
             <div className="w-6 h-6 bg-black relative">
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="w-3 h-3 border-2 border-white"></div>
               </div>
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-black tracking-wider mb-2">QUIZ</h1>
+          <h1 className="text-2xl font-bold text-black tracking-wider mb-1 sm:mb-2">QUIZ</h1>
           <div className="h-px w-24 bg-black mx-auto"></div>
         </div>
 
         {/* Progress Bar */}
-        <div className="mb-6">
-          <div className="flex justify-between items-center mb-2">
+        <div className="mb-3 sm:mb-6">
+          <div className="flex justify-between items-center mb-1 sm:mb-2">
             <span className="text-sm text-black tracking-wider">
               QUESTION {currentQuestion + 1} OF {questions.length}
             </span>
@@ -402,23 +402,23 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
         </div>
 
         {/* Question Card */}
-        <div className="border-2 border-black p-8 mb-6">
-          <div className="text-center mb-6">
-            <div className="text-8xl font-bold text-black mb-4">
+        <div className="border-2 border-black p-4 sm:p-8 mb-3 sm:mb-6">
+          <div className="text-center mb-3 sm:mb-6">
+            <div className="text-6xl sm:text-8xl font-bold text-black mb-2 sm:mb-4">
               {question.kanji.letter}
             </div>
-            <div className="text-xl text-gray-600 tracking-wider">
+            <div className="text-lg sm:text-xl text-gray-600 tracking-wider">
               {question.question}
             </div>
           </div>
 
           {/* Answer Options */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-2 gap-4">
             {question.options.map((option, index) => (
               <button
                 key={index}
                 onClick={() => handleAnswer(option)}
-                className="p-6 text-left border-2 border-gray-300 hover:border-black hover:bg-black hover:text-white transition-all duration-300 group cursor-pointer"
+                className="p-3 sm:p-6 text-left border-2 border-gray-300 hover:border-black hover:bg-black hover:text-white transition-all duration-300 group cursor-pointer"
               >
                 <div className="font-medium text-black group-hover:text-white transition-colors duration-300">
                   {option}
