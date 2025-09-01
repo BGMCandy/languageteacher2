@@ -33,99 +33,122 @@ export default function QuizResults({ results, onRetake, onBackToQuiz }: QuizRes
     }
   }
 
-  const getAccuracyColor = (acc: number) => {
-    if (acc >= 80) return 'text-green-600'
-    if (acc >= 60) return 'text-yellow-600'
-    return 'text-red-600'
-  }
-
   const getAccuracyMessage = (acc: number) => {
-    if (acc >= 90) return 'Excellent! You&apos;re a kanji master!'
-    if (acc >= 80) return 'Great job! You&apos;re doing really well!'
-    if (acc >= 70) return 'Good work! Keep practicing!'
-    if (acc >= 60) return 'Not bad! More practice will help!'
-    return 'Keep studying! Practice makes perfect!'
+    if (acc >= 90) return 'EXCELLENT! YOU\'RE A KANJI MASTER!'
+    if (acc >= 80) return 'GREAT JOB! YOU\'RE DOING REALLY WELL!'
+    if (acc >= 70) return 'GOOD WORK! KEEP PRACTICING!'
+    if (acc >= 60) return 'NOT BAD! MORE PRACTICE WILL HELP!'
+    return 'KEEP STUDYING! PRACTICE MAKES PERFECT!'
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">
-          Quiz Complete!
-        </h1>
+    <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
+      <div className="min-h-full w-full max-w-4xl mx-auto px-8 pt-4 pb-8">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="flex items-center justify-center space-x-3 mb-2">
+            <div className="w-6 h-6 bg-black relative">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-3 h-3 border-2 border-white"></div>
+              </div>
+            </div>
+          </div>
+          <h1 className="text-2xl font-bold text-black tracking-wider mb-2">QUIZ COMPLETE</h1>
+          <div className="h-px w-24 bg-black mx-auto"></div>
+        </div>
 
         {/* Authentication Notice */}
         {!isAuthenticated && (
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6 text-center">
-            <div className="text-yellow-800">
-              <strong>Note:</strong> You&apos;re not signed in, so your results weren&apos;t saved. 
+          <div className="border-2 border-black p-4 mb-6 text-center">
+            <div className="text-black">
+              <strong>NOTE:</strong> YOU&apos;RE NOT SIGNED IN, SO YOUR RESULTS WEREN&apos;T SAVED.
               <br />
-              <Link href="/login" className="text-blue-600 hover:underline">
-                Sign in to track your progress
+              <Link href="/login" className="text-black hover:underline tracking-wider">
+                SIGN IN TO TRACK YOUR PROGRESS
               </Link>
             </div>
           </div>
         )}
 
         {/* Results Summary */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+        <div className="border-2 border-black p-8 mb-6">
           <div className="text-center mb-8">
-            <div className={`text-6xl font-bold mb-4 ${getAccuracyColor(accuracy)}`}>
+            <div className="text-8xl font-bold text-black mb-4">
               {accuracy}%
             </div>
-            <div className="text-xl text-gray-600 mb-2">
+            <div className="text-xl text-gray-600 mb-2 tracking-wider">
               {getAccuracyMessage(accuracy)}
             </div>
-            <div className="text-lg text-gray-500">
-              {correctAnswers} out of {totalQuestions} correct
+            <div className="text-lg text-gray-500 tracking-wider">
+              {correctAnswers} OUT OF {totalQuestions} CORRECT
             </div>
           </div>
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div className="text-center p-4 bg-blue-50 rounded-lg">
-              <div className="text-2xl font-bold text-blue-600">{correctAnswers}</div>
-              <div className="text-sm text-blue-600">Correct Answers</div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+            <div className="border-2 border-black p-4 text-center">
+              <div className="text-3xl font-bold text-black">{correctAnswers}</div>
+              <div className="text-sm text-black tracking-wider">CORRECT ANSWERS</div>
             </div>
-            <div className="text-center p-4 bg-green-50 rounded-lg">
-              <div className="text-2xl font-bold text-green-600">{totalQuestions - correctAnswers}</div>
-              <div className="text-sm text-green-600">Incorrect Answers</div>
+            <div className="border-2 border-black p-4 text-center">
+              <div className="text-3xl font-bold text-black">{totalQuestions - correctAnswers}</div>
+              <div className="text-sm text-black tracking-wider">INCORRECT ANSWERS</div>
             </div>
-            <div className="text-center p-4 bg-purple-50 rounded-lg">
-              <div className="text-2xl font-bold text-purple-600">{averageTime}s</div>
-              <div className="text-sm text-purple-600">Average Time</div>
+            <div className="border-2 border-black p-4 text-center">
+              <div className="text-3xl font-bold text-black">{averageTime}S</div>
+              <div className="text-sm text-black tracking-wider">AVERAGE TIME</div>
             </div>
           </div>
 
           {/* Question Review */}
           <div className="mb-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">Question Review</h3>
-            <div className="space-y-3">
-              {results.map((result, index) => (
-                <div
-                  key={index}
-                  className={`p-3 rounded-lg border-l-4 ${
-                    result.isCorrect
-                      ? 'border-green-500 bg-green-50'
-                      : 'border-red-500 bg-red-50'
-                  }`}
-                >
-                  <div className="flex justify-between items-center">
-                    <span className="font-medium">
-                      Question {index + 1}: {result.isCorrect ? '✓' : '✗'}
-                    </span>
-                    <span className="text-sm text-gray-500">
-                      {Math.round(result.timeSpent / 1000)}s
-                    </span>
-                  </div>
-                  {!result.isCorrect && (
-                    <div className="text-sm text-gray-600 mt-1">
-                      Your answer: <span className="font-medium">{result.userAnswer}</span> | 
-                      Correct: <span className="font-medium text-green-600">{result.correctAnswer}</span>
+            <h3 className="text-lg font-semibold text-black mb-4 tracking-wider">QUESTION REVIEW</h3>
+            <div className="space-y-4">
+              {results.map((result, index) => {
+                const isCorrect = result.isCorrect
+                
+                return (
+                  <div key={index} className="border-2 border-black p-6">
+                    <div className="flex justify-between items-center mb-4">
+                      <span className="font-medium text-black tracking-wider">
+                        QUESTION {index + 1}: {isCorrect ? '✓' : '✗'}
+                      </span>
+                      <span className="text-sm text-gray-500">
+                        {Math.round(result.timeSpent / 1000)}S
+                      </span>
                     </div>
-                  )}
-                </div>
-              ))}
+                    
+                    {/* Kanji Character and Question */}
+                    <div className="text-center mb-4">
+                      <div className="text-6xl font-bold text-black mb-2">
+                        {result.kanjiCharacter}
+                      </div>
+                      <div className="text-sm text-gray-600 tracking-wider">
+                        {result.questionText}
+                      </div>
+                    </div>
+
+                    {/* Answer Comparison */}
+                    <div className="space-y-3">
+                      <div className="border-2 border-gray-300 p-3">
+                        <div className="text-sm text-gray-600 mb-1 tracking-wider">YOUR ANSWER:</div>
+                        <div className={`font-medium ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
+                          {result.userAnswer}
+                        </div>
+                      </div>
+                      
+                      {!isCorrect && (
+                        <div className="border-2 border-green-500 bg-green-50 p-3">
+                          <div className="text-sm text-green-600 mb-1 tracking-wider">CORRECT ANSWER:</div>
+                          <div className="font-medium text-green-600">
+                            {result.correctAnswer}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )
+              })}
             </div>
           </div>
         </div>
@@ -134,18 +157,25 @@ export default function QuizResults({ results, onRetake, onBackToQuiz }: QuizRes
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={onRetake}
-            className="px-8 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors"
+            className="px-8 py-3 border-2 border-black bg-black text-white font-semibold tracking-wider hover:bg-white hover:text-black transition-all duration-300 cursor-pointer"
           >
-            Take Quiz Again
+            TAKE QUIZ AGAIN
           </button>
           <button
             onClick={onBackToQuiz}
-            className="px-8 py-3 bg-gray-600 text-white rounded-lg font-medium hover:bg-gray-700 transition-colors"
+            className="px-8 py-3 border-2 border-black text-black font-semibold tracking-wider hover:bg-black hover:text-white transition-all duration-300 cursor-pointer"
           >
-            Back to Quiz Setup
+            BACK TO QUIZ SETUP
           </button>
+        </div>
+
+        {/* Bottom accent */}
+        <div className="flex justify-center space-x-8 mt-8">
+          <div className="w-2 h-2 bg-black"></div>
+          <div className="w-2 h-2 bg-black"></div>
+          <div className="w-2 h-2 bg-black"></div>
         </div>
       </div>
     </div>
   )
-} 
+}

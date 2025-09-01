@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, useCallback } from 'react'
 
 interface FeatureCardProps {
   href: string
@@ -37,7 +37,7 @@ export default function FeatureCard({
   const IMG_W = 400
   const IMG_HALF = IMG_W / 2
 
-  const recalcTarget = () => {
+  const recalcTarget = useCallback(() => {
     if (!cardRef.current) return
     const rect = cardRef.current.getBoundingClientRect()
 
@@ -51,13 +51,13 @@ export default function FeatureCard({
     // Position so the IMAGE CENTER lands on pageTarget
     const x = Math.round(pageTarget - rect.left - IMG_HALF)
     setTargetX(x)
-  }
+  }, [enterFrom, IMG_HALF])
 
   useEffect(() => {
     recalcTarget()
     window.addEventListener('resize', recalcTarget)
     return () => window.removeEventListener('resize', recalcTarget)
-  }, [enterFrom])
+  }, [enterFrom, recalcTarget])
 
   const initialX = enterFrom === 'right' ? IMG_W * 2 : -IMG_W * 2
   const exitX = initialX

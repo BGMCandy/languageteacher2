@@ -1,6 +1,8 @@
 'use client'
 
 import { useState, useEffect, useCallback } from 'react'
+import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 import { createClientBrowser, JapaneseKanji } from '@/lib/supabase'
 
 interface QuizConfig {
@@ -23,6 +25,9 @@ export interface QuizResult {
   correctAnswer: string
   isCorrect: boolean
   timeSpent: number
+  kanjiCharacter: string
+  questionText: string
+  questionType: 'pronunciation' | 'meaning'
 }
 
 export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; onComplete: (results: QuizResult[]) => void }) {
@@ -30,6 +35,7 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
   const [currentQuestion, setCurrentQuestion] = useState(0)
   const [userAnswers, setUserAnswers] = useState<QuizResult[]>([])
   const [loading, setLoading] = useState(true)
+  const [showStartAnimation, setShowStartAnimation] = useState(false)
   const [questionStartTime, setQuestionStartTime] = useState<number>(0)
 
   const generateQuiz = useCallback(async () => {
@@ -96,6 +102,15 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
       setQuestions(quizQuestions)
       setQuestionStartTime(Date.now())
       setLoading(false)
+      
+      // Show start animation
+      setShowStartAnimation(true)
+      
+      // Hide animation after 2 seconds and start quiz
+      setTimeout(() => {
+        setShowStartAnimation(false)
+      }, 2000)
+      
     } catch (err) {
       console.error('Error generating quiz:', err)
       setLoading(false)
@@ -190,7 +205,10 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
       userAnswer: selectedAnswer,
       correctAnswer: question.correctAnswer,
       isCorrect: selectedAnswer === question.correctAnswer,
-      timeSpent
+      timeSpent,
+      kanjiCharacter: question.kanji.letter,
+      questionText: question.question,
+      questionType: question.questionType
     }
     
     setUserAnswers([...userAnswers, result])
@@ -276,10 +294,10 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
+      <div className="bg-white h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <div className="text-xl text-gray-600">Generating quiz...</div>
+          <div className="w-8 h-8 border-2 border-black border-t-transparent animate-spin mx-auto mb-4"></div>
+          <div className="text-lg text-black tracking-wider">GENERATING QUIZ...</div>
         </div>
       </div>
     )
@@ -287,10 +305,10 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
 
   if (questions.length === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center text-red-600">
-          <div className="text-xl mb-2">Error generating quiz</div>
-          <div className="text-sm">Please try again</div>
+      <div className="bg-white h-screen flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-xl text-black mb-2 tracking-wider">ERROR GENERATING QUIZ</div>
+          <div className="text-sm text-gray-600">Please try again</div>
         </div>
       </div>
     )
@@ -300,33 +318,96 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
   const progress = ((currentQuestion + 1) / questions.length) * 100
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
+    <div className="bg-white h-screen flex flex-col relative overflow-hidden">
+      {/* Start Animation */}
+      <AnimatePresence>
+        {showStartAnimation && (
+          <motion.div
+            className="fixed inset-0 z-50 pointer-events-none"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            {/* Combined Animation Container */}
+            <motion.div
+              className="absolute top-1/2 transform -translate-y-1/2"
+              initial={{ x: '100vw', opacity: 0 }}
+              animate={{ 
+                x: '75vw', // 25% from right border
+                opacity: [0, 1, 0] // Fade in and out
+              }}
+              transition={{ 
+                duration: 0.6,
+                ease: "easeOut",
+                opacity: {
+                  times: [0, 0.3, 1],
+                  duration: 0.6
+                }
+              }}
+            >
+              {/* "Let&apos;s go!" Text */}
+              <div className="text-center mb-4">
+                <div className="text-2xl font-bold text-black font-fugaz">
+                  Let&apos;s go!
+                </div>
+              </div>
+
+              {/* Fox Image */}
+              <div className="w-48 h-48 mx-auto">
+                <Image
+                  src="https://media.languageteacher.io/adult-fox.webp"
+                  alt="Fox"
+                  fill
+                  className="object-contain"
+                  sizes="192px"
+                  style={{ backgroundColor: 'transparent' }}
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="flex-1 w-full max-w-4xl mx-auto px-8 pt-4 pb-8">
+        {/* Header */}
+        <div className="text-center mb-6">
+          <div className="flex items-center justify-center space-x-3 mb-2">
+            <div className="w-6 h-6 bg-black relative">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <div className="w-3 h-3 border-2 border-white"></div>
+              </div>
+            </div>
+          </div>
+          <h1 className="text-2xl font-bold text-black tracking-wider mb-2">QUIZ</h1>
+          <div className="h-px w-24 bg-black mx-auto"></div>
+        </div>
+
         {/* Progress Bar */}
-        <div className="mb-8">
+        <div className="mb-6">
           <div className="flex justify-between items-center mb-2">
-            <span className="text-sm text-gray-600">
-              Question {currentQuestion + 1} of {questions.length}
+            <span className="text-sm text-black tracking-wider">
+              QUESTION {currentQuestion + 1} OF {questions.length}
             </span>
-            <span className="text-sm text-gray-600">
-              {Math.round(progress)}% Complete
+            <span className="text-sm text-black tracking-wider">
+              {Math.round(progress)}% COMPLETE
             </span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
+          <div className="w-full bg-gray-200 h-1">
             <div 
-              className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+              className="bg-black h-1 transition-all duration-300"
               style={{ width: `${progress}%` }}
             ></div>
           </div>
         </div>
 
-        {/* Question */}
-        <div className="bg-white rounded-lg shadow-lg p-8 mb-8">
+        {/* Question Card */}
+        <div className="border-2 border-black p-8 mb-6">
           <div className="text-center mb-6">
-            <div className="text-6xl font-bold text-gray-800 mb-4">
+            <div className="text-8xl font-bold text-black mb-4">
               {question.kanji.letter}
             </div>
-            <div className="text-xl text-gray-600">
+            <div className="text-xl text-gray-600 tracking-wider">
               {question.question}
             </div>
           </div>
@@ -337,14 +418,23 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
               <button
                 key={index}
                 onClick={() => handleAnswer(option)}
-                className="p-4 text-left border-2 border-gray-200 rounded-lg hover:border-blue-300 hover:bg-blue-50 transition-all"
+                className="p-6 text-left border-2 border-gray-300 hover:border-black hover:bg-black hover:text-white transition-all duration-300 group cursor-pointer"
               >
-                <div className="font-medium text-gray-800">{option}</div>
+                <div className="font-medium text-black group-hover:text-white transition-colors duration-300">
+                  {option}
+                </div>
               </button>
             ))}
           </div>
         </div>
+
+        {/* Bottom accent */}
+        <div className="flex justify-center space-x-8">
+          <div className="w-2 h-2 bg-black"></div>
+          <div className="w-2 h-2 bg-black"></div>
+          <div className="w-2 h-2 bg-black"></div>
+        </div>
       </div>
     </div>
   )
-} 
+}
