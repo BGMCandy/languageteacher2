@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { createClientBrowser, JapaneseKanji } from '@/lib/supabase'
+import RegisterPopup from '@/app/components/elements/registerPopup'
 
 interface DictionaryEntry {
   seq: number
@@ -29,6 +30,7 @@ export default function KanjiPoster() {
   const [grouping, setGrouping] = useState<'none' | '5' | '10' | '20'>('none')
   const [kanjiWords, setKanjiWords] = useState<DictionaryEntry[]>([])
   const [loadingWords, setLoadingWords] = useState(false)
+  const [showRegisterPopup, setShowRegisterPopup] = useState(false)
 
   useEffect(() => {
     const fetchKanji = async () => {
@@ -280,6 +282,14 @@ export default function KanjiPoster() {
     }
   }
 
+  const handleViewModeChange = (mode: 'level' | 'performance') => {
+    if (mode === 'performance' && !isAuthenticated) {
+      setShowRegisterPopup(true)
+      return
+    }
+    setViewMode(mode)
+  }
+
   if (loading) {
     return (
       <div className="bg-white flex items-center justify-center py-16">
@@ -322,7 +332,7 @@ export default function KanjiPoster() {
           {/* View Mode Toggle */}
           <div className="border-2 border-black p-1 inline-flex">
             <button
-              onClick={() => setViewMode('level')}
+              onClick={() => handleViewModeChange('level')}
               className={`w-32 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center cursor-pointer ${
                 viewMode === 'level'
                   ? 'bg-black text-white'
@@ -332,13 +342,12 @@ export default function KanjiPoster() {
               LEVEL VIEW
             </button>
             <button
-              onClick={() => setViewMode('performance')}
+              onClick={() => handleViewModeChange('performance')}
               className={`w-36 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center cursor-pointer ${
                 viewMode === 'performance'
                   ? 'bg-black text-white'
                   : 'text-black hover:bg-gray-100'
               }`}
-              disabled={!isAuthenticated}
             >
               PERFORMANCE VIEW
             </button>
@@ -706,7 +715,7 @@ export default function KanjiPoster() {
           className="fixed z-50 bg-black text-white px-4 py-3 border-2 border-white shadow-lg text-sm pointer-events-none"
           style={{
             left: tooltip.x + 10,
-            top: tooltip.y + 20,
+            top: tooltip.y + 30,
             transform: 'translateX(-50%)'
           }}
         >
@@ -721,6 +730,12 @@ export default function KanjiPoster() {
           )}
         </div>
       )}
+
+      {/* Register Popup */}
+      <RegisterPopup 
+        isOpen={showRegisterPopup} 
+        onClose={() => setShowRegisterPopup(false)} 
+      />
     </div>
   )
 }
