@@ -54,7 +54,7 @@ const RegisterPopup: React.FC<RegisterPopupProps> = ({ isOpen, onClose }) => {
           </div>
           
           <p className="text-sm text-gray-500 pt-2">
-            Don't have an account? <a href="/login" className="text-black underline hover:no-underline">Create one here</a>
+            Don&apos;t have an account? <a href="/login" className="text-black underline hover:no-underline">Create one here</a>
           </p>
         </div>
       </div>

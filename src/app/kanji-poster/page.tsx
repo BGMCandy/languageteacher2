@@ -20,7 +20,6 @@ export default function KanjiPoster() {
   const [kanji, setKanji] = useState<JapaneseKanji[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedKanji, setSelectedKanji] = useState<JapaneseKanji | null>(null)
-  const [totalCount, setTotalCount] = useState<number>(0)
   const [tooltip, setTooltip] = useState<{ kanji: JapaneseKanji; x: number; y: number } | null>(null)
   const [viewMode, setViewMode] = useState<'level' | 'performance'>('level')
   const [userPerformance, setUserPerformance] = useState<Record<string, { totalAttempts: number; correctAttempts: number; successRate: number }>>({})
