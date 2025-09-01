@@ -294,7 +294,7 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
 
   if (loading) {
     return (
-      <div className="bg-white h-screen flex items-center justify-center">
+      <div className="bg-white py-16">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-black border-t-transparent animate-spin mx-auto mb-4"></div>
           <div className="text-lg text-black tracking-wider">GENERATING QUIZ...</div>
@@ -305,7 +305,7 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
 
   if (questions.length === 0) {
     return (
-      <div className="bg-white h-screen flex items-center justify-center">
+      <div className="bg-white py-16">
         <div className="text-center">
           <div className="text-xl text-black mb-2 tracking-wider">ERROR GENERATING QUIZ</div>
           <div className="text-sm text-gray-600">Please try again</div>
@@ -318,7 +318,7 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
   const progress = ((currentQuestion + 1) / questions.length) * 100
 
   return (
-    <div className="bg-white h-screen flex flex-col relative overflow-hidden">
+    <div className="bg-white py-8">
       {/* Start Animation */}
       <AnimatePresence>
         {showStartAnimation && (
@@ -369,7 +369,7 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
         )}
       </AnimatePresence>
 
-      <div className="flex-1 w-full max-w-4xl mx-auto px-8 pt-4 pb-8">
+      <div className="w-full max-w-4xl mx-auto px-8">
         {/* Header */}
         <div className="text-center mb-6">
           <div className="flex items-center justify-center space-x-3 mb-2">

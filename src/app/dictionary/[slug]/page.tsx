@@ -182,28 +182,21 @@ export default function DictionaryPage({ params }: { params: Promise<{ slug: str
   )
 
   return (
-    <div className="bg-white">
-      <div className="max-w-6xl mx-auto px-8 py-16">
-        {/* Header */}
-        <div className="text-center mb-16">
-          <div className="flex items-center justify-center space-x-4 mb-8">
-            {/* Sharp geometric logo */}
-            <div className="w-12 h-12 bg-black relative">
-              <div className="absolute inset-0 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)' }}></div>
-              <div className="absolute inset-0 bg-black" style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0 100%)' }}></div>
-            </div>
-            <h1 className="text-4xl font-bold text-black tracking-wider">
-              {language.toUpperCase()} DICTIONARY
-            </h1>
-          </div>
-          <div className="h-px w-32 bg-black mx-auto mb-6"></div>
+    <div className="bg-white min-h-screen">
+      <div className="max-w-6xl mx-auto px-8 pt-8 pb-16">
+        {/* Page Title */}
+        <div className="text-center mb-12">
+          <h1 className="text-3xl font-bold text-black tracking-wider mb-4">
+            {language.toUpperCase()} DICTIONARY
+          </h1>
+          <div className="h-px w-24 bg-black mx-auto mb-4"></div>
           <p className="text-gray-600 tracking-wide">
-            Search for words and kanji in the {language.toLowerCase()} language
+            Search for words and kanji in {language.toLowerCase()}
           </p>
         </div>
 
         {/* Search Form */}
-        <div className="border-2 border-black bg-white p-8 mb-12">
+        <div className="border-2 border-black bg-white p-8 mb-8">
           <form onSubmit={handleSearch} className="space-y-6">
             <div className="flex gap-4">
               <div className="flex-1">
@@ -218,14 +211,14 @@ export default function DictionaryPage({ params }: { params: Promise<{ slug: str
               <button
                 type="submit"
                 disabled={loading || !searchQuery.trim()}
-                className="px-8 py-4 bg-black text-white border-2 border-black hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed font-semibold tracking-wider transition-all duration-200"
+                className="px-8 py-4 bg-black text-white border-2 border-black hover:bg-gray-800 disabled:opacity-50 disabled:cursor-not-allowed font-semibold tracking-wider transition-all duration-200 cursor-pointer"
               >
                 {loading ? 'SEARCHING...' : 'SEARCH'}
               </button>
             </div>
             
             <div className="flex gap-6">
-              <label className="flex items-center">
+              <label className="flex items-center cursor-pointer">
                 <input
                   type="radio"
                   value="words"
@@ -235,7 +228,7 @@ export default function DictionaryPage({ params }: { params: Promise<{ slug: str
                 />
                 <span className="text-black font-medium tracking-wider">WORDS</span>
               </label>
-              <label className="flex items-center">
+              <label className="flex items-center cursor-pointer">
                 <input
                   type="radio"
                   value="kanji"
@@ -286,6 +279,13 @@ export default function DictionaryPage({ params }: { params: Promise<{ slug: str
               <p className="text-gray-600 tracking-wide">ENTER A SEARCH TERM TO FIND {searchType === 'words' ? 'WORDS' : 'KANJI'}</p>
             </div>
           )}
+        </div>
+
+        {/* Bottom accent */}
+        <div className="flex justify-center space-x-8 mt-12">
+          <div className="w-2 h-2 bg-black"></div>
+          <div className="w-2 h-2 bg-black"></div>
+          <div className="w-2 h-2 bg-black"></div>
         </div>
       </div>
     </div>

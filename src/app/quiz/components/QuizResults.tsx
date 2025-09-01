@@ -42,7 +42,7 @@ export default function QuizResults({ results, onRetake, onBackToQuiz }: QuizRes
   }
 
   return (
-    <div className="fixed inset-0 bg-white z-50 overflow-y-auto">
+    <div className="bg-white min-h-screen">
       <div className="min-h-full w-full max-w-4xl mx-auto px-8 pt-4 pb-8">
         {/* Header */}
         <div className="text-center mb-6">
@@ -55,6 +55,22 @@ export default function QuizResults({ results, onRetake, onBackToQuiz }: QuizRes
           </div>
           <h1 className="text-2xl font-bold text-black tracking-wider mb-2">QUIZ COMPLETE</h1>
           <div className="h-px w-24 bg-black mx-auto"></div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="flex justify-center gap-4 mb-8">
+          <button
+            onClick={onRetake}
+            className="px-6 py-3 bg-black text-white font-semibold tracking-wider hover:bg-gray-800 border-2 border-black transition-all cursor-pointer"
+          >
+            RETRY QUIZ
+          </button>
+          <button
+            onClick={onBackToQuiz}
+            className="px-6 py-3 bg-white text-black font-semibold tracking-wider hover:bg-black hover:text-white border-2 border-black transition-all cursor-pointer"
+          >
+            NEW QUIZ
+          </button>
         </div>
 
         {/* Authentication Notice */}
@@ -153,21 +169,6 @@ export default function QuizResults({ results, onRetake, onBackToQuiz }: QuizRes
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button
-            onClick={onRetake}
-            className="px-8 py-3 border-2 border-black bg-black text-white font-semibold tracking-wider hover:bg-white hover:text-black transition-all duration-300 cursor-pointer"
-          >
-            TAKE QUIZ AGAIN
-          </button>
-          <button
-            onClick={onBackToQuiz}
-            className="px-8 py-3 border-2 border-black text-black font-semibold tracking-wider hover:bg-black hover:text-white transition-all duration-300 cursor-pointer"
-          >
-            BACK TO QUIZ SETUP
-          </button>
-        </div>
 
         {/* Bottom accent */}
         <div className="flex justify-center space-x-8 mt-8">

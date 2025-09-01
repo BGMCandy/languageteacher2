@@ -26,6 +26,7 @@ export default function QuizPage() {
   const [quizStarted, setQuizStarted] = useState(false)
   const [quizResults, setQuizResult] = useState<QuizResult[]>([])
   const [showResults, setShowResults] = useState(false)
+  const [retakeCount, setRetakeCount] = useState(0)
   const [availableLevels, setAvailableLevels] = useState<string[]>([])
   const [loadingLevels, setLoadingLevels] = useState(true)
   const [currentStep, setCurrentStep] = useState(0)
@@ -175,11 +176,15 @@ export default function QuizPage() {
 
   const handleRetake = () => {
     setShowResults(false)
+    setRetakeCount(prev => prev + 1)
     setQuizStarted(true)
   }
 
   const handleBackToSetup = () => {
     setShowResults(false)
+    setRetakeCount(prev => prev + 1)
+    setQuizStarted(false)
+    setCurrentStep(0)
     setQuizResult([])
   }
 
@@ -228,7 +233,7 @@ export default function QuizPage() {
 
   if (quizStarted) {
     return (
-      <KanjiQuiz 
+      <KanjiQuiz key={retakeCount} 
         config={{
           questionCount: config.questionCount,
           levels: config.levels,
@@ -385,7 +390,7 @@ export default function QuizPage() {
   ]
 
   return (
-    <div className="bg-white h-screen flex flex-col overflow-hidden">
+    <div className="bg-white min-h-screen flex flex-col overflow-hidden">
       <div className="flex-1 w-full max-w-6xl mx-auto px-4 md:px-6 py-4 md:py-6">
         {/* Header */}
         <div className="text-center mb-4 md:mb-6">
@@ -415,14 +420,14 @@ export default function QuizPage() {
         </div>
 
         {/* Step Content */}
-        <div className="flex-1 min-h-0">
+        <div className="min-h-0">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentStep}
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.3 }}
+              transition={{ duration: 0.15 }}
               className="h-full"
             >
               <div className="h-full flex flex-col">
