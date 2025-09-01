@@ -30,6 +30,7 @@ export default function KanjiPoster() {
   const [kanjiWords, setKanjiWords] = useState<DictionaryEntry[]>([])
   const [loadingWords, setLoadingWords] = useState(false)
   const [showRegisterPopup, setShowRegisterPopup] = useState(false)
+  const [isSheetExpanded, setIsSheetExpanded] = useState(false)
 
   useEffect(() => {
     const fetchKanji = async () => {
@@ -289,6 +290,11 @@ export default function KanjiPoster() {
     setViewMode(mode)
   }
 
+  const handleKanjiSelect = (kanji: JapaneseKanji) => {
+    setSelectedKanji(kanji)
+    setIsSheetExpanded(false) // Reset sheet to collapsed state
+  }
+
   if (loading) {
     return (
       <div className="bg-white flex items-center justify-center py-16">
@@ -307,16 +313,16 @@ export default function KanjiPoster() {
 
   return (
     <div className="bg-white">
-      <div className="max-w-7xl mx-auto px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8">
         {/* Header */}
-        <div className="text-center mb-12">
-          <div className="flex items-center justify-center space-x-4 mb-6">
+        <div className="text-center mb-6 sm:mb-12">
+          <div className="flex items-center justify-center space-x-4 mb-3 sm:mb-6">
             {/* Sharp geometric logo */}
             <div className="w-12 h-12 bg-black relative">
               <div className="absolute inset-0 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)' }}></div>
               <div className="absolute inset-0 bg-black" style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0 100%)' }}></div>
             </div>
-            <h1 className="text-4xl font-bold text-black tracking-wider">
+            <h1 className="text-2xl sm:text-4xl font-bold text-black tracking-wider">
               JAPANESE KANJI POSTER
             </h1>
           </div>
@@ -327,7 +333,7 @@ export default function KanjiPoster() {
         </div>
         
         {/* View Toggle */}
-        <div className="flex justify-center mb-8 gap-6">
+        <div className="flex flex-col sm:flex-row justify-center mb-6 sm:mb-8 gap-3 sm:gap-6">
           {/* View Mode Toggle */}
           <div className="border-2 border-black p-1 inline-flex">
             <button
@@ -453,15 +459,15 @@ export default function KanjiPoster() {
           </div>
         )}
         
-        <div className="flex gap-8">
+        <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
           {/* Kanji Grid */}
           <div className="flex-1">
             {showAllKanji ? (
               /* All Kanji View - Single condensed grid with optional grouping */
               <div className={`grid ${
                 condensedView === 'super-condensed'
-                  ? 'gap-1 grid-cols-40 md:grid-cols-50 lg:grid-cols-60 xl:grid-cols-80 2xl:grid-cols-100'
-                  : 'gap-1 grid-cols-25 md:grid-cols-30 lg:grid-cols-35 xl:grid-cols-40'
+                  ? 'gap-1 grid-cols-20 sm:grid-cols-30 md:grid-cols-40 lg:grid-cols-50 xl:grid-cols-60 2xl:grid-cols-80'
+                  : 'gap-1 grid-cols-15 sm:grid-cols-20 md:grid-cols-25 lg:grid-cols-30 xl:grid-cols-35'
               }`}>
                 {kanji.map((k, index) => {
                   const groupSize = grouping !== 'none' ? parseInt(grouping) : 0
@@ -483,7 +489,7 @@ export default function KanjiPoster() {
                         ${isInGroup && isGroupEnd ? 'mr-2' : ''}
                         ${isInGroup && isLastInRow ? 'mb-2' : ''}
                       `}
-                      onClick={() => setSelectedKanji(k)}
+                      onClick={() => handleKanjiSelect(k)}
                       onMouseEnter={(e) => {
                         setTooltip({ kanji: k, x: e.clientX, y: e.clientY })
                       }}
@@ -491,8 +497,8 @@ export default function KanjiPoster() {
                     >
                       <span className={`font-bold leading-none ${
                         condensedView === 'super-condensed'
-                          ? 'text-[10px]'
-                          : 'text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]'
+                          ? 'text-[8px] sm:text-[10px]'
+                          : 'text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]'
                       }`}>
                         {k.letter}
                       </span>
@@ -520,8 +526,8 @@ export default function KanjiPoster() {
                         /* No grouping - show all kanji for this level */
                         <div className={`grid ${
                           condensedView === 'super-condensed'
-                            ? 'gap-1 grid-cols-30 md:grid-cols-35 lg:grid-cols-40 xl:grid-cols-50 2xl:grid-cols-60'
-                            : 'gap-1 grid-cols-8 md:grid-cols-12 lg:grid-cols-16 xl:grid-cols-20'
+                            ? 'gap-1 grid-cols-15 sm:grid-cols-20 md:grid-cols-25 lg:grid-cols-30 xl:grid-cols-35 2xl:grid-cols-40'
+                            : 'gap-1 grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 xl:grid-cols-16'
                         }`}>
                           {levelKanji.map((k, index) => {
                             const groupSize = grouping !== 'none' ? parseInt(grouping) : 0
@@ -543,7 +549,7 @@ export default function KanjiPoster() {
                                   ${isInGroup && isGroupEnd ? 'mr-2' : ''}
                                   ${isInGroup && isLastInRow ? 'mb-2' : ''}
                                 `}
-                                onClick={() => setSelectedKanji(k)}
+                                onClick={() => handleKanjiSelect(k)}
                                 onMouseEnter={(e) => {
                                   setTooltip({ kanji: k, x: e.clientX, y: e.clientY })
                                 }}
@@ -551,8 +557,8 @@ export default function KanjiPoster() {
                               >
                                 <span className={`font-bold leading-none ${
                                   condensedView === 'super-condensed'
-                                    ? 'text-[10px]'
-                                    : 'text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]'
+                                    ? 'text-[8px] sm:text-[10px]'
+                                    : 'text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]'
                                 }`}>
                                   {k.letter}
                                 </span>
@@ -566,8 +572,8 @@ export default function KanjiPoster() {
                           <div key={groupIndex} className="border-2 border-black p-1">
                             <div className={`grid ${
                               condensedView === 'super-condensed'
-                                ? 'gap-1 grid-cols-30 md:grid-cols-35 lg:grid-cols-40 xl:grid-cols-50 2xl:grid-cols-60'
-                                : 'gap-1 grid-cols-8 md:grid-cols-12 lg:grid-cols-16 xl:grid-cols-20'
+                                ? 'gap-1 grid-cols-15 sm:grid-cols-20 md:grid-cols-25 lg:grid-cols-30 xl:grid-cols-35 2xl:grid-cols-40'
+                                : 'gap-1 grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 xl:grid-cols-16'
                             }`}>
                               {group.map((k) => (
                                 <div
@@ -578,7 +584,7 @@ export default function KanjiPoster() {
                                     ${condensedView === 'super-condensed' ? 'hover:bg-blue-100' : 'hover:bg-gray-100'}
                                     ${getKanjiColor({ letter: k, level: 'Unknown', reading: '', name: '', sound_equiv: '' } as JapaneseKanji)}
                                   `}
-                                  onClick={() => setSelectedKanji({ letter: k, level: 'Unknown', reading: '', name: '', sound_equiv: '' } as JapaneseKanji)}
+                                  onClick={() => handleKanjiSelect({ letter: k, level: 'Unknown', reading: '', name: '', sound_equiv: '' } as JapaneseKanji)}
                                   onMouseEnter={(e) => {
                                     setTooltip({ kanji: { letter: k, level: 'Unknown', reading: '', name: '', sound_equiv: '' } as JapaneseKanji, x: e.clientX, y: e.clientY })
                                   }}
@@ -586,8 +592,8 @@ export default function KanjiPoster() {
                                 >
                                   <span className={`font-bold leading-none ${
                                     condensedView === 'super-condensed'
-                                      ? 'text-[10px]'
-                                      : 'text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]'
+                                      ? 'text-[8px] sm:text-[10px]'
+                                      : 'text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]'
                                   }`}>
                                     {k}
                                   </span>
@@ -607,8 +613,8 @@ export default function KanjiPoster() {
             )}
           </div>
 
-          {/* Details Panel */}
-          <div className="w-80 bg-white p-8 border-2 border-black h-fit sticky top-28">
+          {/* Desktop Details Panel */}
+          <div className="hidden lg:block w-80 bg-white p-8 border-2 border-black h-fit sticky top-28">
             {selectedKanji ? (
               <>
                 <div className="text-center mb-8">
@@ -707,6 +713,128 @@ export default function KanjiPoster() {
           </div>
         </div>
       </div>
+      
+      {/* Mobile Bottom Sheet */}
+      {selectedKanji && (
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-50">
+          <div className={`bg-white border-t-2 border-black transition-transform duration-300 ease-out ${
+            isSheetExpanded ? 'transform translate-y-0' : 'transform translate-y-full'
+          }`}>
+            {/* Drag Handle */}
+            <div 
+              className="flex justify-center py-3 cursor-pointer"
+              onClick={() => setIsSheetExpanded(!isSheetExpanded)}
+            >
+              <div className="w-12 h-1 bg-gray-400 rounded-full"></div>
+            </div>
+            
+            {/* Collapsed View - Basic Info */}
+            <div className={`px-4 pb-4 ${isSheetExpanded ? 'hidden' : 'block'}`}>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="text-3xl font-bold text-black">
+                    {selectedKanji.letter}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {selectedKanji.reading}
+                  </div>
+                </div>
+                <div className={`px-3 py-1 text-xs font-medium tracking-wider ${getKanjiColor(selectedKanji)}`}>
+                  {viewMode === 'level' ? selectedKanji.level : `Performance: ${Math.round(userPerformance[selectedKanji.letter]?.successRate || 0)}%`}
+                </div>
+              </div>
+            </div>
+            
+            {/* Expanded View - Full Details */}
+            <div className={`px-4 pb-4 max-h-[70vh] overflow-y-auto ${isSheetExpanded ? 'block' : 'hidden'}`}>
+              <div className="text-center mb-6">
+                <div className="text-4xl font-bold text-black mb-2">
+                  {selectedKanji.letter}
+                </div>
+                <div className={`inline-block px-4 py-2 text-sm font-medium tracking-wider ${getKanjiColor(selectedKanji)}`}>
+                  {viewMode === 'level' ? `Level ${selectedKanji.level}` : `Performance: ${Math.round(userPerformance[selectedKanji.letter]?.successRate || 0)}%`}
+                </div>
+              </div>
+              
+              <div className="space-y-4 mb-6">
+                <div>
+                  <label className="text-sm font-medium text-black tracking-wider uppercase">Reading</label>
+                  <div className="text-lg text-black font-medium">{selectedKanji.reading}</div>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-black tracking-wider uppercase">Meaning</label>
+                  <div className="text-lg text-black font-medium">{selectedKanji.name}</div>
+                </div>
+                
+                <div>
+                  <label className="text-sm font-medium text-black tracking-wider uppercase">Sound Equivalent</label>
+                  <div className="text-lg text-black font-medium">{selectedKanji.sound_equiv}</div>
+                </div>
+              </div>
+
+              {/* Words containing this kanji */}
+              <div className="pt-6 border-t-2 border-black">
+                <h3 className="text-lg font-semibold text-black mb-4 tracking-wider">
+                  Words containing 「{selectedKanji.letter}」
+                </h3>
+                
+                {loadingWords ? (
+                  <div className="text-center py-4">
+                    <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black mx-auto"></div>
+                    <p className="text-sm text-gray-500 mt-2 tracking-wide">Finding words...</p>
+                  </div>
+                ) : kanjiWords.length > 0 ? (
+                  <div className="space-y-3">
+                    {kanjiWords.map((word, index) => (
+                      <div key={index} className="bg-gray-50 border-2 border-gray-200 p-4 hover:bg-gray-100 transition-colors">
+                        <div className="flex items-center gap-2 mb-3">
+                          {word.headwords && word.headwords.length > 0 && (
+                            <span className="text-lg font-bold text-black">
+                              {word.headwords[0]}
+                            </span>
+                          )}
+                          {word.readings && word.readings.length > 0 && (
+                            <span className="text-sm text-gray-600">
+                              {word.readings[0]}
+                            </span>
+                          )}
+                          {word.is_common && (
+                            <span className="bg-green-100 text-green-800 text-xs px-2 py-1 border border-green-200 tracking-wide">
+                              Common
+                            </span>
+                          )}
+                        </div>
+                        
+                        <div className="text-sm text-gray-700 mb-3">
+                          {word.glosses_en && word.glosses_en.length > 0 
+                            ? word.glosses_en.slice(0, 2).join(', ')
+                            : 'No English definition'
+                          }
+                        </div>
+                        
+                        {word.pos_tags && word.pos_tags.length > 0 && (
+                          <div className="flex flex-wrap gap-1">
+                            {word.pos_tags.slice(0, 3).map((pos: string, idx: number) => (
+                              <span key={idx} className="bg-blue-100 text-blue-700 text-xs px-2 py-1 border border-blue-200 tracking-wide">
+                                {pos}
+                              </span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-4 text-gray-500">
+                    <p className="text-sm tracking-wide">No words found containing this kanji</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
       
       {/* Tooltip */}
       {tooltip && (
