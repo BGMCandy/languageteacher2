@@ -27,7 +27,7 @@ export default function Home() {
           {/* CTA Button */}
           <Link 
             href="/login" 
-            className="inline-block bg-black text-white hover:bg-gray-800 transition-all duration-200 font-medium text-lg tracking-wider border-2 border-black hover:font-fugaz w-52 h-18 flex items-center justify-center text-center"
+            className="btn-3"
           >
             GET STARTED
           </Link>
@@ -106,7 +106,7 @@ export default function Home() {
             <div className="space-y-4">
               <Link 
                 href="/login" 
-                className="inline-block bg-black text-white hover:bg-gray-800 transition-all duration-200 font-medium tracking-wider border-2 border-black hover:font-fugaz w-84 h-16 flex items-center justify-center text-center"
+                className="btn-4"
               >
                 SIGN IN / CREATE ACCOUNT
               </Link>

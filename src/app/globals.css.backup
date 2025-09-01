@@ -1,0 +1,283 @@
+@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Fugaz+One&display=swap');
+@import "tailwindcss";
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 255, 255, 255;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: white;
+}
+
+/* Flashcard flip animation */
+.flip-card {
+  perspective: 1000px;
+}
+
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flip-card.flipped .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+/* Custom scrollbar styles */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db #f3f4f6;
+}
+
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #f3f4f6;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+/* Custom grid columns for kanji poster */
+.grid-cols-25 {
+  grid-template-columns: repeat(25, minmax(0, 1fr));
+}
+
+.grid-cols-30 {
+  grid-template-columns: repeat(30, minmax(0, 1fr));
+}
+
+.grid-cols-35 {
+  grid-template-columns: repeat(35, minmax(0, 1fr));
+}
+
+.grid-cols-40 {
+  grid-template-columns: repeat(40, minmax(0, 1fr));
+}
+
+.grid-cols-50 {
+  grid-template-columns: repeat(50, minmax(0, 1fr));
+}
+
+.grid-cols-60 {
+  grid-template-columns: repeat(60, minmax(0, 1fr));
+}
+
+.grid-cols-80 {
+  grid-template-columns: repeat(80, minmax(0, 1fr));
+}
+
+.grid-cols-100 {
+  grid-template-columns: repeat(100, minmax(0, 1fr));
+}
+
+/* Custom button utilities with completely stable containers */
+.btn-primary {
+  @apply px-6 py-3 bg-black text-white border-2 border-black font-medium tracking-wider transition-all duration-200;
+  height: 3rem;
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-primary:hover {
+  @apply bg-gray-800;
+}
+
+.btn-primary:hover::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Bangers', cursive;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.btn-secondary {
+  @apply px-6 py-3 bg-white text-black border-2 border-black font-medium tracking-wider transition-all duration-200;
+  height: 3rem;
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-secondary:hover {
+  @apply bg-black text-white;
+}
+
+.btn-secondary:hover::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Bangers', cursive;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.btn-danger {
+  @apply px-6 py-3 bg-white text-red-600 border-2 border-red-600 font-medium tracking-wider transition-all duration-200;
+  height: 3rem;
+  width: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-danger:hover {
+  @apply bg-red-600 text-white;
+}
+
+.btn-danger:hover::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: 'Bangers', cursive;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Link utilities with stable containers */
+.link-primary {
+  @apply text-black font-medium tracking-wider transition-all duration-200;
+  height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.link-primary:hover {
+  @apply text-gray-600;
+}
+
+.link-primary:hover::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  font-family: 'Bangers', cursive;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* Navigation link with underline effect */
+.nav-link {
+  @apply text-black font-medium tracking-wider transition-all duration-200 relative;
+  height: 1.5rem;
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.nav-link:hover {
+  @apply text-gray-600;
+}
+
+.nav-link:hover::before {
+  content: attr(data-text);
+  position: absolute;
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+  font-family: 'Bangers', cursive;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.nav-link::after {
+  content: '';
+  @apply absolute -bottom-1 left-0 w-0 h-0.5 bg-black transition-all duration-300;
+}
+
+.nav-link:hover::after {
+  @apply w-full;
+}
+
+/* Global anti-flicker solution for all hover:font-fugaz elements */
+.hover\:font-fugaz {
+  position: relative;
+  display: inline-block;
+}
+
+/* Force all hover:font-fugaz elements to maintain their size */
+.hover\:font-fugaz,
+.hover\:font-fugaz * {
+  box-sizing: border-box;
+}
+
+/* Prevent text from causing container resizing */
+.hover\:font-fugaz {
+  min-width: max-content;
+  min-height: max-content;
+}
+
+/* Hover font effect */
+.hover\:font-fugaz:hover {
+  font-family: 'Bangers', cursive;
+  letter-spacing: 0.5em;
+}
+
+/* Direct hover:font-fugaz utility */
+.hover\:font-fugaz {
+  transition: font-family 0.2s ease, letter-spacing 0.2s ease;
+}
+
+/* Override Tailwind's hover:font-fugaz with more specific selectors */
+.hover\:font-fugaz:hover,
+[class*="hover:font-fugaz"]:hover,
+*[class*="hover:font-fugaz"]:hover {
+  font-family: 'Bangers', cursive !important;
+  letter-spacing: 0.3em !important;
+}
+
+/* Mobile touch equivalent */
+@media (hover: none) {
+  .hover\:font-fugaz:active {
+    font-family: 'Bangers', cursive;
+    letter-spacing: 0.1em;
+  }
+}

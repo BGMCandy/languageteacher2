@@ -298,7 +298,7 @@ export default function KanjiPoster() {
 
   return (
     <div className="bg-white">
-      <div className="max-w-7xl mx-auto px-8 py-12">
+      <div className="max-w-7xl mx-auto px-8">
         {/* Header */}
         <div className="text-center mb-12">
           <div className="flex items-center justify-center space-x-4 mb-6">
@@ -323,7 +323,7 @@ export default function KanjiPoster() {
           <div className="border-2 border-black p-1 inline-flex">
             <button
               onClick={() => setViewMode('level')}
-              className={`w-32 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
+              className={`w-32 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center cursor-pointer ${
                 viewMode === 'level'
                   ? 'bg-black text-white'
                   : 'text-black hover:bg-gray-100'
@@ -333,7 +333,7 @@ export default function KanjiPoster() {
             </button>
             <button
               onClick={() => setViewMode('performance')}
-              className={`w-36 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
+              className={`w-36 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center cursor-pointer ${
                 viewMode === 'performance'
                   ? 'bg-black text-white'
                   : 'text-black hover:bg-gray-100'
@@ -348,7 +348,7 @@ export default function KanjiPoster() {
           <div className="border-2 border-black p-1 inline-flex">
             <button
               onClick={() => setCondensedView('comfortable')}
-              className={`w-20 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
+              className={`w-20 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center cursor-pointer ${
                 condensedView === 'comfortable'
                   ? 'bg-black text-white'
                   : 'text-black hover:bg-gray-100'
@@ -358,7 +358,7 @@ export default function KanjiPoster() {
             </button>
             <button
               onClick={() => setCondensedView('super-condensed')}
-              className={`w-24 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
+              className={`w-24 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center cursor-pointer ${
                 condensedView === 'super-condensed'
                   ? 'bg-black text-white'
                   : 'text-black hover:bg-gray-100'
@@ -372,7 +372,7 @@ export default function KanjiPoster() {
           <div className="border-2 border-black p-1 inline-flex">
             <button
               onClick={() => setShowAllKanji(false)}
-              className={`w-24 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
+              className={`w-24 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center cursor-pointer ${
                 !showAllKanji
                   ? 'bg-black text-white'
                   : 'text-black hover:bg-gray-100'
@@ -382,7 +382,7 @@ export default function KanjiPoster() {
             </button>
             <button
               onClick={() => setShowAllKanji(true)}
-              className={`w-24 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
+              className={`w-24 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center cursor-pointer ${
                 showAllKanji
                   ? 'bg-black text-white'
                   : 'text-black hover:bg-gray-100'
@@ -396,7 +396,7 @@ export default function KanjiPoster() {
           <div className="border-2 border-black p-1 inline-flex">
             <button
               onClick={() => setGrouping('none')}
-              className={`w-24 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
+              className={`w-24 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center cursor-pointer ${
                 grouping === 'none'
                   ? 'bg-black text-white'
                   : 'text-black hover:bg-gray-100'
@@ -406,7 +406,7 @@ export default function KanjiPoster() {
             </button>
             <button
               onClick={() => setGrouping('5')}
-              className={`w-28 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
+              className={`w-28 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center cursor-pointer ${
                 grouping === '5'
                   ? 'bg-black text-white'
                   : 'text-black hover:bg-gray-100'
@@ -416,7 +416,7 @@ export default function KanjiPoster() {
             </button>
             <button
               onClick={() => setGrouping('10')}
-              className={`w-32 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
+              className={`w-32 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center cursor-pointer ${
                 grouping === '10'
                   ? 'bg-black text-white'
                   : 'text-black hover:bg-gray-100'
@@ -426,7 +426,7 @@ export default function KanjiPoster() {
             </button>
             <button
               onClick={() => setGrouping('20')}
-              className={`w-32 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center ${
+              className={`w-32 h-12 text-sm font-medium tracking-wider transition-all hover:font-fugaz flex items-center justify-center cursor-pointer ${
                 grouping === '20'
                   ? 'bg-black text-white'
                   : 'text-black hover:bg-gray-100'

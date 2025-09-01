@@ -4,6 +4,7 @@ import { useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { usePathname } from 'next/navigation'
+import Identify from '../elements/identify'
 
 export default function Header() {
   const { user, signOut } = useAuth()
@@ -15,54 +16,35 @@ export default function Header() {
   return (
     <header className="h-20 bg-white border-b-2 border-black sticky top-0 z-50">
       <div className="h-full max-w-7xl mx-auto px-6 flex items-center justify-between">
-        {/* Logo and Brand */}
-        <div className="flex items-center space-x-4">
-          <div className="w-10 h-10 bg-black relative">
-            <div className="absolute inset-0 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)' }}></div>
-            <div className="absolute inset-0 bg-black" style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0 100%)' }}></div>
-          </div>
-          <div>
-            <h1 className="text-xl font-bold text-black tracking-wider">
-              LANGUAGE TEACHER
-            </h1>
-            <div className="h-0.5 w-16 bg-black"></div>
-          </div>
-        </div>
+        <Identify />
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center space-x-8">
-          <Link
-            href="/"
-            className={`text-sm font-medium tracking-wider transition-all hover:font-fugaz ${
-              isActive('/') ? 'text-black' : 'text-gray-600 hover:text-black'
+          <Link 
+            href="/quiz" 
+            className={`btn-2 ${
+              isActive('/quiz') ? 'active' : ''
             }`}
           >
-            HOME
+            QUIZ
           </Link>
-          <Link
-            href="/kanji-poster"
-            className={`text-sm font-medium tracking-wider transition-all hover:font-fugaz ${
-              isActive('/kanji-poster') ? 'text-black' : 'text-gray-600 hover:text-black'
+          <Link 
+            href="/study" 
+            className={`btn-2 ${
+              isActive('/study') ? 'active' : ''
+            }`}
+          >
+            STUDY
+          </Link>
+          <Link 
+            href="/kanji-poster" 
+            className={`btn-2 ${
+              isActive('/kanji-poster') ? 'active' : ''
             }`}
           >
             KANJI
           </Link>
-          <Link
-            href="/practice"
-            className={`text-sm font-medium tracking-wider transition-all hover:font-fugaz ${
-              isActive('/practice') ? 'text-black' : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            PRACTICE
-          </Link>
-          <Link
-            href="/dictionary"
-            className={`text-sm font-medium tracking-wider transition-all hover:font-fugaz ${
-              isActive('/dictionary') ? 'text-black' : 'text-gray-600 hover:text-black'
-            }`}
-          >
-            DICTIONARY
-          </Link>
+
         </nav>
 
         {/* User Section */}
@@ -103,13 +85,13 @@ export default function Header() {
             <>
               <Link
                 href="/login"
-                className="px-6 py-2 text-sm font-medium tracking-wider transition-all hover:font-fugaz text-black border-2 border-black hover:bg-black hover:text-white"
+                className="btn-3"
               >
                 SIGN IN
               </Link>
               <Link
                 href="/login"
-                className="px-6 py-3 text-sm font-medium tracking-wider transition-all hover:font-fugaz bg-black text-white border-2 border-black hover:bg-gray-800"
+                className="btn-4"
               >
                 GET STARTED
               </Link>
@@ -137,13 +119,13 @@ export default function Header() {
             {/* Mobile Navigation */}
             <nav className="space-y-3">
               <Link
-                href="/"
+                href="/quiz"
                 className={`block text-sm font-medium tracking-wider transition-all hover:font-fugaz ${
                   isActive('/') ? 'text-black' : 'text-gray-600'
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                HOME
+                Quiz
               </Link>
               <Link
                 href="/kanji-poster"
