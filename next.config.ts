@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'media.languageteacher.io',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
   experimental: {
     serverActions: {
       allowedOrigins: [

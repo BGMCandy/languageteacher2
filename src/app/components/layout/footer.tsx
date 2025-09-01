@@ -3,7 +3,7 @@ import Link from 'next/link'
 
 const Footer = () => {
   return (
-    <footer className="bg-white border-t-2 border-black h-48 pt-12">
+    <footer className="bg-white border-t-2 border-black h-48  my-12">
       {/* Main footer content */}
       <div className="max-w-7xl mx-auto px-8 h-full flex flex-col justify-center">
         {/* Brand and copyright */}
@@ -20,7 +20,7 @@ const Footer = () => {
           </div>
           <div className="h-px w-24 bg-black mx-auto mb-4"></div>
           <p className="text-sm text-gray-600 tracking-wide">
-            © {new Date().getFullYear()} ALL RIGHTS RESERVED
+            A BGMCandy Production {new Date().getFullYear()}
           </p>
         </div>
         
@@ -52,10 +52,6 @@ const Footer = () => {
           </Link>
         </div>
         
-        {/* Bottom accent line */}
-        <div className="flex justify-center">
-          <div className="h-px w-32 bg-black"></div>
-        </div>
       </div>
     </footer>
   )

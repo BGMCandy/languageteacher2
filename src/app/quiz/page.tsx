@@ -31,12 +31,12 @@ export default function QuizPage() {
   const [currentStep, setCurrentStep] = useState(0)
 
   const languages = [
-    { id: 'japanese', name: 'Japanese', icon: '🇯🇵' },
-    { id: 'chinese', name: 'Chinese', icon: '🇨🇳' },
-    { id: 'korean', name: 'Korean', icon: '🇰🇷' },
-    { id: 'spanish', name: 'Spanish', icon: '🇪🇸' },
-    { id: 'french', name: 'French', icon: '🇫🇷' },
-    { id: 'german', name: 'German', icon: '🇩🇪' }
+    { id: 'japanese', name: 'Japanese', icon: '日本語' },
+    { id: 'chinese', name: 'Chinese', icon: '中文' },
+    { id: 'korean', name: 'Korean', icon: '한국어' },
+    { id: 'spanish', name: 'Spanish', icon: 'ES' },
+    { id: 'french', name: 'French', icon: 'FR' },
+    { id: 'german', name: 'German', icon: 'DE' }
   ]
 
   const components = {
@@ -74,7 +74,7 @@ export default function QuizPage() {
     ]
   }
 
-  const questionCounts = [5, 10, 20, 30]
+  const questionCounts = [5, 10, 20, 30, 40, 50]
   const quizTypes = [
     { id: 'pronunciation', name: 'Pronunciation', description: 'Test reading skills' },
     { id: 'meaning', name: 'Meaning', description: 'Test understanding' },
@@ -264,7 +264,7 @@ export default function QuizPage() {
                   : 'border-gray-300 hover:border-black'
               }`}
             >
-              <div className="text-2xl md:text-3xl mb-2">{language.icon}</div>
+              <div className="text-2xl md:text-3xl mb-2 font-medium">{language.icon}</div>
               <div className="text-sm md:text-base font-semibold">{language.name}</div>
             </button>
           ))}
@@ -460,7 +460,7 @@ export default function QuizPage() {
                 : 'border-black hover:bg-black hover:text-white'
             }`}
           >
-            {currentStep === steps.length - 1 ? 'FINISH' : 'NEXT'}
+            {currentStep === steps.length - 1 ? 'START QUIZ' : 'NEXT'}
           </button>
         </div>
       </div>

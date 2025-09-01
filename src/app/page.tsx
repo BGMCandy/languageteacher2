@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import FeatureCard from './components/FeatureCard'
 
 export default function Home() {
   return (
@@ -48,76 +49,122 @@ export default function Home() {
           {/* Features grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
             {/* Kanji Poster */}
-            <Link href="/kanji-poster" className="group">
-              <div className="border-2 border-black p-8 hover:bg-black hover:text-white transition-all duration-300 min-h-[280px] flex flex-col justify-between">
-                <div>
-                  <div className="w-12 h-12 bg-black group-hover:bg-white mb-6"></div>
-                  <h3 className="text-xl font-bold text-black group-hover:text-white mb-4 tracking-wider">KANJI POSTER</h3>
-                  <p className="text-gray-600 group-hover:text-gray-200 leading-relaxed">
-                    Interactive visual learning with comprehensive character coverage
-                  </p>
-                </div>
-                <div className="h-px w-16 bg-black group-hover:bg-white mt-6"></div>
-              </div>
-            </Link>
+            <FeatureCard
+              href="/kanji-poster"
+              title="KANJI POSTER"
+              enterFrom="left"
+              verticalOffset={2}
+              overlayText="漢"
+              description="Interactive visual learning with comprehensive character coverage"
+              imageUrl="https://media.languageteacher.io/samurai.webp"
+            />
 
             {/* Practice */}
-            <Link href="/practice" className="group">
-              <div className="border-2 border-black p-8 hover:bg-black hover:text-white transition-all duration-300 min-h-[280px] flex flex-col justify-between">
-                <div>
-                  <div className="w-12 h-12 bg-black group-hover:bg-white mb-6" style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}></div>
-                  <h3 className="text-xl font-bold text-black group-hover:text-white mb-4 tracking-wider">PRACTICE</h3>
-                  <p className="text-gray-600 group-hover:text-gray-200 leading-relaxed">
-                    Test your knowledge with adaptive practice sessions
-                  </p>
-                </div>
-                <div className="h-px w-16 bg-black group-hover:bg-white mt-6"></div>
-              </div>
-            </Link>
+            <FeatureCard
+              href="/practice"
+              title="PRACTICE"
+              enterFrom="right"
+              verticalOffset={2}
+              overlayText="練"
+              description="Test your knowledge with adaptive practice sessions"
+              iconStyle={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}
+              imageUrl="https://media.languageteacher.io/monk.webp"
+            />
 
             {/* Dictionary */}
-            <Link href="/dictionary" className="group">
-              <div className="border-2 border-black p-8 hover:bg-black hover:text-white transition-all duration-300 min-h-[280px] flex flex-col justify-between">
-                <div>
-                  <div className="w-12 h-12 bg-black group-hover:bg-white mb-6" style={{ clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)' }}></div>
-                  <h3 className="text-xl font-bold text-black group-hover:text-white mb-4 tracking-wider">DICTIONARY</h3>
-                  <p className="text-gray-600 group-hover:text-gray-200 leading-relaxed">
-                    Comprehensive word lookup with detailed definitions
-                  </p>
-                </div>
-                <div className="h-px w-16 bg-black group-hover:bg-white mt-6"></div>
-              </div>
-            </Link>
+            <FeatureCard
+              href="/dictionary"
+              title="DICTIONARY"  
+              enterFrom="left"
+              verticalOffset={0}
+              overlayText="辞"
+              description="Comprehensive word lookup with detailed definitions"
+              iconStyle={{ clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)' }}
+              imageUrl="https://media.languageteacher.io/teacher.webp"
+            />
           </div>
         </div>
       </section>
+      
+{/* Authentication Section */}
+<section className="px-8 pb-32">
+  <div className="max-w-4xl mx-auto">
+    <div className="group relative border-2 border-black p-16 text-center overflow-hidden">
+      {/* background word (hover only) */}
+      <div
+        aria-hidden
+        className="
+          pointer-events-none select-none
+          absolute inset-0
+          flex items-end justify-end
+          pr-4 pb-2
+          opacity-0 group-hover:opacity-20
+          transition-opacity duration-500
+        "
+      >
+<div
+  aria-hidden
+  className="
+    pointer-events-none select-none
+    absolute inset-0
+    flex items-end justify-end
+    pr-4 pb-2
+    opacity-0 group-hover:opacity-100
+    transition-opacity duration-500
+  "
+>
+  <div
+    className="
+      text-right leading-[0.85]
+      space-y-2 md:space-y-3
+      translate-y-2
+      [mask-image:linear-gradient(to_top,transparent,black_20%,black)]
+    "
+  >
+    {/* Thai – slightly bigger, normal tracking */}
+    <div className="font-extrabold text-black/15 text-[clamp(2.5rem,10vw,6rem)] tracking-normal">
+      เริ่มกันเลย
+    </div>
 
-      {/* Authentication Section */}
-      <section className="px-8 pb-32">
-        <div className="max-w-4xl mx-auto">
-          <div className="border-2 border-black p-16 text-center">
-            <h2 className="text-3xl font-semibold text-black tracking-wider mb-6">
-              READY TO BEGIN?
-            </h2>
-            <div className="h-px w-24 bg-black mx-auto mb-8"></div>
-            <p className="text-lg text-gray-600 mb-8 max-w-md mx-auto">
-              Create an account or sign in to track your progress and unlock advanced features
-            </p>
-            <div className="space-y-4">
-              <Link 
-                href="/login" 
-                className="btn-4"
-              >
-                SIGN IN / CREATE ACCOUNT
-              </Link>
-              <div className="h-px w-32 bg-black mx-auto mt-6"></div>
-              <p className="text-sm text-gray-500 tracking-wide">
-                FREE TO USE • NO CREDIT CARD REQUIRED
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+    {/* Spanish – a touch narrower tracking to keep it tidy */}
+    <div className="font-extrabold text-black/25 text-[clamp(2.2rem,9vw,5.5rem)] tracking-tight">
+      Vamos a empezar
+    </div>
+
+    {/* Chinese (Traditional) – keep strong but subtle */}
+    <div className="font-extrabold text-black/35 text-[clamp(2.2rem,9vw,5.5rem)] tracking-normal">
+      開始吧
+    </div>
+    {/* Japanese – keep strong but subtle */}
+    <div className="font-extrabold text-black/45 text-[clamp(2.2rem,9vw,5.5rem)] tracking-normal">
+      始めましょう 
+    </div>
+  </div>
+</div>
+      </div>
+
+      {/* content above it */}
+      <h2 className="relative z-10 text-3xl font-semibold text-black tracking-wider mb-6">
+        READY TO BEGIN?
+      </h2>
+      <div className="relative z-10 h-px w-24 bg-black mx-auto mb-8"></div>
+      <p className="relative z-10 text-lg text-gray-600 mb-8 max-w-md mx-auto">
+        Create an account or sign in to track your progress and unlock advanced features
+      </p>
+      <div className="relative z-10 space-y-4">
+        <Link href="/login" className="btn-4">
+          SIGN IN / CREATE ACCOUNT
+        </Link>
+        <div className="h-px w-32 bg-black mx-auto mt-6"></div>
+        <p className="text-sm text-gray-500 tracking-wide">
+          FREE TO USE • NO CREDIT CARD REQUIRED
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 
       {/* Bottom accent */}
       <section className="px-8 pb-16">
