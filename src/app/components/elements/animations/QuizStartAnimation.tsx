@@ -1,6 +1,7 @@
 'use client'
 
 import { motion, AnimatePresence } from 'framer-motion'
+import Image from 'next/image'
 
 interface QuizStartAnimationProps {
   show: boolean
@@ -36,10 +37,12 @@ export default function QuizStartAnimation({ show }: QuizStartAnimationProps) {
           >
             {/* Fox Image Container */}
             <div className="relative w-full h-[90vh]">
-              <img
+              <Image
                 src="https://media.languageteacher.io/adult-fox.webp"
                 alt="Fox"
-                className="w-full h-full object-contain"
+                fill
+                className="object-contain"
+                sizes="100vw"
                 onError={(e) => {
                   console.error('Image failed to load, using fallback')
                   const target = e.currentTarget as HTMLImageElement

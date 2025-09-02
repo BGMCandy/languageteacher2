@@ -1,49 +1,46 @@
 'use client'
 
-import { useEffect, useState } from 'react'
-import { createClientBrowser, JapaneseKanji } from '@/lib/supabase'
+import { useState, useEffect } from 'react'
 
-export default function Practice() {
-  const [kanji, setKanji] = useState<JapaneseKanji[]>([])
+export default function PracticePage() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    const fetchKanji = async () => {
+    const fetchData = async () => {
       try {
-        const supabase = createClientBrowser()
-        const { data, error } = await supabase
-          .from('japanese_kanji')
-          .select('*')
-          .limit(10)
-
-        if (error) {
-          console.error('Error fetching kanji:', error)
-        } else {
-          setKanji(data || [])
-        }
-      } catch (err) {
-        console.error('Error:', err)
-      } finally {
+        // Add your data fetching logic here when needed
+        setLoading(false)
+      } catch (error) {
+        console.error('Error fetching data:', error)
         setLoading(false)
       }
     }
 
-    fetchKanji()
+    fetchData()
   }, [])
 
   if (loading) {
-    return <div className="p-8 text-center">Loading...</div>
+    return (
+      <div className="bg-white py-16">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-black border-t-transparent animate-spin mx-auto mb-2 sm:mb-4"></div>
+          <div className="text-lg text-black tracking-wider">LOADING...</div>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">
-          Practice
-        </h1>
-
-        <div className="flex justify-center mb-8">
-          <p>Coming soon..</p>
+    <div className="bg-white min-h-screen">
+      <div className="max-w-6xl mx-auto px-8 pt-8 pb-16">
+        <div className="text-center mb-12">
+          <h1 className="text-3xl font-bold text-black tracking-wider mb-4">
+            PRACTICE
+          </h1>
+          <div className="h-px w-24 bg-black mx-auto mb-4"></div>
+          <p className="text-gray-600 tracking-wide">
+            Practice your language skills
+          </p>
         </div>
       </div>
     </div>

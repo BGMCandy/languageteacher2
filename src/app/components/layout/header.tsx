@@ -103,104 +103,136 @@ export default function Header() {
         {/* Mobile Menu Button */}
         <button
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          className="md:hidden w-10 h-10 border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all"
+          className="md:hidden w-12 h-12 border-2 border-black flex items-center justify-center hover:bg-black hover:text-white transition-all duration-200 relative z-50 bg-white"
+          aria-label="Toggle mobile menu"
         >
-          <div className="w-5 h-4 flex flex-col justify-between">
-            <div className={`w-full h-0.5 bg-current transition-transform ${isMobileMenuOpen ? 'rotate-45 translate-y-1.5' : ''}`}></div>
-            <div className={`w-full h-0.5 bg-current transition-opacity ${isMobileMenuOpen ? 'opacity-0' : ''}`}></div>
-            <div className={`w-full h-0.5 bg-current transition-transform ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`}></div>
+          <div className="w-6 h-5 flex flex-col justify-between">
+            <div className={`w-full h-0.5 bg-current transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-2' : ''}`}></div>
+            <div className={`w-full h-0.5 bg-current transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : ''}`}></div>
+            <div className={`w-full h-0.5 bg-current transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-2' : ''}`}></div>
           </div>
         </button>
       </div>
 
-      {/* Mobile Menu */}
+      {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
-        <div className="md:hidden border-t-2 border-black bg-white">
-          <div className="px-6 py-4 space-y-4">
+        <div 
+          className="fixed inset-0 bg-black bg-opacity-60 z-40 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+
+      {/* Mobile Menu */}
+      <div className={`md:hidden fixed top-20 left-0 right-0 bg-white z-50 transform transition-all duration-300 ease-out ${
+        isMobileMenuOpen ? 'translate-y-0 opacity-100' : '-translate-y-4 opacity-0 pointer-events-none'
+      }`}>
+        <div className="border-b-2 border-black shadow-lg">
+          <div className="px-6 py-8 space-y-8">
             {/* Mobile Navigation */}
-            <nav className="space-y-3">
-              <Link
-                href="/quiz"
-                className={`block text-sm font-medium tracking-wider transition-all hover:font-fugaz ${
-                  isActive('/quiz') ? 'text-black' : 'text-gray-600'
-                }`}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                QUIZ
-              </Link>
-              <Link
-                href="/dictionary"
-                className={`block text-sm font-medium tracking-wider transition-all hover:font-fugaz ${
-                  isActive('/dictionary') ? 'text-black' : 'text-gray-600'
-                }`}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                DICTIONARY
-              </Link>
-              <Link
-                href="/kanji-poster"
-                className={`block text-sm font-medium tracking-wider transition-all hover:font-fugaz ${
-                  isActive('/kanji-poster') ? 'text-black' : 'text-gray-600'
-                }`}
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                KANJI
-              </Link>
+            <nav className="space-y-6">
+              <div className="text-center mb-6">
+                <h2 className="text-lg font-bold text-black tracking-wider uppercase">Navigation</h2>
+                <div className="h-px w-16 bg-black mx-auto mt-2"></div>
+              </div>
+              
+              <div className="space-y-4">
+                <Link
+                  href="/quiz"
+                  className={`block w-full px-6 py-4 text-lg font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
+                    isActive('/quiz') 
+                      ? 'bg-black text-white border-black shadow-lg' 
+                      : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  QUIZ
+                </Link>
+                <Link
+                  href="/dictionary"
+                  className={`block w-full px-6 py-4 text-lg font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
+                    isActive('/dictionary') 
+                      ? 'bg-black text-white border-black shadow-lg' 
+                      : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  DICTIONARY
+                </Link>
+                <Link
+                  href="/kanji-poster"
+                  className={`block w-full px-6 py-4 text-lg font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
+                    isActive('/kanji-poster') 
+                      ? 'bg-black text-white border-black shadow-lg' 
+                      : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  KANJI
+                </Link>
+              </div>
             </nav>
 
             {/* Mobile User Section */}
-            {!user && (
-              <div className="pt-4 border-t border-gray-200 space-y-3">
-                <Link
-                  href="/login"
-                  className="block w-full px-4 py-2 text-sm font-medium tracking-wider transition-all hover:font-fugaz border-2 text-center text-black border-black hover:bg-black hover:text-white"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  SIGN IN
-                </Link>
-                <Link
-                  href="/login"
-                  className="block w-full px-4 py-2 text-sm font-medium tracking-wider transition-all hover:font-fugaz border-2 text-center bg-black text-white border-black hover:bg-gray-800"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  GET STARTED
-                </Link>
-              </div>
-            )}
-
-            {user && (
-              <div className="pt-4 border-t border-gray-200 space-y-3">
-                <div className="text-sm">
-                  <p className="text-gray-500 tracking-wider uppercase">Signed in as</p>
-                  <p className="font-medium text-black truncate">{user.email}</p>
-                </div>
-                <div className="space-y-2">
+            <div className="pt-6 border-t-2 border-gray-200">
+              {!user ? (
+                <div className="space-y-4">
+                  <div className="text-center mb-4">
+                    <h3 className="text-lg font-bold text-black tracking-wider uppercase">Account</h3>
+                    <div className="h-px w-16 bg-black mx-auto mt-2"></div>
+                  </div>
                   <Link
-                    href="/account"
-                    className={`block w-full px-4 py-2 text-sm font-medium tracking-wider transition-all hover:font-fugaz border-2 text-center ${
-                      isActive('/account') 
-                        ? 'bg-black text-white border-black' 
-                        : 'text-black border-black hover:bg-black hover:text-white'
-                    }`}
+                    href="/login"
+                    className="block w-full px-6 py-4 text-lg font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none text-black border-black hover:bg-black hover:text-white hover:shadow-lg"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    ACCOUNT
+                    SIGN IN
                   </Link>
-                  <button
-                    onClick={() => {
-                      signOut()
-                      setIsMobileMenuOpen(false)
-                    }}
-                    className="w-full px-4 py-2 text-sm font-medium tracking-wider transition-all hover:font-fugaz bg-white text-red-600 border-2 border-red-600 hover:bg-red-600 hover:text-white"
+                  <Link
+                    href="/login"
+                    className="block w-full px-6 py-4 text-lg font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none bg-black text-white border-black hover:bg-gray-800 hover:shadow-lg"
+                    onClick={() => setIsMobileMenuOpen(false)}
                   >
-                    SIGN OUT
-                  </button>
+                    GET STARTED
+                  </Link>
                 </div>
-              </div>
-            )}
+              ) : (
+                <div className="space-y-4">
+                  <div className="text-center mb-4">
+                    <h3 className="text-lg font-bold text-black tracking-wider uppercase">Account</h3>
+                    <div className="h-px w-16 bg-black mx-auto mt-2"></div>
+                  </div>
+                  <div className="text-center pb-4 bg-gray-50 p-4 border-2 border-gray-200">
+                    <p className="text-sm text-gray-600 tracking-wider uppercase">Signed in as</p>
+                    <p className="font-medium text-black text-lg">{user.email}</p>
+                  </div>
+                  <div className="space-y-3">
+                    <Link
+                      href="/account"
+                      className={`block w-full px-6 py-4 text-lg font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
+                        isActive('/account') 
+                          ? 'bg-black text-white border-black shadow-lg' 
+                          : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
+                      }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      ACCOUNT
+                    </Link>
+                    <button
+                      onClick={() => {
+                        signOut()
+                        setIsMobileMenuOpen(false)
+                      }}
+                      className="w-full px-6 py-4 text-lg font-medium tracking-wider transition-all duration-200 bg-white text-red-600 border-2 border-red-600 hover:bg-red-600 hover:text-white hover:shadow-lg rounded-none"
+                    >
+                      SIGN OUT
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
-      )}
+      </div>
     </header>
   )
 }
