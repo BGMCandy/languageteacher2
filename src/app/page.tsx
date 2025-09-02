@@ -122,21 +122,21 @@ export default function Home() {
                   "
                 >
                   {/* Thai – slightly bigger, normal tracking */}
-                  <div className="font-extrabold text-black/15 text-[clamp(1.5rem,6vw,4rem)] tracking-normal">
+                  <div className="font-extrabold text-black/15 text-[clamp(1.5rem,6vw,5rem)] tracking-normal">
                     เริ่มกันเลย
                   </div>
 
                   {/* Spanish – a touch narrower tracking to keep it tidy */}
-                  <div className="font-extrabold text-black/25 text-[clamp(1.3rem,5vw,3.5rem)] tracking-tight">
+                  <div className="font-extrabold text-black/25 text-[clamp(1.3rem,5vw,6.5rem)] tracking-tight">
                     Vamos a empezar
                   </div>
 
                   {/* Chinese (Traditional) – keep strong but subtle */}
-                  <div className="font-extrabold text-black/35 text-[clamp(1.3rem,5vw,3.5rem)] tracking-normal">
+                  <div className="font-extrabold text-black/35 text-[clamp(1.3rem,5vw,6.5rem)] tracking-normal">
                     開始吧
                   </div>
                   {/* Japanese – keep strong but subtle */}
-                  <div className="font-extrabold text-black/45 text-[clamp(1.3rem,5vw,3.5rem)] tracking-normal">
+                  <div className="font-extrabold text-black/45 text-[clamp(1.3rem,5vw,5.5rem)] tracking-normal">
                     始めましょう 
                   </div>
                 </div>
