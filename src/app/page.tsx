@@ -3,17 +3,17 @@ import FeatureCard from './components/FeatureCard'
 
 export default function Home() {
   return (
-    <div className="bg-white w-full overflow-x-hidden">
+    <div className="bg-white w-full h-full">
       {/* Hero Section */}
-      <section className="px-4 pb-16 sm:px-8">
-        <div className="max-w-6xl mx-auto text-center w-full">
+      <section className="px-4 py-16 sm:px-8">
+        <div className="max-w-6xl mx-auto text-center">
           {/* Main heading with geometric accent */}
           <div className="mb-16">
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-black tracking-wider mb-8">
               LANGUAGE TEACHER
             </h1>
             <div className="h-1 w-32 bg-black mx-auto mb-8"></div>
-            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed px-4">
+            <p className="text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
               Master Japanese, Thai, and more with cutting-edge digital tools
             </p>
           </div>
@@ -37,7 +37,7 @@ export default function Home() {
 
       {/* Features Grid */}
       <section className="px-4 sm:px-8 pb-32">
-        <div className="max-w-6xl mx-auto w-full">
+        <div className="max-w-6xl mx-auto">
           {/* Section header */}
           <div className="text-center mb-16 sm:mb-20">
             <h2 className="text-2xl sm:text-3xl font-semibold text-black tracking-wider mb-4">
@@ -88,7 +88,7 @@ export default function Home() {
       
       {/* Authentication Section */}
       <section className="px-4 sm:px-8 pb-32">
-        <div className="max-w-4xl mx-auto w-full">
+        <div className="max-w-4xl mx-auto">
           <div className="group relative border-2 border-black p-6 sm:p-12 lg:p-16 text-center overflow-hidden">
             {/* background word (hover only) */}
             <div

@@ -17,7 +17,7 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: white;
+  background: grey;
 }
 
 /* Flashcard flip animation */

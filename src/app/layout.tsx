@@ -16,10 +16,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased overflow-x-hidden">
+      <body className="antialiased">
         <AuthProvider>
           <Header />
-          <main className="min-h-screen pt-20 pb-48">
+          <main className="">
             {children}
           </main>
           <Footer />

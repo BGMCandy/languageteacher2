@@ -40,7 +40,7 @@ export default function DictionaryIndexPage() {
     <div className="bg-white">
       <div className="max-w-6xl mx-auto px-8">
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center py-16 ">
           <div className="flex items-center justify-center space-x-4 mb-8">
             {/* Sharp geometric logo */}
             <div className="w-12 h-12 bg-black relative">
