@@ -90,49 +90,6 @@ export default function DictionaryIndexPage() {
           ))}
         </div>
 
-        {/* Features Section */}
-        <div className="border-2 border-black bg-white p-12">
-          <h2 className="text-2xl font-bold text-black mb-8 text-center tracking-wider">
-            DICTIONARY FEATURES
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="w-16 h-16 bg-blue-100 border-2 border-blue-300 flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-              </div>
-              <h3 className="font-semibold text-black mb-3 tracking-wider">ADVANCED SEARCH</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Search by word, reading, meaning, or kanji with intelligent matching
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-green-100 border-2 border-green-300 flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="font-semibold text-black mb-3 tracking-wider">COMPREHENSIVE DATA</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Access to official JMdict and KANJIDIC2 databases with rich metadata
-              </p>
-            </div>
-            
-            <div className="text-center">
-              <div className="w-16 h-16 bg-purple-100 border-2 border-purple-300 flex items-center justify-center mx-auto mb-6">
-                <svg className="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="font-semibold text-black mb-3 tracking-wider">FAST & RELIABLE</h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
-                Built on Supabase with optimized search indexes for lightning-fast results
-              </p>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   )

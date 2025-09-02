@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { motion } from 'framer-motion'
 import Image from 'next/image'
-import { useEffect, useRef, useState, useCallback } from 'react'
+import { useState } from 'react'
 
 interface FeatureCardProps {
   href: string
@@ -30,57 +30,32 @@ export default function FeatureCard({
   overlayText
 }: FeatureCardProps) {
   const [isHovered, setIsHovered] = useState(false)
-  const [targetX, setTargetX] = useState<number>(-9999)
-  const cardRef = useRef<HTMLDivElement | null>(null)
-
-  // Keep in sync with the Tailwind width/height below
-  const IMG_W = 400
-  const IMG_HALF = IMG_W / 2
-
-  const recalcTarget = useCallback(() => {
-    if (!cardRef.current) return
-    const rect = cardRef.current.getBoundingClientRect()
-
-    // Stop on the same side it enters:
-    // left  -> 20% from LEFT (0.2 * width)
-    // right -> 20% from RIGHT (0.8 * width)
-    const pageTarget = enterFrom === 'left'
-      ? window.innerWidth * 0.2
-      : window.innerWidth * 0.8
-
-    // Position so the IMAGE CENTER lands on pageTarget
-    const x = Math.round(pageTarget - rect.left - IMG_HALF)
-    setTargetX(x)
-  }, [enterFrom, IMG_HALF])
-
-  useEffect(() => {
-    recalcTarget()
-    window.addEventListener('resize', recalcTarget)
-    return () => window.removeEventListener('resize', recalcTarget)
-  }, [enterFrom, recalcTarget])
-
-  const initialX = enterFrom === 'right' ? IMG_W * 2 : -IMG_W * 2
-  const exitX = initialX
 
   // Clamp vertical offset to -10..10 (vh)
   const clampedOffset = Math.max(-10, Math.min(10, verticalOffset))
   const offsetY = `${clampedOffset}vh`
 
+  // Animation values for slide-in effect
+  const initialX = enterFrom === 'right' ? '100vw' : '-100vw'
+  const exitX = initialX
+
   return (
     <Link href={href} className="group relative">
       <div
-        ref={cardRef}
         className="relative border-2 border-black p-8 hover:bg-black hover:text-white transition-all duration-300 min-h-[280px] flex flex-col justify-between overflow-visible"
-        onMouseEnter={() => { setIsHovered(true); recalcTarget() }}
+        onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
         {/* Floating image */}
         {isHovered && (
           <motion.div
-            className="absolute w-[400px] h-[400px] z-40 pointer-events-none"
-            style={{ top: `calc(-400px + ${offsetY})` }}
+            className="fixed w-[90vh] h-[90vh] z-40 pointer-events-none"
+            style={{ 
+              top: `calc(5vh + ${offsetY})`,
+              left: enterFrom === 'left' ? 'calc(10vw - 45vh)' : 'calc(90vw - 45vh)'
+            }}
             initial={{ x: initialX, opacity: 0 }}
-            animate={{ x: targetX, opacity: 1 }}
+            animate={{ x: 0, opacity: 0.3 }}
             exit={{ x: exitX, opacity: 0 }}
             transition={{ duration: 0.4, ease: 'easeOut' }}
           >
@@ -89,7 +64,7 @@ export default function FeatureCard({
               alt={title}
               fill
               className="object-contain"
-              sizes="400px"
+              sizes="90vh"
               priority={false}
               style={{ backgroundColor: 'transparent' }}
             />

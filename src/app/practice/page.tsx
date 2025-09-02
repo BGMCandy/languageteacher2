@@ -41,23 +41,9 @@ export default function Practice() {
         <h1 className="text-4xl font-bold text-center text-gray-800 mb-8">
           Practice
         </h1>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {kanji.map((k) => (
-            <div
-              key={k.id}
-              className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow"
-            >
-              <div className="text-4xl font-bold text-gray-800 mb-4 text-center">
-                {k.letter}
-              </div>
-              <div className="text-lg text-gray-600 mb-2">{k.reading}</div>
-              <div className="text-gray-500">{k.name}</div>
-              <div className="text-sm text-blue-600 font-medium mt-2">
-                Level {k.level}
-              </div>
-            </div>
-          ))}
+
+        <div className="flex justify-center mb-8">
+          <p>Coming soon..</p>
         </div>
       </div>
     </div>

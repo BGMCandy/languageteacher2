@@ -89,7 +89,8 @@ body {
   display: inline-block;
   padding: 0.75rem 1.5rem;
   font-size: 1rem;
-  width: 6rem;
+  width: 8rem; /* Wide enough for "DICTIONARY" in both fonts */
+  text-align: center;
 }
 
 .btn-2:hover {
@@ -107,6 +108,8 @@ body {
   letter-spacing: 0.05em;
   border: 2px solid black;
   padding: 0.75rem 1.5rem;
+  white-space: nowrap; /* Prevent text wrapping */
+  min-width: 7rem; /* Ensure minimum width */
 }
 
 .btn-3:hover {
@@ -123,6 +126,8 @@ body {
   letter-spacing: 0.05em;
   border: 2px solid black;
   padding: 0.75rem 1.5rem;
+  white-space: nowrap; /* Prevent text wrapping */
+  min-width: 7rem; /* Ensure minimum width */
 }
 
 .btn-4:hover {

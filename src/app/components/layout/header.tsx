@@ -19,7 +19,7 @@ export default function Header() {
         <Identify />
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8">
+        <nav className="hidden md:flex items-center space-x-8 whitespace-nowrap">
           <Link 
             href="/quiz" 
             className={`btn-2 ${
@@ -29,12 +29,12 @@ export default function Header() {
             QUIZ
           </Link>
           <Link 
-            href="/study" 
+            href="/dictionary" 
             className={`btn-2 ${
-              isActive('/study') ? 'active' : ''
+              isActive('/dictionary') ? 'active' : ''
             }`}
           >
-            STUDY
+            DICTIONARY
           </Link>
           <Link 
             href="/kanji-poster" 
@@ -127,18 +127,18 @@ export default function Header() {
                 QUIZ
               </Link>
               <Link
-                href="/study"
+                href="/dictionary"
                 className={`block text-sm font-medium tracking-wider transition-all hover:font-fugaz ${
-                  isActive('/study') ? 'text-black' : 'text-gray-600'
+                  isActive('/dictionary') ? 'text-black' : 'text-gray-600'
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
-                STUDY
+                DICTIONARY
               </Link>
               <Link
-                href="/kanji-poster"
+                href="/practice"
                 className={`block text-sm font-medium tracking-wider transition-all hover:font-fugaz ${
-                  isActive('/kanji-poster') ? 'text-black' : 'text-gray-600'
+                  isActive('/practice') ? 'text-black' : 'text-gray-600'
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
