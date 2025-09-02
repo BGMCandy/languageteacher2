@@ -7,7 +7,7 @@ const languages = [
     description: 'Comprehensive Japanese dictionary with 213,000+ words and 13,000+ kanji',
     wordCount: '213,000+',
     kanjiCount: '13,000+',
-    color: 'from-blue-500 to-purple-600'
+    available: true
   },
   {
     slug: 'chinese',
@@ -15,7 +15,7 @@ const languages = [
     description: 'Chinese dictionary (coming soon)',
     wordCount: 'Coming soon',
     kanjiCount: 'Coming soon',
-    color: 'from-red-500 to-orange-600'
+    available: false
   },
   {
     slug: 'korean',
@@ -23,7 +23,15 @@ const languages = [
     description: 'Korean dictionary (coming soon)',
     wordCount: 'Coming soon',
     kanjiCount: 'Coming soon',
-    color: 'from-blue-500 to-green-600'
+    available: false
+  },
+  {
+    slug: 'thai',
+    name: 'Thai',
+    description: 'Thai dictionary (coming soon)',
+    wordCount: 'Coming soon',
+    kanjiCount: 'Coming soon',
+    available: false
   }
 ]
 
@@ -50,39 +58,67 @@ export default function DictionaryIndexPage() {
         </div>
 
         {/* Language Cards */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-16">
           {languages.map((language) => (
             <Link 
               key={language.slug}
-              href={`/dictionary/${language.slug}`}
-              className="group block"
+              href={language.available ? `/dictionary/${language.slug}` : '#'}
+              className={`group block ${!language.available ? 'pointer-events-none' : ''}`}
             >
-              <div className="border-2 border-black bg-white hover:bg-gray-50 transition-all duration-200 transform hover:-translate-y-1">
-                <div className={`h-2 bg-gradient-to-r ${language.color}`}></div>
+              <div className={`border-2 transition-all duration-200 ${
+                language.available 
+                  ? 'border-black bg-white hover:bg-gray-50' 
+                  : 'border-gray-200 bg-gray-100'
+              }`}>
+                <div className={`h-2 ${
+                  language.available ? 'bg-black' : 'bg-gray-300'
+                }`}></div>
                 <div className="p-8">
-                  <h2 className="text-2xl font-bold text-black mb-4 tracking-wider group-hover:text-blue-600 transition-colors">
+                  <h2 className={`text-2xl font-bold mb-4 tracking-wider transition-colors ${
+                    language.available 
+                      ? 'text-black group-hover:text-gray-600' 
+                      : 'text-gray-400'
+                  }`}>
                     {language.name}
                   </h2>
-                  <p className="text-gray-600 mb-6 leading-relaxed">
+                  <p className={`mb-6 leading-relaxed ${
+                    language.available ? 'text-gray-600' : 'text-gray-400'
+                  }`}>
                     {language.description}
                   </p>
                   
                   <div className="space-y-3 mb-6">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-500 tracking-wider uppercase">Words:</span>
-                      <span className="font-semibold text-black">{language.wordCount}</span>
+                      <span className={`tracking-wider uppercase ${
+                        language.available ? 'text-gray-500' : 'text-gray-400'
+                      }`}>Words:</span>
+                      <span className={`font-semibold ${
+                        language.available ? 'text-black' : 'text-gray-400'
+                      }`}>{language.wordCount}</span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-500 tracking-wider uppercase">Characters:</span>
-                      <span className="font-semibold text-black">{language.kanjiCount}</span>
+                      <span className={`tracking-wider uppercase ${
+                        language.available ? 'text-gray-500' : 'text-gray-400'
+                      }`}>Characters:</span>
+                      <span className={`font-semibold ${
+                        language.available ? 'text-black' : 'text-gray-400'
+                      }`}>{language.kanjiCount}</span>
                     </div>
                   </div>
                   
-                  <div className="flex items-center text-blue-600 font-medium group-hover:text-blue-700 transition-colors">
-                    <span className="tracking-wider">OPEN DICTIONARY</span>
-                    <svg className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                    </svg>
+                  <div className={`flex items-center font-medium transition-colors ${
+                    language.available 
+                      ? 'text-black group-hover:text-gray-600' 
+                      : 'text-gray-400'
+                  }`}>
+                    <span className="tracking-wider">
+                      {language.available ? 'OPEN DICTIONARY' : 'COMING SOON'}
+                    </span>
+                    {language.available && (
+                      <svg className="w-4 h-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    )}
                   </div>
                 </div>
               </div>

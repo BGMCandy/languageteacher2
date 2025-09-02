@@ -20,7 +20,7 @@ const Footer = () => {
           </div>
           <div className="h-px w-24 bg-black mx-auto mb-4"></div>
           <p className="text-sm text-gray-600 tracking-wide">
-            A BGMCandy Production {new Date().getFullYear()}
+            languageteacher.io {new Date().getFullYear()}
           </p>
         </div>
         
