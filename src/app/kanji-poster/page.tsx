@@ -328,7 +328,7 @@ export default function KanjiPoster() {
           </div>
           <div className="h-px w-32 bg-black mx-auto mb-4"></div>
           <p className="text-gray-600 tracking-wide">
-            Interactive visual learning with comprehensive character coverage
+            If you wanna know Japanese - these are the 1945 common use Kanji you need to learn.
           </p>
         </div>
         

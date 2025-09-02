@@ -199,25 +199,35 @@ export default function QuizPage() {
 
   const handleLanguageSelect = (languageId: string) => {
     setConfig(prev => ({ ...prev, language: languageId }))
-    // Auto-advance to next step
-    setTimeout(() => setCurrentStep(1), 300)
+    // Auto-advance to next step and scroll to top
+    setTimeout(() => {
+      setCurrentStep(1)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, 300)
   }
 
   const handleComponentSelect = (componentId: string) => {
     setConfig(prev => ({ ...prev, component: componentId }))
-    // Auto-advance to next step
-    setTimeout(() => setCurrentStep(2), 300)
+    // Auto-advance to next step and scroll to top
+    setTimeout(() => {
+      setCurrentStep(2)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }, 300)
   }
 
   const nextStep = () => {
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1)
+      // Scroll to top when advancing
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
   const prevStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1)
+      // Scroll to top when going back
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
 
@@ -262,11 +272,18 @@ export default function QuizPage() {
           {languages.map((language) => (
             <button
               key={language.id}
-              onClick={() => handleLanguageSelect(language.id)}
+              onClick={() => {
+                if (language.id === 'japanese') {
+                  handleLanguageSelect('japanese')
+                }
+              }}
+              disabled={language.id !== 'japanese'}
               className={`p-4 md:p-6 border-2 transition-all hover:font-bangers cursor-pointer ${
-                config.language === language.id
-                  ? 'border-black bg-black text-white'
-                  : 'border-gray-300 hover:border-black'
+                language.id === 'japanese'
+                  ? config.language === language.id
+                    ? 'border-black bg-black text-white'
+                    : 'border-gray-300 hover:border-black'
+                  : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
               }`}
             >
               <div className="text-2xl md:text-3xl mb-2 font-medium">{language.icon}</div>
@@ -283,11 +300,18 @@ export default function QuizPage() {
           {components[config.language as keyof typeof components]?.map((component) => (
             <button
               key={component.id}
-              onClick={() => handleComponentSelect(component.id)}
+              onClick={() => {
+                if (component.id === 'kanji') {
+                  handleComponentSelect('kanji')
+                }
+              }}
+              disabled={component.id !== 'kanji'}
               className={`p-4 md:p-6 border-2 text-left transition-all hover:font-bangers cursor-pointer ${
-                config.component === component.id
-                  ? 'border-black bg-black text-white'
-                  : 'border-gray-300 hover:border-black'
+                component.id === 'kanji'
+                  ? config.component === component.id
+                    ? 'border-black bg-black text-white'
+                    : 'border-gray-300 hover:border-black'
+                  : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed'
               }`}
             >
               <div className="text-base md:text-lg font-semibold mb-1">{component.name}</div>
@@ -368,6 +392,24 @@ export default function QuizPage() {
                 ))}
               </div>
             )}
+          </div>
+
+          {/* Custom Lists - Coming Soon */}
+          <div>
+            <h3 className="text-sm md:text-base font-semibold text-black mb-2 md:mb-3 tracking-wider">
+              CUSTOM LISTS
+            </h3>
+            <div className="border-2 border-dashed border-gray-300 bg-gray-50 p-4 md:p-6 text-center">
+              <div className="text-gray-500 text-sm md:text-base font-medium mb-1">
+                Select Custom Lists
+              </div>
+              <div className="text-gray-400 text-xs md:text-sm">
+                Coming Soon
+              </div>
+              <div className="text-gray-400 text-xs mt-2">
+                Create your own study lists with specific kanji
+              </div>
+            </div>
           </div>
         </div>
       )
