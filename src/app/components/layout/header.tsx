@@ -19,31 +19,33 @@ export default function Header() {
         <Identify />
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center space-x-8 whitespace-nowrap">
-          <Link 
-            href="/quiz" 
-            className={`btn-2 ${
-              isActive('/quiz') ? 'active' : ''
-            }`}
-          >
-            QUIZ
-          </Link>
-          <Link 
-            href="/dictionary" 
-            className={`btn-2 ${
-              isActive('/dictionary') ? 'active' : ''
-            }`}
-          >
-            DICTIONARY
-          </Link>
-          <Link 
-            href="/kanji-poster" 
-            className={`btn-2 ${
-              isActive('/kanji-poster') ? 'active' : ''
-            }`}
-          >
-            KANJI
-          </Link>
+        <nav className="hidden md:flex items-center w-80">
+          <div className="grid grid-cols-3 w-full gap-4">
+            <Link 
+              href="/quiz" 
+              className={`btn-2 w-full ${
+                isActive('/quiz') ? 'active' : ''
+              }`}
+            >
+              QUIZ
+            </Link>
+            <Link 
+              href="/dictionary" 
+              className={`btn-2 w-full ${
+                isActive('/dictionary') ? 'active' : ''
+              }`}
+            >
+              DICTIONARY
+            </Link>
+            <Link 
+              href="/kanji-poster" 
+              className={`btn-2 w-full ${
+                isActive('/kanji-poster') ? 'active' : ''
+              }`}
+            >
+              KANJI
+            </Link>
+          </div>
         </nav>
 
         {/* Desktop User Section */}
@@ -136,9 +138,9 @@ export default function Header() {
                 DICTIONARY
               </Link>
               <Link
-                href="/practice"
+                href="/kanji-poster"
                 className={`block text-sm font-medium tracking-wider transition-all hover:font-fugaz ${
-                  isActive('/practice') ? 'text-black' : 'text-gray-600'
+                  isActive('/kanji-poster') ? 'text-black' : 'text-gray-600'
                 }`}
                 onClick={() => setIsMobileMenuOpen(false)}
               >
