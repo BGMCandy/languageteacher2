@@ -16,6 +16,43 @@ interface DictionaryEntry {
   raw: Record<string, unknown>
 }
 
+// Skeleton component for kanji grid
+const KanjiSkeleton = () => {
+  return (
+    <div className="space-y-2">
+      {/* Level skeleton */}
+      <div className="flex items-center mb-2">
+        <div className="flex-1 h-px bg-gray-200"></div>
+        <div className="px-3 py-1 mx-3 bg-gray-200 h-6 w-24 animate-pulse"></div>
+        <div className="flex-1 h-px bg-gray-200"></div>
+      </div>
+      
+      {/* Kanji grid skeleton */}
+      <div className="grid gap-1 grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 xl:grid-cols-16">
+        {Array.from({ length: 80 }).map((_, index) => (
+          <div
+            key={index}
+            className="aspect-square bg-gray-200 animate-pulse"
+            style={{
+              animationDelay: `${index * 0.05}s`,
+              animationDuration: '1.5s'
+            }}
+          ></div>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+// Shimmer effect component
+const ShimmerCard = ({ className = "" }: { className?: string }) => {
+  return (
+    <div className={`relative overflow-hidden bg-gray-200 ${className}`}>
+      <div className="absolute inset-0 -translate-x-full animate-[shimmer_2s_infinite] bg-gradient-to-r from-transparent via-white/60 to-transparent"></div>
+    </div>
+  )
+}
+
 export default function KanjiPoster() {
   const [kanji, setKanji] = useState<JapaneseKanji[]>([])
   const [loading, setLoading] = useState(true)
@@ -297,15 +334,102 @@ export default function KanjiPoster() {
 
   if (loading) {
     return (
-      <div className="bg-white flex items-center justify-center py-16">
-        <div className="text-center">
-          <div className="w-12 h-12 bg-black relative mb-6">
-            <div className="absolute inset-0 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)' }}></div>
-            <div className="absolute inset-0 bg-black" style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0 100%)' }}></div>
+      <div className="bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-8">
+          {/* Header */}
+          <div className="text-center mb-6 sm:mb-12">
+            <div className="flex items-center justify-center space-x-4 mb-3 sm:mb-6">
+              {/* Sharp geometric logo */}
+              <div className="w-12 h-12 bg-black relative">
+                <div className="absolute inset-0 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)' }}></div>
+                <div className="absolute inset-0 bg-black" style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0 100%)' }}></div>
+              </div>
+              <h1 className="text-2xl sm:text-4xl font-bold text-black tracking-wider">
+                JAPANESE KANJI POSTER
+              </h1>
+            </div>
+            <div className="h-px w-32 bg-black mx-auto mb-4"></div>
+            <p className="text-gray-600 tracking-wide">
+              If you wanna know Japanese - these are the 1945 common use Kanji you need to learn.
+            </p>
           </div>
-          <h2 className="text-xl font-bold text-black tracking-wider">
-            LOADING KANJI...
-          </h2>
+          
+          {/* View Toggle Skeleton */}
+          <div className="flex flex-col sm:flex-row justify-center mb-6 sm:mb-8 gap-3 sm:gap-6">
+            <div className="border-2 border-gray-200 p-1 inline-flex">
+              <ShimmerCard className="w-32 h-12"></ShimmerCard>
+              <ShimmerCard className="w-36 h-12"></ShimmerCard>
+            </div>
+            <div className="border-2 border-gray-200 p-1 inline-flex">
+              <ShimmerCard className="w-20 h-12"></ShimmerCard>
+              <ShimmerCard className="w-24 h-12"></ShimmerCard>
+            </div>
+            <div className="border-2 border-gray-200 p-1 inline-flex">
+              <ShimmerCard className="w-24 h-12"></ShimmerCard>
+              <ShimmerCard className="w-24 h-12"></ShimmerCard>
+            </div>
+            <div className="border-2 border-gray-200 p-1 inline-flex">
+              <ShimmerCard className="w-24 h-12"></ShimmerCard>
+              <ShimmerCard className="w-28 h-12"></ShimmerCard>
+              <ShimmerCard className="w-32 h-12"></ShimmerCard>
+              <ShimmerCard className="w-32 h-12"></ShimmerCard>
+            </div>
+          </div>
+          
+          <div className="flex flex-col lg:flex-row gap-4 lg:gap-8">
+            {/* Kanji Grid Skeleton */}
+            <div className="flex-1">
+              <div className="space-y-2">
+                {Array.from({ length: 3 }).map((_, levelIndex) => (
+                  <KanjiSkeleton key={levelIndex} />
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop Details Panel Skeleton */}
+            <div className="hidden lg:block w-80 bg-white p-8 border-2 border-gray-200 h-fit sticky top-28">
+              <div className="text-center mb-8">
+                <ShimmerCard className="w-24 h-24 mx-auto mb-4 rounded"></ShimmerCard>
+                <ShimmerCard className="w-32 h-8 mx-auto"></ShimmerCard>
+              </div>
+              
+              <div className="space-y-4">
+                <div>
+                  <ShimmerCard className="w-20 h-4 mb-2"></ShimmerCard>
+                  <ShimmerCard className="w-32 h-6"></ShimmerCard>
+                </div>
+                <div>
+                  <ShimmerCard className="w-16 h-4 mb-2"></ShimmerCard>
+                  <ShimmerCard className="w-40 h-6"></ShimmerCard>
+                </div>
+                <div>
+                  <ShimmerCard className="w-24 h-4 mb-2"></ShimmerCard>
+                  <ShimmerCard className="w-28 h-6"></ShimmerCard>
+                </div>
+              </div>
+
+              <div className="mt-8 pt-8 border-t-2 border-gray-200">
+                <ShimmerCard className="w-48 h-6 mb-4"></ShimmerCard>
+                <div className="space-y-3">
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="bg-gray-50 border-2 border-gray-200 p-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <ShimmerCard className="w-16 h-6"></ShimmerCard>
+                        <ShimmerCard className="w-20 h-4"></ShimmerCard>
+                        <ShimmerCard className="w-12 h-4"></ShimmerCard>
+                      </div>
+                      <ShimmerCard className="w-full h-4 mb-3"></ShimmerCard>
+                      <div className="flex gap-1">
+                        <ShimmerCard className="w-12 h-4"></ShimmerCard>
+                        <ShimmerCard className="w-16 h-4"></ShimmerCard>
+                        <ShimmerCard className="w-14 h-4"></ShimmerCard>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     )

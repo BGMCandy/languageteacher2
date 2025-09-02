@@ -56,14 +56,17 @@ export default function DictionaryPage({ params }: { params: Promise<{ slug: str
 
     try {
       if (searchType === 'words') {
-        // Search JMdict entries
+        // Search JMdict entries - simplified query
         const { data, error } = await supabase
           .from('jmdict_entries')
           .select('*')
-          .or(`search_text.ilike.%${searchQuery}%,headwords.cs.{${searchQuery}},readings.cs.{${searchQuery}}`)
+          .ilike('search_text', `%${searchQuery}%`)
           .limit(50)
 
-        if (error) throw error
+        if (error) {
+          console.error('Supabase error:', error)
+          throw error
+        }
         setResults(data || [])
       } else {
         // Search kanji
@@ -73,7 +76,10 @@ export default function DictionaryPage({ params }: { params: Promise<{ slug: str
           .or(`kanji.eq.${searchQuery},meanings_en.cs.{${searchQuery}}`)
           .limit(50)
 
-        if (error) throw error
+        if (error) {
+          console.error('Supabase error:', error)
+          throw error
+        }
         setResults(data || [])
       }
     } catch (error) {
