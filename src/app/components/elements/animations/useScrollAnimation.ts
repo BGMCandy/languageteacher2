@@ -48,14 +48,6 @@ export function useScrollAnimation(options: UseScrollAnimationOptions = {}) {
         const windowHeight = window.innerHeight
         const elementHeight = rect.height
         
-        // Calculate how much of the element is visible
-        const visibleTop = Math.max(0, rect.top)
-        const visibleBottom = Math.min(windowHeight, rect.bottom)
-        const visibleHeight = Math.max(0, visibleBottom - visibleTop)
-        
-        // Calculate progress (0 = not visible, 1 = fully visible in center)
-        const progress = visibleHeight / elementHeight
-        
         // Create a bell curve effect - most visible when centered
         const centerProgress = Math.abs(rect.top + elementHeight / 2 - windowHeight / 2)
         const maxDistance = windowHeight / 2 + elementHeight / 2

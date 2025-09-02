@@ -4,7 +4,7 @@ import Link from 'next/link'
 import React, { useState, useEffect } from 'react'
 import { useScrollAnimation } from './animations/useScrollAnimation'
 
-const identify = () => {
+const Identify = () => {
   const [isMobile, setIsMobile] = useState(false)
   const { ref, isVisible } = useScrollAnimation({ threshold: 0.5, triggerOnce: false })
 
@@ -50,4 +50,4 @@ const identify = () => {
   )
 }
 
-export default identify
+export default Identify
