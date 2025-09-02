@@ -738,7 +738,7 @@ export default function KanjiPoster() {
           </div>
 
           {/* Desktop Details Panel */}
-          <div className="hidden lg:block w-80 bg-white p-8 border-2 border-black h-fit sticky top-28">
+          <div className="hidden lg:block w-80 bg-white p-8 border-2 border-black h-fit sticky top-22">
             {selectedKanji ? (
               <>
                 <div className="text-center mb-8">
