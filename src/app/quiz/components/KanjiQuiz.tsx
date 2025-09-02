@@ -331,38 +331,49 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
           >
             {/* Combined Animation Container */}
             <motion.div
-              className="absolute top-1/2 transform -translate-y-1/2"
+              className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2"
               initial={{ x: '100vw', opacity: 0 }}
               animate={{ 
-                x: '75vw', // 25% from right border
+                x: 0, // Center the container
                 opacity: [0, 1, 0] // Fade in and out
               }}
               transition={{ 
-                duration: 0.6,
+                duration: 1.2, // Doubled from 0.6 to 1.2 seconds
                 ease: "easeOut",
                 opacity: {
                   times: [0, 0.3, 1],
-                  duration: 0.6
+                  duration: 1.2 // Doubled from 0.6 to 1.2 seconds
                 }
               }}
             >
-              {/* "Let&apos;s go!" Text */}
-              <div className="text-center mb-2 sm:mb-4">
-                <div className="text-2xl font-bold text-black font-fugaz">
-                  Let&apos;s go!
-                </div>
-              </div>
-
-              {/* Fox Image */}
-              <div className="w-48 h-48 mx-auto">
-                <Image
+              {/* Fox Image Container */}
+              <div className="relative w-full h-[90vh] bg-gray-100">
+                <img
                   src="https://media.languageteacher.io/adult-fox.webp"
                   alt="Fox"
-                  fill
-                  className="object-contain"
-                  sizes="192px"
-                  style={{ backgroundColor: 'transparent' }}
+                  className="w-full h-full object-contain"
+                  onError={(e) => {
+                    console.error('Image failed to load, using fallback')
+                    const target = e.currentTarget as HTMLImageElement
+                    const fallback = target.nextElementSibling as HTMLElement
+                    target.style.display = 'none'
+                    if (fallback) fallback.style.display = 'block'
+                  }}
                 />
+                {/* Fallback div if image fails */}
+                <div 
+                  className="w-full h-full bg-orange-400 flex items-center justify-center text-6xl"
+                  style={{ display: 'none' }}
+                >
+                  
+                </div>
+                
+                {/* "Let's go!" Text Overlay */}
+                <div className="absolute top-8 left-1/2 transform -translate-x-1/2 text-center">
+                  <div className="text-6xl sm:text-8xl font-bold text-black font-fugaz">
+                    Let&apos;s go!
+                  </div>
+                </div>
               </div>
             </motion.div>
           </motion.div>
