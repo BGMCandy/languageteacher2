@@ -5,7 +5,7 @@ export default function Home() {
   return (
     <div className="bg-white w-full overflow-x-hidden">
       {/* Hero Section */}
-      <section className="pt-24 pb-32 px-4 sm:px-8">
+      <section className="px-4 pb-16 sm:px-8">
         <div className="max-w-6xl mx-auto text-center w-full">
           {/* Main heading with geometric accent */}
           <div className="mb-16">

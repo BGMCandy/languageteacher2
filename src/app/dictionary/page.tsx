@@ -38,7 +38,7 @@ const languages = [
 export default function DictionaryIndexPage() {
   return (
     <div className="bg-white">
-      <div className="max-w-6xl mx-auto px-8 py-16">
+      <div className="max-w-6xl mx-auto px-8">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="flex items-center justify-center space-x-4 mb-8">
