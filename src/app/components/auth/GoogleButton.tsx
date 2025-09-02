@@ -24,7 +24,7 @@ export default function GoogleButton() {
   return (
     <button
       onClick={handleGoogle}
-      className="rounded-md border px-4 py-2"
+      className="rounded-md border px-4 py-2 cursor-pointer"
     >
       Continue with Google
     </button>

@@ -152,7 +152,7 @@ export default function Home() {
               Create an account or sign in to track your progress and unlock advanced features
             </p>
             <div className="relative z-10 space-y-4">
-              <Link href="/login" className="btn-4 inline-block">
+              <Link href="/login" className="btn-4 inline-block cursor-pointer">
                 SIGN IN / CREATE ACCOUNT
               </Link>
               <div className="h-px w-32 bg-black mx-auto mt-6"></div>
