@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Fugaz+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900&family=Noto+Serif+TC:wght@200..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@100..900&family=Noto+Serif+TC:wght@200..900&family=Noto+Sans+JP:wght@100..900&display=swap');
 @import "tailwindcss";
 
 :root {
@@ -37,7 +39,6 @@ body {
 .flip-card.flipped .flip-card-inner {
   transform: rotateY(180deg);
 }
-
 /* Custom scrollbar styles */
 .scrollbar-thin {
   scrollbar-width: thin;
@@ -180,4 +181,21 @@ body {
 
 .animate-shimmer {
   animation: shimmer 2s infinite;
+}
+
+/* Chinese Font Classes - Added for hanzi poster */
+.chinese-font {
+  font-family: "Noto Sans SC", "Noto Serif TC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "SimSun", "Arial Unicode MS", sans-serif;
+}
+
+.chinese-font-simplified {
+  font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+.chinese-font-traditional {
+  font-family: "Noto Serif TC", "PingFang TC", "Hiragino Sans TC", "Microsoft JhengHei", sans-serif;
+}
+
+.chinese-font-extended {
+  font-family: "Noto Sans SC", "Noto Serif TC", "Noto Sans JP", "Source Han Sans SC", "Source Han Serif SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "SimSun", "Arial Unicode MS", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 }

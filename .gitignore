@@ -40,3 +40,5 @@ next-env.d.ts
 
 # dictionary data
 /data/dict/
+
+/temp/.

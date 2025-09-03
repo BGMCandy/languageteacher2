@@ -25,8 +25,8 @@ export default function PostersPage() {
       name: 'Chinese Characters', 
       icon: '汉字',
       description: 'Chinese characters and vocabulary',
-      available: false,
-      href: '#'
+      available: true,
+      href: '/posters/hanzi'
     },
     { 
       id: 'hangul', 

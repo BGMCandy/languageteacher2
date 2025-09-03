@@ -76,7 +76,26 @@ export interface ThaiTone {
   example: string
 }
 
-export type LanguageCard = JapaneseKanji | JapaneseHiragana | JapaneseKatakana | ThaiConsonant | ThaiVowel | ThaiTone
+export interface ChineseHanzi {
+  char: string
+  name?: string
+  codepoint?: number
+  properties?: Record<string, unknown>
+  kdefinition?: string
+  kmandarin?: string[]
+  kcantonese?: string[]
+  ktotalstrokes?: number
+  krsunicode?: string
+  ksimplifiedvariant?: string[]
+  ktraditionalvariant?: string[]
+  ksemanticvariant?: string[]
+  kspecializedsemanticvariant?: string[]
+  kzvariant?: string[]
+  created_at?: string
+  updated_at?: string
+}
+
+export type LanguageCard = JapaneseKanji | JapaneseHiragana | JapaneseKatakana | ThaiConsonant | ThaiVowel | ThaiTone | ChineseHanzi
 
 // Thai Quiz Types
 export interface ThaiQuizResult {

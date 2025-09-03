@@ -2,6 +2,7 @@
   "name": "languageteacher2",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -14,15 +15,19 @@
     "dict:kanji": "ts-node scripts/dict/import-kanjidic2.ts ./data/dict/kanjidic2-full.xml",
     "dict:download": "ts-node scripts/dict/download-sources.ts",
     "dict:find-words": "ts-node scripts/dict/find-words-for-kanji.ts",
-    "dict:download-full": "ts-node scripts/dict/download-full-dicts.ts"
+    "dict:download-full": "ts-node scripts/dict/download-full-dicts.ts",
+    "cedict:import": "ts-node --project scripts/tsconfig.json scripts/import-cedict.ts",
+    "unihan:import": "node src/app/temp/import_unihan.js \"src/app/temp/ch_characters/*.txt\" \"src/app/temp/ch_characters_original/Unihan_*.txt\"",
+    "unihan:import-official": "node src/app/temp/import_unihan.js \"src/app/temp/ch_characters_original/Unihan_*.txt\""
   },
   "dependencies": {
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/ssr": "^0.7.0",
-    "@supabase/supabase-js": "^2.56.1",
+    "@supabase/supabase-js": "^2.57.0",
     "cheerio": "^1.1.2",
     "csv-parse": "^6.1.0",
-    "dotenv": "^17.2.1",
+    "dotenv": "^17.2.2",
+    "fast-glob": "^3.3.3",
     "fast-xml-parser": "^5.2.5",
     "framer-motion": "^12.23.12",
     "next": "15.5.2",
