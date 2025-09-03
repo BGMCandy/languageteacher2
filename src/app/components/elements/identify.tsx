@@ -18,7 +18,7 @@ const Identify = () => {
   }, [])
 
   return (
-    <div ref={ref as React.RefObject<HTMLDivElement>} className="w-[480px]">
+    <div className='min-w-[320px]' ref={ref as React.RefObject<HTMLDivElement>} >
         {/* Logo and Brand */}
         <Link href="/">
         <div className="flex items-center space-x-4 group cursor-pointer">
