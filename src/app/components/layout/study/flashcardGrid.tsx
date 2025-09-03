@@ -14,6 +14,16 @@ export default function FlashcardGrid({ language, script, limit = 8 }: Flashcard
   const [cards, setCards] = useState<LanguageCard[]>([])
   const [loading, setLoading] = useState(true)
 
+  const getCardKey = (card: LanguageCard, index: number): string => {
+    if ('id' in card) {
+      return (card as { id: number }).id.toString()
+    }
+    if ('idx' in card) {
+      return (card as { idx: number }).idx.toString()
+    }
+    return `${language}-${script}-${index}`
+  }
+
   useEffect(() => {
     const fetchCards = async () => {
       try {
@@ -58,8 +68,8 @@ export default function FlashcardGrid({ language, script, limit = 8 }: Flashcard
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-      {cards.map((card) => (
-        <Flashcard key={card.id} card={card} />
+      {cards.map((card, index) => (
+        <Flashcard key={getCardKey(card, index)} card={card} />
       ))}
     </div>
   )

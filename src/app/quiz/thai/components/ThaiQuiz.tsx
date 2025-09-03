@@ -347,7 +347,7 @@ export default function ThaiQuiz({ config, onComplete }: { config: QuizConfig; o
   }
 
   if (showStartAnimation) {
-    return <QuizStartAnimation />
+    return <QuizStartAnimation show={true} />
   }
 
   if (questions.length === 0) {

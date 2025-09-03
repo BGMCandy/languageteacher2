@@ -55,6 +55,54 @@ export default function ThaiScriptPoster() {
   const [showRegisterPopup, setShowRegisterPopup] = useState(false)
   const [isSheetExpanded, setIsSheetExpanded] = useState(false)
 
+  // Helper functions for character properties
+  const getCharacterKey = (char: ThaiConsonant | ThaiVowel | ThaiTone): string => {
+    if ('letter' in char) {
+      return (char as { letter: string }).letter
+    }
+    if ('mark' in char) {
+      return (char as { mark: string }).mark
+    }
+    return 'Unknown'
+  }
+
+  const getCharacterName = (char: ThaiConsonant | ThaiVowel | ThaiTone): string => {
+    if ('name' in char) {
+      return (char as { name: string }).name
+    }
+    if ('tonename' in char) {
+      return (char as { tonename: string }).tonename
+    }
+    return 'Unknown'
+  }
+
+  const getCharacterType = (char: ThaiConsonant | ThaiVowel | ThaiTone): string => {
+    if ('class' in char) {
+      return (char as { class: string }).class
+    }
+    if ('length' in char) {
+      return (char as { length: string }).length
+    }
+    return 'tone'
+  }
+
+  const getCharacterSound = (char: ThaiConsonant | ThaiVowel | ThaiTone): string => {
+    if ('sound_equiv' in char) {
+      return (char as { sound_equiv: string }).sound_equiv
+    }
+    if ('pronunciation' in char) {
+      return (char as { pronunciation: string }).pronunciation
+    }
+    return 'N/A'
+  }
+
+  const getCharacterExample = (char: ThaiConsonant | ThaiVowel | ThaiTone): string => {
+    if ('example' in char) {
+      return (char as { example: string }).example
+    }
+    return 'N/A'
+  }
+
   // Fetch Thai characters from database
   useEffect(() => {
     const fetchThaiData = async () => {
@@ -329,18 +377,14 @@ export default function ThaiScriptPoster() {
                   </div>
                   
                   {/* Character Grid */}
-                  <div className={`grid ${
-                    condensedView === 'super-condensed'
-                      ? 'gap-1 grid-cols-15 sm:grid-cols-20 md:grid-cols-25 lg:grid-cols-30 xl:grid-cols-35 2xl:grid-cols-40'
-                      : 'gap-1 grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 xl:grid-cols-16'
-                  }`}>
+                  <div className="grid gap-1 grid-cols-6 sm:grid-cols-8 md:grid-cols-10 lg:grid-cols-12 xl:grid-cols-16">
                     {characters.map((character) => (
                       <div
                         key={'idx' in character ? character.idx : character.id}
                         className={`
                           aspect-square flex items-center justify-center 
                           cursor-pointer transition-all duration-200
-                          ${condensedView === 'super-condensed' ? 'hover:bg-blue-100' : 'hover:bg-gray-100'}
+                          hover:bg-gray-100
                           ${getCharacterColor(character)}
                         `}
                         onClick={() => handleCharacterSelect(character)}
@@ -349,11 +393,7 @@ export default function ThaiScriptPoster() {
                         }}
                         onMouseLeave={() => setTooltip(null)}
                       >
-                        <span className={`font-bold leading-none ${
-                          condensedView === 'super-condensed'
-                            ? 'text-[8px] sm:text-[10px]'
-                            : 'text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]'
-                        }`}>
+                        <span className="font-bold leading-none text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]">
                           {'letter' in character ? character.letter : character.mark}
                         </span>
                       </div>
@@ -393,16 +433,16 @@ export default function ThaiScriptPoster() {
               <div className="flex items-center justify-between">
                 <div className="flex items-center space-x-4">
                   <div className="text-3xl font-bold text-black">
-                    {'letter' in selectedCharacter ? selectedCharacter.letter : selectedCharacter.mark}
+                    {getCharacterKey(selectedCharacter)}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {'name' in selectedCharacter ? selectedCharacter.name : selectedCharacter.tonename}
+                    {getCharacterName(selectedCharacter)}
                   </div>
                 </div>
                 <div className={`px-3 py-1 text-xs font-medium tracking-wider ${getCharacterColor(selectedCharacter)}`}>
                   {viewMode === 'type' 
-                    ? ('class' in selectedCharacter ? selectedCharacter.class : 'length' in selectedCharacter ? selectedCharacter.length : 'tone')
-                    : `Performance: ${Math.round(userPerformance[('letter' in selectedCharacter ? selectedCharacter.letter : selectedCharacter.mark)]?.successRate || 0)}%`
+                    ? getCharacterType(selectedCharacter)
+                    : `Performance: ${Math.round(userPerformance[getCharacterKey(selectedCharacter)]?.successRate || 0)}%`
                   }
                 </div>
               </div>
@@ -412,12 +452,12 @@ export default function ThaiScriptPoster() {
             <div className={`px-4 pb-4 max-h-[70vh] overflow-y-auto ${isSheetExpanded ? 'block' : 'hidden'}`}>
               <div className="text-center mb-6">
                 <div className="text-4xl font-bold text-black mb-2">
-                  {'letter' in selectedCharacter ? selectedCharacter.letter : selectedCharacter.mark}
+                  {getCharacterKey(selectedCharacter)}
                 </div>
                 <div className={`inline-block px-4 py-2 text-sm font-medium tracking-wider ${getCharacterColor(selectedCharacter)}`}>
                   {viewMode === 'type' 
-                    ? ('class' in selectedCharacter ? selectedCharacter.class : 'length' in selectedCharacter ? selectedCharacter.length : 'tone')
-                    : `Performance: ${Math.round(userPerformance[('letter' in selectedCharacter ? selectedCharacter.letter : selectedCharacter.mark)]?.successRate || 0)}%`
+                    ? getCharacterType(selectedCharacter)
+                    : `Performance: ${Math.round(userPerformance[getCharacterKey(selectedCharacter)]?.successRate || 0)}%`
                   }
                 </div>
               </div>
@@ -426,21 +466,21 @@ export default function ThaiScriptPoster() {
                 <div>
                   <label className="text-sm font-medium text-black tracking-wider uppercase">Name</label>
                   <div className="text-lg text-black font-medium">
-                    {'name' in selectedCharacter ? selectedCharacter.name : selectedCharacter.tonename}
+                    {getCharacterName(selectedCharacter)}
                   </div>
                 </div>
                 
                 <div>
                   <label className="text-sm font-medium text-black tracking-wider uppercase">Sound</label>
                   <div className="text-lg text-black font-medium">
-                    {'sound_equiv' in selectedCharacter ? selectedCharacter.sound_equiv : selectedCharacter.pronunciation}
+                    {getCharacterSound(selectedCharacter)}
                   </div>
                 </div>
                 
                 <div>
                   <label className="text-sm font-medium text-black tracking-wider uppercase">Example</label>
                   <div className="text-lg text-black font-medium">
-                    {'example' in selectedCharacter ? selectedCharacter.example : selectedCharacter.example}
+                    {getCharacterExample(selectedCharacter)}
                   </div>
                 </div>
               </div>

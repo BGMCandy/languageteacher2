@@ -29,7 +29,103 @@ export default function DetailsCard({
     )
   }
 
-  const characterKey = 'letter' in selectedCharacter ? selectedCharacter.letter : selectedCharacter.mark
+  const getCharacterKey = (char: ThaiConsonant | ThaiVowel | ThaiTone): string => {
+    if ('letter' in char) {
+      return (char as { letter: string }).letter
+    }
+    if ('mark' in char) {
+      return (char as { mark: string }).mark
+    }
+    return 'Unknown'
+  }
+
+  const getCharacterType = (char: ThaiConsonant | ThaiVowel | ThaiTone): string => {
+    if ('class' in char) {
+      return (char as { class: string }).class
+    }
+    if ('length' in char) {
+      return (char as { length: string }).length
+    }
+    return 'tone'
+  }
+
+  const getCharacterName = (char: ThaiConsonant | ThaiVowel | ThaiTone): string => {
+    if ('name' in char) {
+      return (char as { name: string }).name
+    }
+    if ('tonename' in char) {
+      return (char as { tonename: string }).tonename
+    }
+    return 'Unknown'
+  }
+
+  const getCharacterSound = (char: ThaiConsonant | ThaiVowel | ThaiTone): string => {
+    if ('sound_equiv' in char) {
+      return (char as { sound_equiv: string }).sound_equiv
+    }
+    if ('pronunciation' in char) {
+      return (char as { pronunciation: string }).pronunciation
+    }
+    return 'N/A'
+  }
+
+  const getCharacterIPA = (char: ThaiConsonant | ThaiVowel | ThaiTone): string => {
+    if ('ipa' in char) {
+      return (char as { ipa: string }).ipa
+    }
+    return 'N/A'
+  }
+
+  const getCharacterExample = (char: ThaiConsonant | ThaiVowel | ThaiTone): string => {
+    if ('example' in char) {
+      return (char as { example: string }).example
+    }
+    return 'N/A'
+  }
+
+  const getCharacterGloss = (char: ThaiConsonant | ThaiVowel | ThaiTone): string => {
+    if ('gloss' in char) {
+      return (char as { gloss: string }).gloss
+    }
+    return 'N/A'
+  }
+
+  const getCharacterWavFile = (char: ThaiConsonant | ThaiVowel | ThaiTone): string | null => {
+    if ('wav_file' in char) {
+      return (char as { wav_file: string }).wav_file
+    }
+    return null
+  }
+
+  const getCharacterClass = (char: ThaiConsonant | ThaiVowel | ThaiTone): string | null => {
+    if ('class' in char) {
+      return (char as { class: string }).class
+    }
+    return null
+  }
+
+  const getCharacterLength = (char: ThaiConsonant | ThaiVowel | ThaiTone): string | null => {
+    if ('length' in char) {
+      return (char as { length: string }).length
+    }
+    return null
+  }
+
+  const getCharacterForm = (char: ThaiConsonant | ThaiVowel | ThaiTone): string | null => {
+    if ('form' in char) {
+      return (char as { form: string }).form
+    }
+    return null
+  }
+
+  const getCharacterFunction = (char: ThaiConsonant | ThaiVowel | ThaiTone): string | null => {
+    if ('function' in char) {
+      return (char as { function: string }).function
+    }
+    return null
+  }
+
+  const characterKey = getCharacterKey(selectedCharacter)
   const performance = userPerformance[characterKey]
 
   return (
@@ -40,7 +136,7 @@ export default function DetailsCard({
         </div>
         <div className={`inline-block px-4 py-2 text-sm font-medium tracking-wider ${getCharacterColor(selectedCharacter)}`}>
           {viewMode === 'type' 
-            ? ('class' in selectedCharacter ? selectedCharacter.class : 'length' in selectedCharacter ? selectedCharacter.length : 'tone')
+            ? getCharacterType(selectedCharacter)
             : `Performance: ${Math.round(performance?.successRate || 0)}%`
           }
         </div>
@@ -50,35 +146,35 @@ export default function DetailsCard({
         <div>
           <label className="text-sm font-medium text-black tracking-wider uppercase">Name</label>
           <div className="text-lg text-black font-medium">
-            {'name' in selectedCharacter ? selectedCharacter.name : selectedCharacter.tonename}
+            {getCharacterName(selectedCharacter)}
           </div>
         </div>
         
         <div>
           <label className="text-sm font-medium text-black tracking-wider uppercase">Sound</label>
           <div className="text-lg text-black font-medium">
-            {'sound_equiv' in selectedCharacter ? selectedCharacter.sound_equiv : selectedCharacter.pronunciation}
+            {getCharacterSound(selectedCharacter)}
           </div>
         </div>
         
         <div>
           <label className="text-sm font-medium text-black tracking-wider uppercase">IPA</label>
           <div className="text-lg text-black font-medium">
-            {'ipa' in selectedCharacter ? selectedCharacter.ipa : 'N/A'}
+            {getCharacterIPA(selectedCharacter)}
           </div>
         </div>
         
         <div>
           <label className="text-sm font-medium text-black tracking-wider uppercase">Example</label>
           <div className="text-lg text-black font-medium">
-            {'example' in selectedCharacter ? selectedCharacter.example : selectedCharacter.example}
+            {getCharacterExample(selectedCharacter)}
           </div>
         </div>
         
         <div>
           <label className="text-sm font-medium text-black tracking-wider uppercase">Gloss</label>
           <div className="text-lg text-black font-medium">
-            {'gloss' in selectedCharacter ? selectedCharacter.gloss : selectedCharacter.gloss}
+            {getCharacterGloss(selectedCharacter)}
           </div>
         </div>
       </div>
@@ -107,14 +203,14 @@ export default function DetailsCard({
       )}
 
       {/* Audio Player */}
-      {'wav_file' in selectedCharacter && selectedCharacter.wav_file && (
+      {getCharacterWavFile(selectedCharacter) && (
         <div className="pt-6 border-t-2 border-black">
           <h3 className="text-lg font-semibold text-black mb-4 tracking-wider">
             Pronunciation
           </h3>
           <button
             onClick={() => {
-              const audio = new Audio(selectedCharacter.wav_file)
+              const audio = new Audio(getCharacterWavFile(selectedCharacter)!)
               audio.play()
             }}
             className="w-full px-4 py-2 bg-black text-white font-semibold tracking-wider hover:bg-gray-800 border-2 border-black transition-all cursor-pointer"
@@ -133,25 +229,25 @@ export default function DetailsCard({
           {'class' in selectedCharacter && (
             <div className="flex justify-between">
               <span className="text-gray-600">Class:</span>
-              <span className="font-medium text-black">{selectedCharacter.class}</span>
+              <span className="font-medium text-black">{getCharacterClass(selectedCharacter)}</span>
             </div>
           )}
           {'length' in selectedCharacter && (
             <div className="flex justify-between">
               <span className="text-gray-600">Length:</span>
-              <span className="font-medium text-black">{selectedCharacter.length}</span>
+              <span className="font-medium text-black">{getCharacterLength(selectedCharacter)}</span>
             </div>
           )}
           {'form' in selectedCharacter && (
             <div className="flex justify-between">
               <span className="text-gray-600">Form:</span>
-              <span className="font-medium text-black">{selectedCharacter.form}</span>
+              <span className="font-medium text-black">{getCharacterForm(selectedCharacter)}</span>
             </div>
           )}
           {'function' in selectedCharacter && (
             <div className="flex justify-between">
               <span className="text-gray-600">Function:</span>
-              <span className="font-medium text-black">{selectedCharacter.function}</span>
+              <span className="font-medium text-black">{getCharacterFunction(selectedCharacter)}</span>
             </div>
           )}
         </div>
