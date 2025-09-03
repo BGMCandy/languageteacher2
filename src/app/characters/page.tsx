@@ -19,15 +19,15 @@ export default function CharactersPage() {
           {/* Japanese Kanji */}
           <Link
             href="/characters/kanji"
-            className="block bg-white border-2 border-gray-200 rounded-lg p-6 hover:border-black hover:shadow-lg transition-all duration-200"
+            className="block bg-white border-2 border-black p-6 hover:bg-black hover:text-white transition-all duration-200 group"
           >
             <div className="text-center">
-              <div className="text-4xl mb-4">漢字</div>
-              <h3 className="text-xl font-semibold text-black mb-2">Japanese Kanji</h3>
-              <p className="text-gray-600 text-sm mb-4">
+              <div className="text-4xl mb-4 group-hover:text-white">漢字</div>
+              <h3 className="text-xl font-semibold text-black mb-2 group-hover:text-white">Japanese Kanji</h3>
+              <p className="text-gray-600 text-sm mb-4 group-hover:text-gray-300">
                 Chinese characters used in Japanese writing. Learn stroke order, readings, and meanings.
               </p>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-gray-500 group-hover:text-gray-400">
                 ~2,000+ characters
               </div>
             </div>
@@ -36,15 +36,15 @@ export default function CharactersPage() {
           {/* Japanese Hiragana */}
           <Link
             href="/characters/hiragana"
-            className="block bg-white border-2 border-gray-200 rounded-lg p-6 hover:border-black hover:shadow-lg transition-all duration-200"
+            className="block bg-white border-2 border-black p-6 hover:bg-black hover:text-white transition-all duration-200 group"
           >
             <div className="text-center">
-              <div className="text-4xl mb-4">ひらがな</div>
-              <h3 className="text-xl font-semibold text-black mb-2">Japanese Hiragana</h3>
-              <p className="text-gray-600 text-sm mb-4">
+              <div className="text-4xl mb-4 group-hover:text-white">ひらがな</div>
+              <h3 className="text-xl font-semibold text-black mb-2 group-hover:text-white">Japanese Hiragana</h3>
+              <p className="text-gray-600 text-sm mb-4 group-hover:text-gray-300">
                 Japanese phonetic characters used for native words and grammar.
               </p>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-gray-500 group-hover:text-gray-400">
                 46 characters
               </div>
             </div>
@@ -53,22 +53,22 @@ export default function CharactersPage() {
           {/* Japanese Katakana */}
           <Link
             href="/characters/katakana"
-            className="block bg-white border-2 border-gray-200 rounded-lg p-6 hover:border-black hover:shadow-lg transition-all duration-200"
+            className="block bg-white border-2 border-black p-6 hover:bg-black hover:text-white transition-all duration-200 group"
           >
             <div className="text-center">
-              <div className="text-4xl mb-4">カタカナ</div>
-              <h3 className="text-xl font-semibold text-black mb-2">Japanese Katakana</h3>
-              <p className="text-gray-600 text-sm mb-4">
+              <div className="text-4xl mb-4 group-hover:text-white">カタカナ</div>
+              <h3 className="text-xl font-semibold text-black mb-2 group-hover:text-white">Japanese Katakana</h3>
+              <p className="text-gray-600 text-sm mb-4 group-hover:text-gray-300">
                 Japanese phonetic characters used for foreign words and emphasis.
               </p>
-              <div className="text-xs text-gray-500">
+              <div className="text-xs text-gray-500 group-hover:text-gray-400">
                 46 characters
               </div>
             </div>
           </Link>
 
           {/* Korean Hangul - Coming Soon */}
-          <div className="block bg-gray-100 border-2 border-gray-300 rounded-lg p-6 opacity-60">
+          <div className="block bg-gray-100 border-2 border-gray-300 p-6 opacity-60">
             <div className="text-center">
               <div className="text-4xl mb-4">한글</div>
               <h3 className="text-xl font-semibold text-gray-600 mb-2">Korean Hangul</h3>
@@ -82,7 +82,7 @@ export default function CharactersPage() {
           </div>
 
           {/* Chinese Characters - Coming Soon */}
-          <div className="block bg-gray-100 border-2 border-gray-300 rounded-lg p-6 opacity-60">
+          <div className="block bg-gray-100 border-2 border-gray-300 p-6 opacity-60">
             <div className="text-center">
               <div className="text-4xl mb-4">汉字</div>
               <h3 className="text-xl font-semibold text-gray-600 mb-2">Chinese Characters</h3>
@@ -96,7 +96,7 @@ export default function CharactersPage() {
           </div>
 
           {/* Thai Script - Coming Soon */}
-          <div className="block bg-gray-100 border-2 border-gray-300 rounded-lg p-6 opacity-60">
+          <div className="block bg-gray-100 border-2 border-gray-300 p-6 opacity-60">
             <div className="text-center">
               <div className="text-4xl mb-4">ไทย</div>
               <h3 className="text-xl font-semibold text-gray-600 mb-2">Thai Script</h3>

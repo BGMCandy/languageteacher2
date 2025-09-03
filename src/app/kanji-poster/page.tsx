@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 import { createClientBrowser, JapaneseKanji } from '@/lib/supabase'
 import RegisterPopup from '@/app/components/elements/registerPopup'
 import DetailsCard from './components/detailsCard'
@@ -73,6 +73,125 @@ export default function KanjiPoster() {
   const [hasMoreWords, setHasMoreWords] = useState(false)
   const [wordsOffset, setWordsOffset] = useState(0)
 
+  // Define functions first
+  const fetchPerformanceFromQuizAnswers = useCallback(async (supabase: ReturnType<typeof createClientBrowser>, userId: string) => {
+    try {
+      console.log('Aggregating performance data from quiz_answers table...')
+      
+      // Get all quiz results for this user
+      const { data: quizResults, error: quizError } = await supabase
+        .from('quiz_results')
+        .select('id')
+        .eq('user_id', userId)
+        .eq('quiz_type', 'kanji')
+      
+      if (quizError) {
+        console.error('Error fetching quiz results:', quizError)
+        return
+      }
+      
+      if (!quizResults || quizResults.length === 0) {
+        console.log('No quiz results found for user')
+        return
+      }
+      
+              const quizResultIds = quizResults.map((r: { id: number }) => r.id)
+      console.log('Found', quizResultIds.length, 'quiz results')
+      
+      // Get all answers for these quiz results
+      const { data: answers, error: answersError } = await supabase
+        .from('quiz_answers')
+        .select('kanji_character, is_correct')
+        .in('quiz_result_id', quizResultIds)
+      
+      if (answersError) {
+        console.error('Error fetching quiz answers:', answersError)
+        return
+      }
+      
+      // Aggregate the data
+      const performanceMap: Record<string, { totalAttempts: number; correctAttempts: number; successRate: number }> = {}
+      
+      answers?.forEach((answer: { kanji_character: string; is_correct: boolean }) => {
+        const kanji = answer.kanji_character
+        if (!performanceMap[kanji]) {
+          performanceMap[kanji] = { totalAttempts: 0, correctAttempts: 0, successRate: 0 }
+        }
+        performanceMap[kanji].totalAttempts++
+        if (answer.is_correct) {
+          performanceMap[kanji].correctAttempts++
+        }
+      })
+      
+      // Calculate success rates
+      Object.keys(performanceMap).forEach(kanji => {
+        const stats = performanceMap[kanji]
+        stats.successRate = stats.totalAttempts > 0 ? (stats.correctAttempts / stats.totalAttempts) * 100 : 0
+      })
+      
+      setUserPerformance(performanceMap)
+      console.log('User performance data aggregated from quiz_answers:', Object.keys(performanceMap).length, 'kanji')
+      
+    } catch (err) {
+      console.error('Error aggregating performance from quiz_answers:', err)
+    }
+  }, [])
+
+  const fetchUserPerformance = useCallback(async () => {
+    try {
+      const supabase = createClientBrowser()
+      
+      // Check if user is authenticated
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) {
+        setIsAuthenticated(false)
+        return
+      }
+      
+      setIsAuthenticated(true)
+      console.log('Fetching performance data for user:', user.id)
+      
+      // First try to fetch from kanji_performance table
+      const { data: performanceData, error: performanceError } = await supabase
+        .from('kanji_performance')
+        .select('kanji_character, total_attempts, correct_attempts')
+        .eq('user_id', user.id)
+      
+      if (performanceError) {
+        console.error('Error fetching from kanji_performance table:', performanceError)
+        console.log('Falling back to quiz_answers table...')
+        
+        // Fallback: aggregate from quiz_answers table
+        await fetchPerformanceFromQuizAnswers(supabase, user.id)
+        return
+      }
+      
+      // Process performance data from kanji_performance table
+      const performanceMap: Record<string, { totalAttempts: number; correctAttempts: number; successRate: number }> = {}
+      
+      performanceData?.forEach((item: { kanji_character: string; total_attempts: number; correct_attempts: number }) => {
+        const successRate = item.total_attempts > 0 ? (item.correct_attempts / item.total_attempts) * 100 : 0
+        performanceMap[item.kanji_character] = {
+          totalAttempts: item.total_attempts,
+          correctAttempts: item.correct_attempts,
+          successRate
+        }
+      })
+      
+      setUserPerformance(performanceMap)
+      console.log('User performance data loaded from kanji_performance:', Object.keys(performanceMap).length, 'kanji')
+      
+    } catch (err) {
+      console.error('Error fetching performance data:', err)
+    }
+  }, [fetchPerformanceFromQuizAnswers])
+
+  // Add a function to refresh performance data (can be called after quiz completion)
+  const refreshPerformanceData = useCallback(async () => {
+    console.log('Refreshing performance data...')
+    await fetchUserPerformance()
+  }, [fetchUserPerformance])
+
   useEffect(() => {
     const fetchKanji = async () => {
       try {
@@ -125,53 +244,26 @@ export default function KanjiPoster() {
       }
     }
 
-    const fetchUserPerformance = async () => {
-      try {
-        const supabase = createClientBrowser()
-        
-        // Check if user is authenticated
-        const { data: { user } } = await supabase.auth.getUser()
-        if (!user) {
-          setIsAuthenticated(false)
-          return
-        }
-        
-        setIsAuthenticated(true)
-        
-        // Fetch user's kanji performance data
-        const { data: performanceData, error } = await supabase
-          .from('kanji_performance')
-          .select('kanji_character, total_attempts, correct_attempts')
-          .eq('user_id', user.id)
-        
-        if (error) {
-          console.error('Error fetching performance data:', error)
-          return
-        }
-        
-        // Process performance data
-        const performanceMap: Record<string, { totalAttempts: number; correctAttempts: number; successRate: number }> = {}
-        
-        performanceData?.forEach((item: { kanji_character: string; total_attempts: number; correct_attempts: number }) => {
-          const successRate = item.total_attempts > 0 ? (item.correct_attempts / item.total_attempts) * 100 : 0
-          performanceMap[item.kanji_character] = {
-            totalAttempts: item.total_attempts,
-            correctAttempts: item.correct_attempts,
-            successRate
-          }
-        })
-        
-        setUserPerformance(performanceMap)
-        console.log('User performance data loaded:', Object.keys(performanceMap).length, 'kanji')
-        
-      } catch (err) {
-        console.error('Error fetching performance data:', err)
-      }
-    }
+
 
     fetchKanji()
     fetchUserPerformance()
-  }, [])
+  }, [fetchUserPerformance])
+
+  // Listen for storage events to refresh when user completes a quiz
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'quiz-completed' && e.newValue) {
+        console.log('Quiz completion detected, refreshing performance data')
+        refreshPerformanceData()
+        // Clear the storage event
+        localStorage.removeItem('quiz-completed')
+      }
+    }
+
+    window.addEventListener('storage', handleStorageChange)
+    return () => window.removeEventListener('storage', handleStorageChange)
+  }, [refreshPerformanceData])
 
   // Fetch words when a kanji is selected
   useEffect(() => {
@@ -257,7 +349,7 @@ export default function KanjiPoster() {
     return viewMode === 'level' ? getLevelColor(kanji.level) : getPerformanceColor(kanji.letter)
   }
 
-  // Fetch words containing the selected kanji
+  // Fetch n the selected kanji
   const fetchKanjiWords = async (kanjiChar: string, offset: number = 0, limit: number = 20) => {
     if (!kanjiChar) return
     

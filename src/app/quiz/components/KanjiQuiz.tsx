@@ -233,6 +233,9 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
         return
       }
       
+      console.log('Starting to save quiz results for user:', user.id)
+      console.log('Total results to save:', allResults.length)
+      
       // Calculate quiz summary
       const totalQuestions = allResults.length
       const correctAnswers = allResults.filter(r => r.isCorrect).length
@@ -260,8 +263,10 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
       
       if (quizError) {
         console.error('Error saving quiz result:', quizError)
-        return
+        throw new Error(`Failed to save quiz result: ${quizError.message}`)
       }
+      
+      console.log('Quiz result saved with ID:', quizResult.id)
       
       // Insert individual answers
       const answersToInsert = allResults.map((result, index) => ({
@@ -281,13 +286,105 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
       
       if (answersError) {
         console.error('Error saving quiz answers:', answersError)
-        return
+        throw new Error(`Failed to save quiz answers: ${answersError.message}`)
       }
       
-      console.log('Quiz results saved successfully!')
+      console.log('Quiz answers saved successfully!')
+      
+      // Now update kanji_performance table for each kanji
+      await updateKanjiPerformance(supabase, user.id, allResults)
+      
+      console.log('Quiz results and performance data saved successfully!')
+      
+      // Trigger a refresh of performance data in other tabs/windows
+      localStorage.setItem('quiz-completed', Date.now().toString())
       
     } catch (err) {
       console.error('Error saving quiz results:', err)
+      // Don't throw - we still want the quiz to complete even if saving fails
+    }
+  }
+
+  const updateKanjiPerformance = async (supabase: ReturnType<typeof createClientBrowser>, userId: string, allResults: QuizResult[]) => {
+    try {
+      console.log('Updating kanji performance data...')
+      
+      // Group results by kanji character
+      const kanjiStats: Record<string, { totalAttempts: number; correctAttempts: number }> = {}
+      
+      allResults.forEach(result => {
+        const kanji = result.kanjiCharacter
+        if (!kanjiStats[kanji]) {
+          kanjiStats[kanji] = { totalAttempts: 0, correctAttempts: 0 }
+        }
+        kanjiStats[kanji].totalAttempts++
+        if (result.isCorrect) {
+          kanjiStats[kanji].correctAttempts++
+        }
+      })
+      
+      console.log('Kanji stats calculated:', Object.keys(kanjiStats).length, 'unique kanji')
+      
+      // Update or insert performance data for each kanji
+      for (const [kanjiCharacter, stats] of Object.entries(kanjiStats)) {
+        // First, try to get existing performance data
+        const { data: existingData, error: fetchError } = await supabase
+          .from('kanji_performance')
+          .select('total_attempts, correct_attempts')
+          .eq('user_id', userId)
+          .eq('kanji_character', kanjiCharacter)
+          .single()
+        
+        if (fetchError && fetchError.code !== 'PGRST116') { // PGRST116 = no rows found
+          console.error(`Error fetching existing performance for ${kanjiCharacter}:`, fetchError)
+          continue
+        }
+        
+        const newTotalAttempts = existingData ? existingData.total_attempts + stats.totalAttempts : stats.totalAttempts
+        const newCorrectAttempts = existingData ? existingData.correct_attempts + stats.correctAttempts : stats.correctAttempts
+        
+        if (existingData) {
+          // Update existing record
+          const { error: updateError } = await supabase
+            .from('kanji_performance')
+            .update({
+              total_attempts: newTotalAttempts,
+              correct_attempts: newCorrectAttempts,
+              updated_at: new Date().toISOString()
+            })
+            .eq('user_id', userId)
+            .eq('kanji_character', kanjiCharacter)
+          
+          if (updateError) {
+            console.error(`Error updating performance for ${kanjiCharacter}:`, updateError)
+          } else {
+            console.log(`Updated performance for ${kanjiCharacter}: ${newCorrectAttempts}/${newTotalAttempts}`)
+          }
+        } else {
+          // Insert new record
+          const { error: insertError } = await supabase
+            .from('kanji_performance')
+            .insert({
+              user_id: userId,
+              kanji_character: kanjiCharacter,
+              total_attempts: newTotalAttempts,
+              correct_attempts: newCorrectAttempts,
+              created_at: new Date().toISOString(),
+              updated_at: new Date().toISOString()
+            })
+          
+          if (insertError) {
+            console.error(`Error inserting performance for ${kanjiCharacter}:`, insertError)
+          } else {
+            console.log(`Inserted performance for ${kanjiCharacter}: ${newCorrectAttempts}/${newTotalAttempts}`)
+          }
+        }
+      }
+      
+      console.log('Kanji performance update completed')
+      
+    } catch (err) {
+      console.error('Error updating kanji performance:', err)
     }
   }
 
