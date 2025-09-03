@@ -28,8 +28,8 @@ export default function Header() {
         <Identify />
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center w-80">
-          <div className="grid grid-cols-3 w-full gap-4">
+        <nav className="hidden md:flex items-center w-96">
+          <div className="grid grid-cols-4 w-full gap-3">
             <Link 
               href="/quiz" 
               className={`btn-2 w-full ${
@@ -45,6 +45,14 @@ export default function Header() {
               }`}
             >
               DICTIONARY
+            </Link>
+            <Link 
+              href="/progress" 
+              className={`btn-2 w-full ${
+                isActive('/progress') ? 'active' : ''
+              }`}
+            >
+              PROGRESS
             </Link>
             <div 
               className="relative" 
@@ -223,6 +231,17 @@ export default function Header() {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   DICTIONARY
+                </Link>
+                <Link
+                  href="/progress"
+                  className={`block w-full px-6 py-4 text-lg font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
+                    isActive('/progress') 
+                      ? 'bg-black text-white border-black shadow-lg' 
+                      : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  PROGRESS
                 </Link>
                 <div className="space-y-2">
                   <div className="text-center">
