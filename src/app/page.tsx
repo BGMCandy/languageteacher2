@@ -21,7 +21,12 @@ export default function Home() {
           {/* Geometric accent elements */}
           <div className="flex justify-center space-x-6 sm:space-x-8 mb-16">
             <div className="w-4 h-4 bg-black"></div>
-            <div className="w-4 h-4 bg-black" style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}></div>
+            <Link 
+              href="/games" 
+              className="w-4 h-4 bg-black hover:bg-purple-600 transition-colors duration-300 cursor-pointer" 
+              style={{ clipPath: 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)' }}
+              title="🎮 Hidden Games"
+            ></Link>
             <div className="w-4 h-4 bg-black"></div>
           </div>
           
