@@ -61,7 +61,7 @@ export default function DetailsCard({
         {/* Header with clickable kanji */}
         <div className="text-center mb-6">
         <Link 
-          href={`/characters/${selectedKanji.letter}`}
+          href={`/characters/kanji/${selectedKanji.letter}`}
           className="block hover:bg-gray-50 transition-colors p-2  border-2 border-transparent hover:border-black"
         >
           <div className="text-5xl font-bold text-black mb-2 transition-colors">
@@ -251,7 +251,7 @@ export default function DetailsCard({
               <div className="flex items-center gap-2 mb-2">
                 {kanjiWords[currentWordIndex]?.headwords && kanjiWords[currentWordIndex].headwords.length > 0 && (
                   <Link 
-                    href={`/vocabulary/${encodeURIComponent(kanjiWords[currentWordIndex].headwords[0])}`}
+                    href={`/vocabulary/japanese/${encodeURIComponent(kanjiWords[currentWordIndex].headwords[0])}`}
                     className="text-lg font-bold text-black hover:text-blue-600 transition-colors hover:underline"
                   >
                     {kanjiWords[currentWordIndex].headwords[0]}

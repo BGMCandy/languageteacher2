@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { use } from 'react'
 import { createClient } from '@supabase/supabase-js'
 import Link from 'next/link'
+import GenerateExcerptButton from '@/app/components/GenerateExcerptButton'
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -31,11 +32,11 @@ interface KanjiEntry {
   jouyou: boolean
 }
 
-interface VocabularyPageProps {
+interface JapaneseVocabularyPageProps {
   params: Promise<{ slug: string }>
 }
 
-export default function VocabularyPage({ params }: VocabularyPageProps) {
+export default function JapaneseVocabularyPage({ params }: JapaneseVocabularyPageProps) {
   const { slug: rawSlug } = use(params)
   const slug = decodeURIComponent(rawSlug) // Decode URL-encoded characters
   const [word, setWord] = useState<DictionaryEntry | null>(null)
@@ -48,17 +49,47 @@ export default function VocabularyPage({ params }: VocabularyPageProps) {
       try {
         setLoading(true)
         
-        // Fetch word details by sequence number
-        const seqNumber: number = parseInt(slug)
-        if (isNaN(seqNumber)) {
-          throw new Error('Invalid word ID')
-        }
+        let wordData: DictionaryEntry | null = null
+        let wordError: Error | null = null
 
-        const { data: wordData, error: wordError } = await supabase
-          .from('jmdict_entries')
-          .select('*')
-          .eq('seq', seqNumber)
-          .single()
+        // Try to parse as sequence number first
+        const seqNumber: number = parseInt(slug)
+        if (!isNaN(seqNumber)) {
+          // Fetch by sequence number
+          const result = await supabase
+            .from('jmdict_entries')
+            .select('*')
+            .eq('seq', seqNumber)
+            .single()
+          
+          wordData = result.data
+          wordError = result.error
+        } else {
+          // Fetch by word text (search in headwords using text search)
+          try {
+            const result = await supabase
+              .from('jmdict_entries')
+              .select('*')
+              .ilike('search_text', `%${slug}%`)
+              .limit(1)
+              .single()
+            
+            wordData = result.data
+            wordError = result.error
+          } catch {
+            // If text search fails, try array search as fallback
+            console.log('Text search failed, trying array search...')
+            const result = await supabase
+              .from('jmdict_entries')
+              .select('*')
+              .overlaps('headwords', [slug])
+              .limit(1)
+              .single()
+            
+            wordData = result.data
+            wordError = result.error
+          }
+        }
 
         if (wordError) {
           throw new Error(`Word not found: ${wordError.message}`)
@@ -118,8 +149,8 @@ export default function VocabularyPage({ params }: VocabularyPageProps) {
         <div className="text-center">
           <h1 className="text-2xl font-bold text-black mb-4">Word Not Found</h1>
           <p className="text-gray-600 mb-6">{error || 'The requested word could not be found.'}</p>
-          <Link href="/dictionary" className="btn-3">
-            Back to Dictionary
+          <Link href="/vocabulary" className="btn-3">
+            Back to Vocabulary
           </Link>
         </div>
       </div>
@@ -131,8 +162,8 @@ export default function VocabularyPage({ params }: VocabularyPageProps) {
       <div className="max-w-4xl mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <Link href="/dictionary" className="text-gray-600 hover:text-black transition-colors mb-4 inline-block">
-            ← Back to Dictionary
+          <Link href="/vocabulary" className="text-gray-600 hover:text-black transition-colors mb-4 inline-block">
+            ← Back to Vocabulary
           </Link>
           <h1 className="text-4xl font-bold text-black mb-2">{word.headwords[0]}</h1>
           <div className="h-px w-24 bg-black"></div>
@@ -208,6 +239,21 @@ export default function VocabularyPage({ params }: VocabularyPageProps) {
                 </div>
               </div>
             </div>
+
+            {/* Excerpt Generation */}
+            <div className="border-2 border-black p-6">
+              <h2 className="text-xl font-bold text-black mb-4 tracking-wider">LEARNING TOOLS</h2>
+              <p className="text-gray-600 mb-4">
+                Generate an AI-powered learning excerpt to help you understand this word in context.
+              </p>
+              <GenerateExcerptButton
+                wordId={word.seq.toString()}
+                wordText={word.headwords[0]}
+                wordReading={word.readings[0]}
+                wordMeaning={word.glosses_en[0]}
+                className="w-full"
+              />
+            </div>
           </div>
 
           {/* Kanji Breakdown */}
@@ -222,7 +268,7 @@ export default function VocabularyPage({ params }: VocabularyPageProps) {
                       <div className="flex items-center gap-3 mb-3">
                         <span className="text-2xl font-bold text-black">{kanji.kanji}</span>
                         <Link 
-                          href={`/characters/${kanji.kanji}`}
+                          href={`/characters/kanji/${kanji.kanji}`}
                           className="text-sm text-blue-600 hover:text-blue-800 underline"
                         >
                           View Details →
