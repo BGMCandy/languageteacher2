@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { createClientBrowser, JapaneseKanji } from '@/lib/supabase'
 import RegisterPopup from '@/app/components/elements/registerPopup'
+import DetailsCard from './components/detailsCard'
 
 interface DictionaryEntry {
   seq: number
@@ -68,6 +69,9 @@ export default function KanjiPoster() {
   const [loadingWords, setLoadingWords] = useState(false)
   const [showRegisterPopup, setShowRegisterPopup] = useState(false)
   const [isSheetExpanded, setIsSheetExpanded] = useState(false)
+  const [currentWordIndex, setCurrentWordIndex] = useState(0)
+  const [hasMoreWords, setHasMoreWords] = useState(false)
+  const [wordsOffset, setWordsOffset] = useState(0)
 
   useEffect(() => {
     const fetchKanji = async () => {
@@ -172,7 +176,9 @@ export default function KanjiPoster() {
   // Fetch words when a kanji is selected
   useEffect(() => {
     if (selectedKanji) {
-      fetchKanjiWords(selectedKanji.letter)
+      setCurrentWordIndex(0)
+      setWordsOffset(0)
+      fetchKanjiWords(selectedKanji.letter, 0, 2) // Load only 2 words initially
     }
   }, [selectedKanji])
 
@@ -252,25 +258,27 @@ export default function KanjiPoster() {
   }
 
   // Fetch words containing the selected kanji
-  const fetchKanjiWords = async (kanjiChar: string) => {
+  const fetchKanjiWords = async (kanjiChar: string, offset: number = 0, limit: number = 20) => {
     if (!kanjiChar) return
     
     setLoadingWords(true)
-    setKanjiWords([])
+    if (offset === 0) {
+      setKanjiWords([])
+    }
     
     try {
       const supabase = createClientBrowser()
       
       // Try multiple search methods to find words containing this kanji
-              let words: DictionaryEntry[] = []
-        let error: Error | null = null
+      let words: DictionaryEntry[] = []
+      let error: Error | null = null
       
       // Method 1: Search in search_text field (most reliable)
       const { data: searchResults, error: searchError } = await supabase
         .from('jmdict_entries')
         .select('*')
         .ilike('search_text', `%${kanjiChar}%`)
-        .limit(20)
+        .range(offset, offset + limit - 1)
       
       if (searchError) {
         console.log('Search method 1 failed, trying alternative...', searchError)
@@ -280,7 +288,7 @@ export default function KanjiPoster() {
           .from('jmdict_entries')
           .select('*')
           .textSearch('headwords', kanjiChar)
-          .limit(20)
+          .range(offset, offset + limit - 1)
         
         if (headwordError) {
           console.log('Search method 2 failed, trying final method...', headwordError)
@@ -290,7 +298,7 @@ export default function KanjiPoster() {
             .from('jmdict_entries')
             .select('*')
             .or(`headwords.cs.{${kanjiChar}},readings.cs.{${kanjiChar}}`)
-            .limit(20)
+            .range(offset, offset + limit - 1)
           
           if (rawError) {
             error = rawError
@@ -309,8 +317,17 @@ export default function KanjiPoster() {
         return
       }
       
-      setKanjiWords(words)
-      console.log(`Found ${words.length} words containing kanji: ${kanjiChar}`)
+      if (offset === 0) {
+        setKanjiWords(words)
+      } else {
+        setKanjiWords(prev => [...prev, ...words])
+      }
+      
+      // Check if there are more words available
+      setHasMoreWords(words.length === limit)
+      setWordsOffset(offset + words.length)
+      
+      console.log(`Found ${words.length} words containing kanji: ${kanjiChar} (offset: ${offset})`)
       
     } catch (err) {
       console.error('Error fetching kanji words:', err)
@@ -331,6 +348,27 @@ export default function KanjiPoster() {
     setSelectedKanji(kanji)
     setIsSheetExpanded(false) // Reset sheet to collapsed state
   }
+
+  const handleNextWord = () => {
+    if (currentWordIndex < kanjiWords.length - 1) {
+      // Move to next word if available
+      setCurrentWordIndex(prev => prev + 1)
+    } else if (hasMoreWords && selectedKanji) {
+      // Load more words if we're at the end and more are available
+      fetchKanjiWords(selectedKanji.letter, wordsOffset, 5).then(() => {
+        // After loading, move to the next word
+        setCurrentWordIndex(prev => prev + 1)
+      })
+    }
+  }
+
+  const handlePrevWord = () => {
+    if (currentWordIndex > 0) {
+      setCurrentWordIndex(prev => prev - 1)
+    }
+  }
+
+
 
   if (loading) {
     return (
@@ -738,103 +776,18 @@ export default function KanjiPoster() {
           </div>
 
           {/* Desktop Details Panel */}
-          <div className="hidden lg:block w-80 bg-white p-8 border-2 border-black h-fit sticky top-22">
-            {selectedKanji ? (
-              <>
-                <div className="text-center mb-8">
-                  <div className="text-6xl font-bold text-black mb-4">
-                    {selectedKanji.letter}
-                  </div>
-                  <div className={`inline-block px-4 py-2 text-sm font-medium tracking-wider ${getKanjiColor(selectedKanji)}`}>
-                    {viewMode === 'level' ? `Level ${selectedKanji.level}` : `Performance: ${Math.round(userPerformance[selectedKanji.letter]?.successRate || 0)}%`}
-                  </div>
-                </div>
-                
-                <div className="space-y-4">
-                  <div>
-                    <label className="text-sm font-medium text-black tracking-wider uppercase">Reading</label>
-                    <div className="text-lg text-black font-medium">{selectedKanji.reading}</div>
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium text-black tracking-wider uppercase">Meaning</label>
-                    <div className="text-lg text-black font-medium">{selectedKanji.name}</div>
-                  </div>
-                  
-                  <div>
-                    <label className="text-sm font-medium text-black tracking-wider uppercase">Sound Equivalent</label>
-                    <div className="text-lg text-black font-medium">{selectedKanji.sound_equiv}</div>
-                  </div>
-                </div>
-
-                {/* Words containing this kanji */}
-                <div className="mt-8 pt-8 border-t-2 border-black">
-                  <h3 className="text-lg font-semibold text-black mb-4 tracking-wider">
-                    Words containing 「{selectedKanji.letter}」
-                  </h3>
-                  
-                  {loadingWords ? (
-                    <div className="text-center py-4">
-                      <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-black mx-auto"></div>
-                      <p className="text-sm text-gray-500 mt-2 tracking-wide">Finding words...</p>
-                    </div>
-                  ) : kanjiWords.length > 0 ? (
-                    <div className="space-y-3 max-h-64 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
-                      {kanjiWords.map((word, index) => (
-                        <div key={index} className="bg-gray-50 border-2 border-gray-200 p-4 hover:bg-gray-100 transition-colors">
-                          <div className="flex items-center gap-2 mb-3">
-                            {word.headwords && word.headwords.length > 0 && (
-                              <span className="text-lg font-bold text-black">
-                                {word.headwords[0]}
-                              </span>
-                            )}
-                            {word.readings && word.readings.length > 0 && (
-                              <span className="text-sm text-gray-600">
-                                {word.readings[0]}
-                              </span>
-                            )}
-                            {word.is_common && (
-                              <span className="bg-green-100 text-green-800 text-xs px-2 py-1 border border-green-200 tracking-wide">
-                                Common
-                              </span>
-                            )}
-                          </div>
-                          
-                          <div className="text-sm text-gray-700 mb-3">
-                            {word.glosses_en && word.glosses_en.length > 0 
-                              ? word.glosses_en.slice(0, 2).join(', ')
-                              : 'No English definition'
-                            }
-                          </div>
-                          
-                          {word.pos_tags && word.pos_tags.length > 0 && (
-                            <div className="flex flex-wrap gap-1">
-                              {word.pos_tags.slice(0, 3).map((pos: string, idx: number) => (
-                                <span key={idx} className="bg-blue-100 text-blue-700 text-xs px-2 py-1 border border-blue-200 tracking-wide">
-                                  {pos}
-                                </span>
-                              ))}
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="text-center py-4 text-gray-500">
-                      <p className="text-sm tracking-wide">No words found containing this kanji</p>
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="text-center text-gray-500">
-                <div className="w-16 h-16 bg-gray-100 border-2 border-gray-200 mx-auto mb-4 flex items-center justify-center">
-                  <span className="text-2xl text-gray-400">字</span>
-                </div>
-                <p className="text-sm tracking-wide">Select a kanji to view details</p>
-              </div>
-            )}
-          </div>
+          <DetailsCard
+            selectedKanji={selectedKanji}
+            viewMode={viewMode}
+            userPerformance={userPerformance}
+            kanjiWords={kanjiWords}
+            loadingWords={loadingWords}
+            getKanjiColor={getKanjiColor}
+            hasMoreWords={hasMoreWords}
+            currentWordIndex={currentWordIndex}
+            onNextWord={handleNextWord}
+            onPrevWord={handlePrevWord}
+          />
         </div>
       </div>
       
