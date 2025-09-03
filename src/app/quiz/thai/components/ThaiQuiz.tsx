@@ -207,6 +207,15 @@ export default function ThaiQuiz({ config, onComplete }: { config: QuizConfig; o
       setQuestions(quizQuestions)
       console.log(`Generated ${quizQuestions.length} Thai ${config.component} questions`)
       
+      // Show start animation immediately
+      setShowStartAnimation(true)
+      
+      // Hide animation after 2 seconds and start quiz
+      setTimeout(() => {
+        setShowStartAnimation(false)
+        setQuestionStartTime(Date.now())
+      }, 2000)
+      
     } catch (err) {
       console.error('Error generating Thai quiz:', err)
     } finally {
@@ -326,14 +335,10 @@ export default function ThaiQuiz({ config, onComplete }: { config: QuizConfig; o
   }, [generateQuiz])
 
   useEffect(() => {
-    if (questions.length > 0) {
-      setShowStartAnimation(true)
-      setTimeout(() => {
-        setShowStartAnimation(false)
-        setQuestionStartTime(Date.now())
-      }, 2000)
+    if (questions.length > 0 && currentQuestion === 0) {
+      setQuestionStartTime(Date.now())
     }
-  }, [questions])
+  }, [questions, currentQuestion])
 
   if (loading) {
     return (

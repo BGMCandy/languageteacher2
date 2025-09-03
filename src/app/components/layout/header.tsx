@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
 import { useAuth } from '@/contexts/AuthContext'
 import { usePathname } from 'next/navigation'
@@ -9,18 +9,13 @@ import Identify from '../elements/identify'
 export default function Header() {
   const { user, signOut } = useAuth()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isAlphabetsDropdownOpen, setIsAlphabetsDropdownOpen] = useState(false)
   const pathname = usePathname()
-  const dropdownRef = useRef<HTMLDivElement>(null)
 
   const isActive = (path: string) => pathname === path
 
 
 
-  // Close dropdown when route changes
-  useEffect(() => {
-    setIsAlphabetsDropdownOpen(false)
-  }, [pathname])
+
 
   return (
     <header className="h-20 bg-white border-b-2 border-black sticky top-0 z-50">
@@ -33,157 +28,43 @@ export default function Header() {
             <Link 
               href="/quiz" 
               className={`btn-2  ${
-                isActive('/quiz') ? 'bg-gray-100' : ''
+                isActive('/quiz') ? 'border-b-2 border-black' : ''
               }`}
             >
               QUIZ
             </Link>
             <Link 
+              href="/posters" 
+              className={`btn-2  ${
+                isActive('/posters') ? 'border-b-2 border-black' : ''
+              }`}
+            >
+              POSTERS
+            </Link>
+            <Link 
               href="/dictionary" 
               className={`btn-2  ${
-                isActive('/dictionary') ? 'bg-gray-100' : ''
+                isActive('/dictionary') ? 'border-b-2 border-black' : ''
               }`}
             >
               DICTIONARY
             </Link>
             <Link 
+              href="/characters" 
+              className={`btn-2  ${
+                isActive('/characters') ? 'border-b-2 border-black' : ''
+              }`}
+            >
+              CHARACTERS
+            </Link>
+            <Link 
               href="/progress" 
               className={`btn-2  ${
-                isActive('/progress') ? 'bg-gray-100' : ''
+                isActive('/progress') ? 'border-b-2 border-black' : ''
               }`}
             >
               PROGRESS
             </Link>
-            <div 
-              className="relative" 
-              ref={dropdownRef}
-              onMouseEnter={() => setIsAlphabetsDropdownOpen(true)}
-              onMouseLeave={() => setIsAlphabetsDropdownOpen(false)}
-            >
-              <Link
-                href="/characters"
-                className={`btn-2 flex items-center justify-center space-x-1 ${
-                  isActive('/poster/kanji') || isActive('/characters/hanzi') || isActive('/characters/hangul') || isActive('/characters/thai-script') || isActive('/characters') ? 'bg-gray-100 border-br' : ''
-                }`}
-              >
-                <span>ALPHABETS</span>
-                <svg 
-                  className={`w-3 h-3 transition-transform duration-200 ${isAlphabetsDropdownOpen ? 'rotate-180' : ''}`}
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </Link>
-              
-              {/* Dropdown Menu */}
-              {isAlphabetsDropdownOpen && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-black shadow-lg z-50">
-                                  <Link
-                  href="/poster/kanji"
-                  className={`block w-full px-3 py-2 text-xs font-medium tracking-wider transition-all hover:bg-black hover:text-white border-b border-gray-200 last:border-b-0 ${
-                    isActive('/poster/kanji') ? 'bg-black text-white' : 'text-black'
-                  }`}
-                >
-                  <span className="text-sm mr-1">漢字</span>
-                  Japanese Kanji
-                </Link>
-                  <Link
-                    href="/characters/hanzi"
-                    className={`block w-full px-3 py-2 text-xs font-medium tracking-wider transition-all hover:bg-black hover:text-white border-b border-gray-200 last:border-b-0 ${
-                      isActive('/characters/hanzi') ? 'bg-black text-white' : 'text-black'
-                    }`}
-                  >
-                    <span className="text-sm mr-1">汉字</span>
-                    Chinese Characters
-                  </Link>
-                  <Link
-                    href="/characters/hangul"
-                    className={`block w-full px-3 py-2 text-xs font-medium tracking-wider transition-all hover:bg-black hover:text-white border-b border-gray-200 last:border-b-0 ${
-                      isActive('/characters/hangul') ? 'bg-black text-white' : 'text-black'
-                    }`}
-                  >
-                    <span className="text-sm mr-1">한글</span>
-                    Korean Hangul
-                  </Link>
-                  <Link
-                    href="/characters/thai-script"
-                    className={`block w-full px-3 py-2 text-xs font-medium tracking-wider transition-all hover:bg-black hover:text-white border-b border-gray-200 last:border-b-0 ${
-                      isActive('/characters/thai-script') ? 'bg-black text-white' : 'text-black'
-                    }`}
-                  >
-                    <span className="text-sm mr-1">ไทย</span>
-                    Thai Script
-                  </Link>
-                </div>
-              )}
-            </div>
-            <div 
-              className="relative" 
-              ref={dropdownRef}
-              onMouseEnter={() => setIsAlphabetsDropdownOpen(true)}
-              onMouseLeave={() => setIsAlphabetsDropdownOpen(false)}
-            >
-              <Link
-                href="/poster"
-                className={`btn-2 flex items-center justify-center space-x-1 ${
-                  isActive('/poster/kanji') || isActive('/characters/hanzi') || isActive('/characters/hangul') || isActive('/characters/thai-script') || isActive('/characters') ? 'bg-gray-100 border-br' : ''
-                }`}
-              >
-                <span>POSTERS</span>
-                <svg 
-                  className={`w-3 h-3 transition-transform duration-200 ${isAlphabetsDropdownOpen ? 'rotate-180' : ''}`}
-                  fill="none" 
-                  stroke="currentColor" 
-                  viewBox="0 0 24 24"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
-              </Link>
-              
-              {/* Dropdown Menu */}
-              {isAlphabetsDropdownOpen && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white border-2 border-black shadow-lg z-50">
-                                  <Link
-                  href="/poster/kanji"
-                  className={`block w-full px-3 py-2 text-xs font-medium tracking-wider transition-all hover:bg-black hover:text-white border-b border-gray-200 last:border-b-0 ${
-                    isActive('/poster/kanji') ? 'bg-black text-white' : 'text-black'
-                  }`}
-                >
-                  <span className="text-sm mr-1">漢字</span>
-                  Japanese Kanji
-                </Link>
-                  <Link
-                    href="/characters/hanzi"
-                    className={`block w-full px-3 py-2 text-xs font-medium tracking-wider transition-all hover:bg-black hover:text-white border-b border-gray-200 last:border-b-0 ${
-                      isActive('/characters/hanzi') ? 'bg-black text-white' : 'text-black'
-                    }`}
-                  >
-                    <span className="text-sm mr-1">汉字</span>
-                    Chinese Characters
-                  </Link>
-                  <Link
-                    href="/characters/hangul"
-                    className={`block w-full px-3 py-2 text-xs font-medium tracking-wider transition-all hover:bg-black hover:text-white border-b border-gray-200 last:border-b-0 ${
-                      isActive('/characters/hangul') ? 'bg-black text-white' : 'text-black'
-                    }`}
-                  >
-                    <span className="text-sm mr-1">한글</span>
-                    Korean Hangul
-                  </Link>
-                  <Link
-                    href="/characters/thai-script"
-                    className={`block w-full px-3 py-2 text-xs font-medium tracking-wider transition-all hover:bg-black hover:text-white border-b border-gray-200 last:border-b-0 ${
-                      isActive('/characters/thai-script') ? 'bg-black text-white' : 'text-black'
-                    }`}
-                  >
-                    <span className="text-sm mr-1">ไทย</span>
-                    Thai Script
-                  </Link>
-                </div>
-              )}
-            </div>
           </div>
         </nav>
 
@@ -308,58 +189,78 @@ export default function Header() {
                 >
                   PROGRESS
                 </Link>
-                <div className="space-y-2">
-                  <div className="text-center">
-                    <h4 className="text-sm font-semibold text-gray-600 tracking-wider uppercase mb-2">Alphabets</h4>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <div className="text-center">
+                      <h4 className="text-sm font-semibold text-gray-600 tracking-wider uppercase mb-2">Characters</h4>
+                    </div>
+                    <Link
+                      href="/characters/hanzi"
+                      className={`block w-full px-6 py-3 text-base font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
+                        isActive('/characters/hanzi') 
+                          ? 'bg-black text-white border-black shadow-lg' 
+                          : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
+                      }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <span className="text-lg mr-2">汉字</span>
+                      Chinese Characters
+                    </Link>
+                    <Link
+                      href="/characters/hangul"
+                      className={`block w-full px-6 py-3 text-base font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
+                        isActive('/characters/hangul') 
+                          ? 'bg-black text-white border-black shadow-lg' 
+                          : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
+                      }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <span className="text-lg mr-2">한글</span>
+                      Korean Hangul
+                    </Link>
+                    <Link
+                      href="/characters/thai-script"
+                      className={`block w-full px-6 py-3 text-base font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
+                        isActive('/characters/thai-script') 
+                          ? 'bg-black text-white border-black shadow-lg' 
+                          : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
+                      }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <span className="text-lg mr-2">ไทย</span>
+                      Thai Script
+                    </Link>
                   </div>
-                  <Link
-                    href="/poster/kanji"
-                    className={`block w-full px-6 py-3 text-base font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
-                      isActive('/poster/kanji') 
-                        ? 'bg-black text-white border-black shadow-lg' 
-                        : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
-                    }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <span className="text-lg mr-2">漢字</span>
-                    Japanese Kanji
-                  </Link>
-                  <Link
-                    href="/characters/hanzi"
-                    className={`block w-full px-6 py-3 text-base font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
-                      isActive('/characters/hanzi') 
-                        ? 'bg-black text-white border-black shadow-lg' 
-                        : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
-                    }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <span className="text-lg mr-2">汉字</span>
-                    Chinese Characters
-                  </Link>
-                  <Link
-                    href="/characters/hangul"
-                    className={`block w-full px-6 py-3 text-base font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
-                      isActive('/characters/hangul') 
-                        ? 'bg-black text-white border-black shadow-lg' 
-                        : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
-                    }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <span className="text-lg mr-2">한글</span>
-                    Korean Hangul
-                  </Link>
-                  <Link
-                    href="/characters/thai-script"
-                    className={`block w-full px-6 py-3 text-base font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
-                      isActive('/characters/thai-script') 
-                        ? 'bg-black text-white border-black shadow-lg' 
-                        : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
-                    }`}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    <span className="text-lg mr-2">ไทย</span>
-                    Thai Script
-                  </Link>
+                  
+                  <div className="space-y-2">
+                    <div className="text-center">
+                      <h4 className="text-sm font-semibold text-gray-600 tracking-wider uppercase mb-2">Posters</h4>
+                    </div>
+                    <Link
+                      href="/posters/kanji"
+                      className={`block w-full px-6 py-3 text-base font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
+                        isActive('/posters/kanji') 
+                          ? 'bg-black text-white border-black shadow-lg' 
+                          : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
+                      }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <span className="text-lg mr-2">漢字</span>
+                      Japanese Kanji
+                    </Link>
+                    <Link
+                      href="/posters/thai-script"
+                      className={`block w-full px-6 py-3 text-base font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
+                        isActive('/posters/thai-script') 
+                          ? 'bg-black text-white border-black shadow-lg' 
+                          : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
+                      }`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <span className="text-lg mr-2">ไทย</span>
+                      Thai Script
+                    </Link>
+                  </div>
                 </div>
               </div>
             </nav>
