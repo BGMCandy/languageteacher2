@@ -18,11 +18,6 @@ const Footer = () => {
               LANGUAGETEACHER.IO
             </p>
           </div>
-          <div className="h-px w-24 bg-black mx-auto mb-4"></div>
-          <p className="text-sm text-gray-600 tracking-wide">
-            languageteacher.io {new Date().getFullYear()}
-          </p>
-        </div>
         
         {/* Navigation links */}
         <div className="flex flex-wrap justify-center gap-4 sm:gap-6 lg:gap-12 mb-6">
@@ -50,6 +45,13 @@ const Footer = () => {
           >
             About
           </Link>
+        </div>
+
+
+        <div className="w-24 bg-black mx-auto"></div>
+          <p className="text-sm text-gray-600 tracking-wide">
+            languageteacher.io {new Date().getFullYear()}
+          </p>
         </div>
       </div>
     </footer>

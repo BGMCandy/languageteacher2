@@ -50,7 +50,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 sm:gap-12">
             {/* Kanji Poster */}
             <FeatureCard
-              href="/kanji-poster"
+              href="/poster/kanji"
               title="KANJI POSTER"
               enterFrom="left"
               verticalOffset={2}
