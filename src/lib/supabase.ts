@@ -41,33 +41,68 @@ export interface JapaneseKatakana {
 }
 
 export interface ThaiConsonant {
-  id?: number
+  idx: number
   letter: string
   name: string
-  reading: string
   sound_equiv: string
-  level: string
-  wav_file?: string
+  class: 'mid' | 'high' | 'low'
+  gloss: string
+  example: string
+  ipa: string
+  wav_file: string
 }
 
 export interface ThaiVowel {
-  id?: number
+  id: number
   letter: string
   name: string
-  reading: string
+  length: 'long' | 'short'
+  form: 'pre' | 'post' | 'above' | 'below' | 'around'
+  gloss: string
+  example: string
+  ipa: string
   sound_equiv: string
-  level: string
-  wav_file?: string
+  wav_file: string
 }
 
 export interface ThaiTone {
-  id?: number
-  letter: string
-  name: string
-  reading: string
-  sound_equiv: string
-  level: string
-  wav_file?: string
+  id: number
+  tonename: string
+  mark: string
+  unicode: string
+  function: string
+  pronunciation: string
+  gloss: string
+  example: string
 }
 
-export type LanguageCard = JapaneseKanji | JapaneseHiragana | JapaneseKatakana | ThaiConsonant | ThaiVowel | ThaiTone 
+export type LanguageCard = JapaneseKanji | JapaneseHiragana | JapaneseKatakana | ThaiConsonant | ThaiVowel | ThaiTone
+
+// Thai Quiz Types
+export interface ThaiQuizResult {
+  id?: string
+  user_id: string
+  quiz_type: 'consonants' | 'vowels' | 'tones' | 'vocabulary'
+  quiz_config: {
+    questionCount: number
+    quizType: 'pronunciation' | 'meaning' | 'mixed'
+  }
+  total_questions: number
+  correct_answers: number
+  total_time_ms: number
+  created_at?: string
+  updated_at?: string
+}
+
+export interface ThaiQuizAnswer {
+  id?: string
+  quiz_result_id: string
+  question_number: number
+  question_type: 'pronunciation' | 'meaning' | 'mixed'
+  thai_character: string
+  user_answer: string
+  correct_answer: string
+  is_correct: boolean
+  time_spent_ms: number
+  created_at?: string
+} 

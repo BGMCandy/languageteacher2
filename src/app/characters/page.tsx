@@ -95,25 +95,28 @@ export default function CharactersPage() {
             </div>
           </div>
 
-          {/* Thai Script - Coming Soon */}
-          <div className="block bg-gray-100 border-2 border-gray-300 p-6 opacity-60">
+          {/* Thai Script */}
+          <Link
+            href="/characters/thai-script"
+            className="block bg-white border-2 border-black p-6 hover:bg-black hover:text-white transition-all duration-200 group cursor-pointer"
+          >
             <div className="text-center">
-              <div className="text-4xl mb-4">ไทย</div>
-              <h3 className="text-xl font-semibold text-gray-600 mb-2">Thai Script</h3>
-              <p className="text-gray-500 text-sm mb-4">
-                Thai alphabet and script system. Coming soon!
+              <div className="text-4xl mb-4 group-hover:text-white">ไทย</div>
+              <h3 className="text-xl font-semibold text-black mb-2 group-hover:text-white">Thai Script</h3>
+              <p className="text-gray-600 text-sm mb-4 group-hover:text-gray-300">
+                Thai alphabet with consonants, vowels, and tones. Learn pronunciation and writing.
               </p>
-              <div className="text-xs text-gray-400">
-                Coming soon
+              <div className="text-xs text-gray-500 group-hover:text-gray-400">
+                44 consonants + 32 vowels + 5 tones
               </div>
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* Quick Stats */}
         <div className="mt-12 pt-8 border-t-2 border-gray-200">
           <h2 className="text-2xl font-bold text-black mb-6">Learning Progress</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
             <div className="text-center">
               <div className="text-3xl font-bold text-black mb-2">2,000+</div>
               <div className="text-gray-600">Kanji Characters</div>
@@ -121,6 +124,10 @@ export default function CharactersPage() {
             <div className="text-center">
               <div className="text-3xl font-bold text-black mb-2">92</div>
               <div className="text-gray-600">Hiragana & Katakana</div>
+            </div>
+            <div className="text-center">
+              <div className="text-3xl font-bold text-black mb-2">81</div>
+              <div className="text-gray-600">Thai Characters</div>
             </div>
             <div className="text-center">
               <div className="text-3xl font-bold text-black mb-2">Coming Soon</div>

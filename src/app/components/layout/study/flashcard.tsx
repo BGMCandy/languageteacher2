@@ -13,6 +13,62 @@ export default function Flashcard({ card, onFlip, className = '' }: FlashcardPro
   const [isFlipped, setIsFlipped] = useState(false)
   const [isPlaying, setIsPlaying] = useState(false)
 
+  const getLetter = (card: LanguageCard): string => {
+    if ('letter' in card) {
+      return (card as { letter: string }).letter
+    }
+    if ('mark' in card) {
+      return (card as { mark: string }).mark
+    }
+    return (card as { name: string }).name
+  }
+
+  const getName = (card: LanguageCard): string => {
+    if ('name' in card) {
+      return (card as { name: string }).name
+    }
+    if ('tonename' in card) {
+      return (card as { tonename: string }).tonename
+    }
+    return 'Unknown'
+  }
+
+  const getReading = (card: LanguageCard): string => {
+    if ('reading' in card) {
+      return (card as { reading: string }).reading
+    }
+    if ('gloss' in card) {
+      return (card as { gloss: string }).gloss
+    }
+    return getName(card)
+  }
+
+  const getLevel = (card: LanguageCard): string => {
+    if ('level' in card) {
+      return (card as { level: string }).level
+    }
+    if ('class' in card) {
+      return (card as { class: string }).class
+    }
+    if ('function' in card) {
+      return (card as { function: string }).function
+    }
+    return 'N/A'
+  }
+
+  const getPronunciation = (card: LanguageCard): string => {
+    if ('sound_equiv' in card) {
+      return (card as { sound_equiv: string }).sound_equiv
+    }
+    if ('pronunciation' in card) {
+      return (card as { pronunciation: string }).pronunciation
+    }
+    if ('reading' in card) {
+      return (card as { reading: string }).reading
+    }
+    return getName(card)
+  }
+
   const handleFlip = () => {
     setIsFlipped(!isFlipped)
     onFlip?.()
@@ -44,10 +100,11 @@ export default function Flashcard({ card, onFlip, className = '' }: FlashcardPro
         setIsPlaying(true)
         
         // Create speech synthesis utterance
-        const utterance = new SpeechSynthesisUtterance(card.sound_equiv)
+        const pronunciation = getPronunciation(card)
+        const utterance = new SpeechSynthesisUtterance(pronunciation)
         
         // Configure speech settings for better pronunciation
-        utterance.lang = 'ja-JP' // Japanese language
+        utterance.lang = 'pronunciation' in card ? 'th-TH' : 'ja-JP' // Thai or Japanese language
         utterance.rate = 0.8 // Slightly slower for clarity
         utterance.pitch = 1.0
         utterance.volume = 1.0
@@ -90,7 +147,7 @@ export default function Flashcard({ card, onFlip, className = '' }: FlashcardPro
         <div className="absolute inset-0 w-full h-full backface-hidden">
           <div className="w-full h-full bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-6 flex flex-col items-center justify-center">
             <div className="text-4xl font-bold text-gray-800 dark:text-white mb-4">
-              {card.letter}
+              {getLetter(card)}
             </div>
             <div className="text-sm text-gray-500 dark:text-gray-400 text-center">
               Click to reveal
@@ -102,25 +159,25 @@ export default function Flashcard({ card, onFlip, className = '' }: FlashcardPro
         <div className="absolute inset-0 w-full h-full backface-hidden rotate-y-180">
           <div className="w-full h-full bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-800 dark:to-gray-700 rounded-xl shadow-lg border border-blue-200 dark:border-gray-600 p-6 flex flex-col">
             <div className="text-2xl font-bold text-gray-800 dark:text-white mb-3 text-center">
-              {card.letter}
+              {getLetter(card)}
             </div>
             
             <div className="space-y-3 flex-1">
               <div>
                 <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Meaning</div>
-                <div className="text-sm font-medium text-gray-800 dark:text-white">{card.name}</div>
+                <div className="text-sm font-medium text-gray-800 dark:text-white">{getName(card)}</div>
               </div>
               
               <div>
                 <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Reading</div>
-                <div className="text-sm font-medium text-gray-800 dark:text-white">{card.reading}</div>
+                <div className="text-sm font-medium text-gray-800 dark:text-white">{getReading(card)}</div>
               </div>
               
               <div>
                 <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Pronunciation</div>
                 <div className="flex items-center space-x-2">
                   <div className="text-sm font-medium text-gray-800 dark:text-white flex-1">
-                    {card.sound_equiv}
+                    {getPronunciation(card)}
                   </div>
                   <button
                     onClick={(e) => {
@@ -153,7 +210,7 @@ export default function Flashcard({ card, onFlip, className = '' }: FlashcardPro
               
               <div>
                 <div className="text-xs text-gray-500 dark:text-gray-400 uppercase tracking-wide">Level</div>
-                <div className="text-sm font-medium text-gray-800 dark:text-white">{card.level}</div>
+                <div className="text-sm font-medium text-gray-800 dark:text-white">{getLevel(card)}</div>
               </div>
             </div>
             

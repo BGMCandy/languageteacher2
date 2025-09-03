@@ -272,8 +272,8 @@ export default function KanjiQuiz({ config, onComplete }: { config: QuizConfig; 
       const answersToInsert = allResults.map((result, index) => ({
         quiz_result_id: quizResult.id,
         question_number: index + 1,
-        question_type: questions[index].questionType,
-        kanji_character: questions[index].kanji.letter,
+        question_type: result.questionType,
+        kanji_character: result.kanjiCharacter,
         user_answer: result.userAnswer,
         correct_answer: result.correctAnswer,
         is_correct: result.isCorrect,
