@@ -219,6 +219,17 @@ section h1 {
   line-height: 1.2;
 }
 
+/* Mobile-only hamburger menu */
+.mobile-only {
+  display: flex;
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
 /* Ensure consistent heading hierarchy */
 h1 {
   font-size: 2.5rem; /* 40px - equivalent to text-4xl in Tailwind */

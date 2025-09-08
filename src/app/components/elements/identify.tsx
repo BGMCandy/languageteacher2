@@ -29,9 +29,9 @@ const Identify = () => {
             <div className="absolute inset-0 bg-black" style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0 100%)' }}></div>
           </div>
           <div className="relative w-[220px]">
-            <h1 className={`text-xl font-bold text-black transition-all duration-300 whitespace-nowrap ${
+            <h1 className={`font-bold text-black transition-all duration-300 whitespace-nowrap ${
               isMobile ? (isVisible ? 'tracking-normal' : 'tracking-wider') : 'tracking-wider group-hover:tracking-normal'
-            }`}>
+            }`} style={{ fontSize: '24px' }}>
               <span className={isMobile ? (isVisible ? 'hidden' : '') : 'group-hover:hidden'}>LANGUAGE TEACHER</span>
               <span className={isMobile ? (isVisible ? 'inline' : 'hidden') : 'hidden group-hover:inline'}>languageteacher</span>
               <span className={`inline-block ml-1 transform transition-all duration-300 delay-100 text-blue-600 font-mono ${
