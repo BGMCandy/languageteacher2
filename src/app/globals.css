@@ -199,3 +199,11 @@ body {
 .chinese-font-extended {
   font-family: "Noto Sans SC", "Noto Serif TC", "Noto Sans JP", "Source Han Sans SC", "Source Han Serif SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "SimSun", "Arial Unicode MS", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
 }
+
+/* Line clamp utilities for blog excerpts */
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}

@@ -45,6 +45,12 @@ const Footer = () => {
           >
             About
           </Link>
+          <Link 
+            href="/blog" 
+            className="btn-5 text-sm sm:text-base"
+          >
+            Blog
+          </Link>
         </div>
 
 
