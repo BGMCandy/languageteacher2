@@ -56,7 +56,7 @@ const ShimmerCard = ({ className = "" }: { className?: string }) => {
 
 
 export default function KanjiPosterClient() {
-  const [kanji, setKanji] = useState<JapaneseKanji[]>([])
+  const [kanji, setKanji] = useState<(JapaneseKanji | null)[]>(new Array(1945).fill(null))
   const [loading, setLoading] = useState(true)
   const [loadingMore, setLoadingMore] = useState(false)
   const [hasMore, setHasMore] = useState(true)
@@ -222,10 +222,20 @@ export default function KanjiPosterClient() {
       }
 
       if (moreKanji && moreKanji.length > 0) {
-        setKanji(prev => [...prev, ...moreKanji])
+        // Add kanji to the correct positions in the array
+        setKanji(prev => {
+          const newKanji = [...prev]
+          moreKanji.forEach((k, index) => {
+            const position = offset + index
+            if (position < totalKanjiCount) {
+              newKanji[position] = k
+            }
+          })
+          return newKanji
+        })
         setCurrentPage(prev => prev + 1)
         setHasMore(moreKanji.length === pageSize)
-        console.log(`Loaded ${moreKanji.length} more kanji. Total: ${kanji.length + moreKanji.length}`)
+        console.log(`Loaded ${moreKanji.length} more kanji. Total loaded: ${kanji.length + moreKanji.length}`)
       } else {
         setHasMore(false)
       }
@@ -235,7 +245,7 @@ export default function KanjiPosterClient() {
       setLoadingMore(false)
       setIsLoadingMore(false)
     }
-  }, [loadingMore, hasMore, isLoadingMore, currentPage, kanji.length])
+  }, [loadingMore, hasMore, isLoadingMore, currentPage, kanji.length, totalKanjiCount])
 
 
   // Scroll detection for infinite loading
@@ -349,7 +359,7 @@ export default function KanjiPosterClient() {
   }
 
   // Group kanji by level for level view
-  const groupedKanji = kanji.reduce((acc, k) => {
+  const groupedKanji = kanji.filter(k => k !== null).reduce((acc, k) => {
     const level = k.level || 'Unknown'
     if (!acc[level]) acc[level] = []
     acc[level].push(k)
@@ -507,74 +517,68 @@ export default function KanjiPosterClient() {
     setIsSheetExpanded(false) // Reset sheet to collapsed state
   }, [])
 
-  // Generate full grid with skeleton placeholders
+  // Generate full 1945 grid with loaded kanji and skeleton placeholders
   const generateFullGrid = useCallback(() => {
     const items = []
     
-    // Add loaded kanji
-    kanji.forEach((k, index) => {
+    // Generate all 1945 slots
+    for (let i = 0; i < totalKanjiCount; i++) {
       const groupSize = grouping !== 'none' ? parseInt(grouping) : 0
       const isInGroup = groupSize > 0
-      const groupIndex = Math.floor(index / groupSize)
+      const groupIndex = Math.floor(i / groupSize)
       const isAlternateGroup = groupIndex % 2 === 1
-      const isGroupEnd = isInGroup && ((index + 1) % groupSize === 0)
-      const isLastInRow = (index + 1) % (groupSize * Math.ceil(groupSize / 10)) === 0
+      const isGroupEnd = isInGroup && ((i + 1) % groupSize === 0)
+      const isLastInRow = (i + 1) % (groupSize * Math.ceil(groupSize / 10)) === 0
       
-      items.push(
-        <div
-          key={k.id}
-          className={`
-            aspect-square flex items-center justify-center 
-            cursor-pointer transition-all duration-200
-            ${condensedView === 'super-condensed' ? 'hover:bg-blue-100' : 'hover:bg-gray-100'}
-            ${getKanjiColor(k)}
-            ${isInGroup && isAlternateGroup ? 'bg-gray-50/30' : ''}
-            ${isInGroup && isGroupEnd ? 'mr-2' : ''}
-            ${isInGroup && isLastInRow ? 'mb-2' : ''}
-          `}
-          onClick={() => handleKanjiSelect(k)}
-          onMouseEnter={(e) => {
-            setTooltip({ kanji: k, x: e.clientX, y: e.clientY })
-          }}
-          onMouseLeave={() => setTooltip(null)}
-        >
-          <span className={`font-bold leading-none ${
-            condensedView === 'super-condensed'
-              ? 'text-[8px] sm:text-[10px]'
-              : 'text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]'
-          }`}>
-            {k.letter}
-          </span>
-        </div>
-      )
-    })
-    
-    // Add skeleton placeholders for remaining kanji
-    const remainingCount = totalKanjiCount - kanji.length
-    for (let i = 0; i < remainingCount; i++) {
-      const index = kanji.length + i
-      const groupSize = grouping !== 'none' ? parseInt(grouping) : 0
-      const isInGroup = groupSize > 0
-      const groupIndex = Math.floor(index / groupSize)
-      const isAlternateGroup = groupIndex % 2 === 1
-      const isGroupEnd = isInGroup && ((index + 1) % groupSize === 0)
-      const isLastInRow = (index + 1) % (groupSize * Math.ceil(groupSize / 10)) === 0
+      const loadedKanji = kanji[i]
       
-      items.push(
-        <div
-          key={`skeleton-${i}`}
-          className={`
-            aspect-square bg-gray-50 border border-gray-100 animate-pulse
-            ${isInGroup && isAlternateGroup ? 'bg-gray-100/30' : ''}
-            ${isInGroup && isGroupEnd ? 'mr-2' : ''}
-            ${isInGroup && isLastInRow ? 'mb-2' : ''}
-          `}
-          style={{
-            animationDelay: `${i * 20}ms`,
-            opacity: 0.4
-          }}
-        />
-      )
+      if (loadedKanji) {
+        // Render loaded kanji
+        items.push(
+          <div
+            key={loadedKanji.id}
+            className={`
+              aspect-square flex items-center justify-center 
+              cursor-pointer transition-all duration-200
+              ${condensedView === 'super-condensed' ? 'hover:bg-blue-100' : 'hover:bg-gray-100'}
+              ${getKanjiColor(loadedKanji)}
+              ${isInGroup && isAlternateGroup ? 'bg-gray-50/30' : ''}
+              ${isInGroup && isGroupEnd ? 'mr-2' : ''}
+              ${isInGroup && isLastInRow ? 'mb-2' : ''}
+            `}
+            onClick={() => handleKanjiSelect(loadedKanji)}
+            onMouseEnter={(e) => {
+              setTooltip({ kanji: loadedKanji, x: e.clientX, y: e.clientY })
+            }}
+            onMouseLeave={() => setTooltip(null)}
+          >
+            <span className={`font-bold leading-none ${
+              condensedView === 'super-condensed'
+                ? 'text-[8px] sm:text-[10px]'
+                : 'text-[12px] sm:text-[14px] md:text-[16px] lg:text-[18px] xl:text-[20px]'
+            }`}>
+              {loadedKanji.letter}
+            </span>
+          </div>
+        )
+      } else {
+        // Render skeleton placeholder
+        items.push(
+          <div
+            key={`skeleton-${i}`}
+            className={`
+              aspect-square bg-gray-50 border border-gray-100 animate-pulse
+              ${isInGroup && isAlternateGroup ? 'bg-gray-100/30' : ''}
+              ${isInGroup && isGroupEnd ? 'mr-2' : ''}
+              ${isInGroup && isLastInRow ? 'mb-2' : ''}
+            `}
+            style={{
+              animationDelay: `${i * 10}ms`,
+              opacity: 0.3
+            }}
+          />
+        )
+      }
     }
     
     return items
@@ -861,12 +865,12 @@ export default function KanjiPosterClient() {
                 {/* Progress indicator */}
                 <div className="mb-4 text-center">
                   <div className="text-sm text-gray-600 mb-2">
-                    {kanji.length} of {totalKanjiCount} kanji loaded
+                    {kanji.filter(k => k !== null).length} of {totalKanjiCount} kanji loaded
                   </div>
                   <div className="w-full bg-gray-200 rounded-full h-2">
                     <div 
                       className="bg-black h-2 rounded-full transition-all duration-500"
-                      style={{ width: `${(kanji.length / totalKanjiCount) * 100}%` }}
+                      style={{ width: `${(kanji.filter(k => k !== null).length / totalKanjiCount) * 100}%` }}
                     ></div>
                   </div>
                 </div>
