@@ -185,21 +185,6 @@ body {
 }
 
 /* Chinese Font Classes - Added for hanzi poster */
-.chinese-font {
-  font-family: "Noto Sans SC", "Noto Serif TC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "SimSun", "Arial Unicode MS", sans-serif;
-}
-
-.chinese-font-simplified {
-  font-family: "Noto Sans SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-}
-
-.chinese-font-traditional {
-  font-family: "Noto Serif TC", "PingFang TC", "Hiragino Sans TC", "Microsoft JhengHei", sans-serif;
-}
-
-.chinese-font-extended {
-  font-family: "Noto Sans SC", "Noto Serif TC", "Noto Sans JP", "Source Han Sans SC", "Source Han Serif SC", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "SimSun", "Arial Unicode MS", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
-}
 
 /* Line clamp utilities for blog excerpts */
 .line-clamp-3 {
