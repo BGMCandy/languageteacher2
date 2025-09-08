@@ -51,6 +51,10 @@ export async function GET() {
         
         console.log(`Simple query found ${simpleKanjiData?.length || 0} kanji characters`)
         
+        if (simpleError) {
+          console.error('Simple query error:', simpleError)
+        }
+        
         if (simpleKanjiData && simpleKanjiData.length > 0) {
           kanjiPages.push(...simpleKanjiData.map(item => ({
             url: `${baseUrl}/characters/kanji/${encodeURIComponent(item.character)}`,

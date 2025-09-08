@@ -1,5 +1,5 @@
 /* Optimized font loading - only load weights we actually use */
-@import url('https://fonts.googleapis.com/css2?family=Bangers&family=Fugaz+One&display=swap');
+/* Fonts are now loaded via Next.js font optimization */
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&family=Noto+Serif+TC:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
 @import "tailwindcss";
@@ -89,7 +89,7 @@ body {
 .btn-1:hover {
   background-color: black;
   color: white;
-  font-family: 'Fugaz One', cursive;
+  font-family: var(--font-fugaz-one), cursive;
 }
 
 .btn-2 {
@@ -112,7 +112,7 @@ body {
   background-color: transparent;
   color: black;
   font-weight: 100;
-  font-family: 'Fugaz One', cursive;
+  font-family: var(--font-fugaz-one), cursive;
 }
 
 .btn-3 {
@@ -166,7 +166,7 @@ body {
 /* Mobile touch equivalent */
 @media (hover: none) {
   .hover\:font-fugaz:active {
-    font-family: 'Bangers', cursive;
+    font-family: var(--font-bangers), cursive;
     letter-spacing: 0.3em;
   }
 }

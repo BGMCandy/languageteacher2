@@ -1,8 +1,23 @@
 import type { Metadata } from "next";
+import { Bangers, Fugaz_One } from "next/font/google";
 import "./globals.css";
 import Header from "./components/layout/header";
 import Footer from "./components/layout/footer";
 import { AuthProvider } from "@/contexts/AuthContext";
+
+const bangers = Bangers({
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-bangers",
+});
+
+const fugazOne = Fugaz_One({
+  weight: "400",
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-fugaz-one",
+});
 
 export const metadata: Metadata = {
   title: "Language Teacher - Learn Japanese, Thai & More",
@@ -15,21 +30,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <head>
-        {/* Preload critical fonts for better LCP */}
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link 
-          rel="preload" 
-          href="https://fonts.googleapis.com/css2?family=Bangers&family=Fugaz+One&display=swap" 
-          as="style" 
-        />
-        <link 
-          rel="stylesheet" 
-          href="https://fonts.googleapis.com/css2?family=Bangers&family=Fugaz+One&display=swap" 
-        />
-      </head>
+    <html lang="en" className={`${bangers.variable} ${fugazOne.variable}`}>
       <body className="antialiased">
         <AuthProvider>
           <Header />
