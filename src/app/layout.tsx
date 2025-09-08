@@ -16,6 +16,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        {/* Preload critical fonts for better LCP */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link 
+          rel="preload" 
+          href="https://fonts.googleapis.com/css2?family=Bangers&family=Fugaz+One&display=swap" 
+          as="style" 
+        />
+        <link 
+          rel="stylesheet" 
+          href="https://fonts.googleapis.com/css2?family=Bangers&family=Fugaz+One&display=swap" 
+        />
+      </head>
       <body className="antialiased">
         <AuthProvider>
           <Header />
