@@ -235,7 +235,7 @@ export default function KanjiPosterClient() {
         })
         setCurrentPage(prev => prev + 1)
         setHasMore(moreKanji.length === pageSize)
-        console.log(`Loaded ${moreKanji.length} more kanji. Total loaded: ${kanji.length + moreKanji.length}`)
+        console.log(`Loaded ${moreKanji.length} more kanji at positions ${offset}-${offset + moreKanji.length - 1}`)
       } else {
         setHasMore(false)
       }
@@ -245,7 +245,7 @@ export default function KanjiPosterClient() {
       setLoadingMore(false)
       setIsLoadingMore(false)
     }
-  }, [loadingMore, hasMore, isLoadingMore, currentPage, kanji.length, totalKanjiCount])
+  }, [loadingMore, hasMore, isLoadingMore, currentPage, totalKanjiCount])
 
 
   // Scroll detection for infinite loading
@@ -278,52 +278,16 @@ export default function KanjiPosterClient() {
   }, [loadMoreKanji, loadingMore, hasMore])
 
   useEffect(() => {
-    const fetchKanji = async () => {
-      try {
-        const supabase = createClientBrowser()
-        
-        // First get the total count
-        const { count, error: countError } = await supabase
-          .from('japanese_kanji')
-          .select('*', { count: 'exact', head: true })
-        
-        if (countError) {
-          console.error('Error getting count:', countError)
-          return
-        }
-        
-        console.log(`Total kanji in database: ${count}`)
-        
-        // Fetch first page of kanji
-        const pageSize = 100
-        const { data: allKanji, error: fetchError } = await supabase
-          .from('japanese_kanji')
-          .select('*')
-          .order('level')
-          .range(0, pageSize - 1)
-        
-        if (fetchError) {
-          console.error('Error fetching kanji:', fetchError)
-          return
-        }
-        
-        console.log(`Total fetched: ${allKanji?.length || 0} kanji characters`)
-        setKanji(allKanji || [])
-        setCurrentPage(1)
-        setHasMore((allKanji?.length || 0) === pageSize)
-        
-      } catch (err) {
-        console.error('Error:', err)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-
-
-    fetchKanji()
+    // Initialize the grid immediately - show full 1945 grid with skeleton placeholders
+    console.log('Initializing full 1945 grid with skeleton placeholders...')
+    setLoading(false) // Show the grid immediately
+    
+    // Fetch user performance data in background
     fetchUserPerformance()
-  }, [fetchUserPerformance])
+    
+    // Load first batch of kanji immediately
+    loadMoreKanji()
+  }, [fetchUserPerformance, loadMoreKanji])
 
   // Listen for storage events to refresh when user completes a quiz
   useEffect(() => {
