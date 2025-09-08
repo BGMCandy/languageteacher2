@@ -1,5 +1,13 @@
 import { Metadata } from 'next'
-import ThaiScriptPosterClient from './thai-script-poster-client'
+import dynamic from 'next/dynamic'
+
+const ThaiScriptPosterClient = dynamic(() => import('./thai-script-poster-client'), {
+  loading: () => (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-black"></div>
+    </div>
+  )
+})
 
 export const metadata: Metadata = {
   title: 'Thai Script Poster | Interactive Thai Alphabet Learning with Consonants, Vowels & Tones',

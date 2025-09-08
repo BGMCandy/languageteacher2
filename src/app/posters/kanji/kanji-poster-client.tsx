@@ -209,33 +209,20 @@ export default function KanjiPosterClient() {
         
         console.log(`Total kanji in database: ${count}`)
         
-        // Fetch all data in chunks to bypass any limits
-        let allKanji: JapaneseKanji[] = []
-        const chunkSize = 1000
-        let offset = 0
+        // Only fetch a reasonable amount for performance
+        const { data: allKanji, error: fetchError } = await supabase
+          .from('japanese_kanji')
+          .select('*')
+          .order('level')
+          .limit(200) // Limit to 200 most common kanji for performance
         
-        while (offset < (count || 0)) {
-          const { data: chunk, error: chunkError } = await supabase
-            .from('japanese_kanji')
-            .select('*')
-            .order('level')
-            .range(offset, offset + chunkSize - 1)
-          
-          if (chunkError) {
-            console.error('Error fetching chunk:', chunkError)
-            break
-          }
-          
-          if (chunk && chunk.length > 0) {
-            allKanji = [...allKanji, ...chunk]
-            console.log(`Fetched chunk: ${chunk.length} kanji (total: ${allKanji.length})`)
-          }
-          
-          offset += chunkSize
+        if (fetchError) {
+          console.error('Error fetching kanji:', fetchError)
+          return
         }
         
-        console.log(`Total fetched: ${allKanji.length} kanji characters`)
-        setKanji(allKanji)
+        console.log(`Total fetched: ${allKanji?.length || 0} kanji characters`)
+        setKanji(allKanji || [])
         
       } catch (err) {
         console.error('Error:', err)

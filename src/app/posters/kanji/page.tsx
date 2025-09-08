@@ -1,5 +1,13 @@
 import { Metadata } from 'next'
-import KanjiPosterClient from './kanji-poster-client'
+import dynamic from 'next/dynamic'
+
+const KanjiPosterClient = dynamic(() => import('./kanji-poster-client'), {
+  loading: () => (
+    <div className="flex items-center justify-center min-h-screen">
+      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-black"></div>
+    </div>
+  )
+})
 
 export const metadata: Metadata = {
   title: 'Japanese Kanji Poster | Interactive Kanji Learning with Performance Tracking',
