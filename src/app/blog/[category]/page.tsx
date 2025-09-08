@@ -4,16 +4,17 @@ import { notFound } from 'next/navigation'
 import { getCategoryBySlug, getEntriesByCategory, formatDate } from '@/lib/blog'
 
 interface CategoryPageProps {
-  params: {
+  params: Promise<{
     category: string
-  }
+  }>
 }
 
 export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
-  const category = getCategoryBySlug(params.category)
-  const entries = getEntriesByCategory(params.category)
+  const { category } = await params
+  const categoryData = getCategoryBySlug(category)
+  const entries = getEntriesByCategory(category)
   
-  if (!category) {
+  if (!categoryData) {
     return {
       title: 'Category Not Found | Language Teacher Blog',
       description: 'The requested blog category could not be found.',
@@ -21,22 +22,22 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
     }
   }
 
-  const categoryDescription = `${category.description} Browse ${entries.length} ${entries.length === 1 ? 'article' : 'articles'} in the ${category.title.toLowerCase()} category.`
+  const categoryDescription = `${categoryData.description} Browse ${entries.length} ${entries.length === 1 ? 'article' : 'articles'} in the ${categoryData.title.toLowerCase()} category.`
 
   return {
-    title: `${category.title} | Language Teacher Blog`,
+    title: `${categoryData.title} | Language Teacher Blog`,
     description: categoryDescription,
-    keywords: `${category.title.toLowerCase()}, blog, articles, ${category.title.toLowerCase().replace(' ', '-')}`,
+    keywords: `${categoryData.title.toLowerCase()}, blog, articles, ${categoryData.title.toLowerCase().replace(' ', '-')}`,
     openGraph: {
-      title: `${category.title} | Language Teacher Blog`,
+      title: `${categoryData.title} | Language Teacher Blog`,
       description: categoryDescription,
       type: 'website',
-      url: `/blog/${params.category}`,
+      url: `/blog/${category}`,
       siteName: 'Language Teacher'
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${category.title} | Language Teacher Blog`,
+      title: `${categoryData.title} | Language Teacher Blog`,
       description: categoryDescription
     },
     robots: {
@@ -44,16 +45,17 @@ export async function generateMetadata({ params }: CategoryPageProps): Promise<M
       follow: true
     },
     alternates: {
-      canonical: `/blog/${params.category}`
+      canonical: `/blog/${category}`
     }
   }
 }
 
-export default function CategoryPage({ params }: CategoryPageProps) {
-  const category = getCategoryBySlug(params.category)
-  const entries = getEntriesByCategory(params.category)
+export default async function CategoryPage({ params }: CategoryPageProps) {
+  const { category } = await params
+  const categoryData = getCategoryBySlug(category)
+  const entries = getEntriesByCategory(category)
 
-  if (!category) {
+  if (!categoryData) {
     notFound()
   }
 
@@ -70,12 +72,12 @@ export default function CategoryPage({ params }: CategoryPageProps) {
           </Link>
           
           <div className="flex items-center mb-4">
-            <div className={`w-16 h-16 ${category.color} rounded-lg flex items-center justify-center text-3xl mr-6`}>
-              {category.icon}
+            <div className={`w-16 h-16 ${categoryData.color} rounded-lg flex items-center justify-center text-3xl mr-6`}>
+              {categoryData.icon}
             </div>
             <div>
-              <h1 className="text-4xl font-bold text-gray-900">{category.title}</h1>
-              <p className="text-xl text-gray-600 mt-2">{category.description}</p>
+              <h1 className="text-4xl font-bold text-gray-900">{categoryData.title}</h1>
+              <p className="text-xl text-gray-600 mt-2">{categoryData.description}</p>
             </div>
           </div>
         </div>
@@ -90,7 +92,7 @@ export default function CategoryPage({ params }: CategoryPageProps) {
             entries.map((entry) => (
               <Link
                 key={entry.slug}
-                href={`/blog/${params.category}/${entry.slug}`}
+                href={`/blog/${category}/${entry.slug}`}
                 className="block bg-white rounded-lg shadow-md hover:shadow-lg transition-shadow duration-200 p-6 group"
               >
                 <div className="flex justify-between items-start mb-3">
