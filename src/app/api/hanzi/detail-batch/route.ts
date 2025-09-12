@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     const detailsMap = data?.reduce((acc, item) => {
       acc[item.char] = item
       return acc
-    }, {} as Record<string, any>) || {}
+    }, {} as Record<string, unknown>) || {}
 
     // Set cache headers for performance
     const response = NextResponse.json(detailsMap)

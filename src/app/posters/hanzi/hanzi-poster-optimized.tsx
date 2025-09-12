@@ -255,8 +255,8 @@ export default function HanziPosterOptimized() {
                 padding: '4px',
               }}
             >
-              {Array.from({ length: COLS }).map((_, colIndex) => {
-                const itemIndex = virtualRow.index * COLS + colIndex
+              {Array.from({ length: COLS }).map((_, _colIndex) => {
+                const itemIndex = virtualRow.index * COLS + _colIndex
                 const item = tiles[itemIndex]
                 
                 if (!item) return null

@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react'
 
 export default function HanziPosterDebug() {
   const [status, setStatus] = useState('Starting...')
-  const [data, setData] = useState<any>(null)
+  const [data, setData] = useState<unknown>(null)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export default function HanziPosterDebug() {
         <div>
           <h2 className="text-xl font-semibold mb-2">Characters:</h2>
           <div className="grid grid-cols-10 gap-2">
-            {data.items.map((item: any, index: number) => (
+            {data.items.map((item: { char: string }, index: number) => (
               <div
                 key={index}
                 className="aspect-square border-2 border-gray-300 flex items-center justify-center text-lg font-medium"

@@ -28,7 +28,6 @@ export default function HanziPosterClient() {
   const [condensedView, setCondensedView] = useState<'comfortable' | 'super-condensed'>('comfortable')
   
   const preloadTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
-  const intersectionObserverRef = useRef<IntersectionObserver | undefined>(undefined)
 
 
 
