@@ -24,6 +24,7 @@
     "@supabase/auth-helpers-nextjs": "^0.10.0",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.57.0",
+    "@tanstack/react-virtual": "^3.13.12",
     "cheerio": "^1.1.2",
     "csv-parse": "^6.1.0",
     "dotenv": "^17.2.2",

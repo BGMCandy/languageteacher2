@@ -1,81 +1,154 @@
 'use client'
 
-import { useEffect, useState, useCallback, useRef, useMemo } from 'react'
-import { createClientBrowser, ChineseHanzi } from '@/lib/supabase'
+import { useEffect, useState, useCallback, useRef } from 'react'
+import { ChineseHanzi } from '@/lib/supabase'
 import DetailsCard from './components/detailsCard'
 
-// Cache for character details
-const characterCache = new Map<string, ChineseHanzi>()
+// Types for our optimized data
+interface HanziGridItem {
+  char: string
+  has_definition: boolean
+  has_pinyin: boolean
+}
+
+// Global caches
+const detailCache = new Map<string, ChineseHanzi>()
 const preloadQueue = new Set<string>()
 
-// Skeleton component for hanzi grid
-const HanziSkeleton = () => (
-  <div className="grid grid-cols-8 sm:grid-cols-12 md:grid-cols-16 lg:grid-cols-20 xl:grid-cols-24 gap-1 sm:gap-2">
-    {Array.from({ length: 200 }).map((_, i) => (
-      <div key={i} className="aspect-square bg-gray-100 border border-gray-200 animate-pulse"></div>
-    ))}
-  </div>
-)
-
-
-
-export default function HanziPosterClient() {
-  const [hanzi, setHanzi] = useState<ChineseHanzi[]>([])
+export default function HanziPosterSimple() {
+  const [tiles, setTiles] = useState<HanziGridItem[]>([])
   const [loading, setLoading] = useState(true)
   const [selectedHanzi, setSelectedHanzi] = useState<ChineseHanzi | null>(null)
-  const [tooltip, setTooltip] = useState<{ hanzi: ChineseHanzi; x: number; y: number } | null>(null)
+  const [tooltip, setTooltip] = useState<{ hanzi: HanziGridItem; x: number; y: number } | null>(null)
   const [viewMode, setViewMode] = useState<'definition' | 'pronunciation'>('definition')
   const [condensedView, setCondensedView] = useState<'comfortable' | 'super-condensed'>('comfortable')
+  const [totalCount, setTotalCount] = useState(0)
   
   const preloadTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
-  const intersectionObserverRef = useRef<IntersectionObserver | undefined>(undefined)
 
-
-
-  // Progressive loading: Start with just characters, load details on demand
+  // Load initial tile
   useEffect(() => {
-    const fetchInitialHanzi = async () => {
+    const loadInitialTile = async () => {
       try {
         setLoading(true)
-        const supabase = createClientBrowser()
+        console.log('🚀 Loading initial hanzi characters...')
         
-        console.log('🚀 Loading initial hanzi characters (characters only)...')
+        const response = await fetch(`/api/hanzi/grid?offset=0&limit=2400&view=${viewMode}`)
+        const data = await response.json()
         
-        // Load ALL characters but only the char field first - this is still fast
-        const { data, error } = await supabase
-          .from('hanzi_characters')
-          .select('char')
-          .not('kdefinition', 'is', null)
-          .order('char')
+        console.log('API Response:', data)
         
-        if (error) {
-          console.error('Error fetching initial characters:', error)
-          return
+        if (data.items) {
+          setTiles(data.items)
+          setTotalCount(data.total)
+          console.log(`⚡ Loaded ${data.items.length} characters!`)
+        } else {
+          console.error('No items in response:', data)
         }
-        
-        if (data) {
-          // Create minimal hanzi objects with just the character
-          const initialHanzi = data.map(h => ({
-            char: h.char,
-            kdefinition: undefined,
-            kmandarin: undefined,
-            name: undefined
-          } as ChineseHanzi))
-          
-          setHanzi(initialHanzi)
-          console.log(`⚡ Loaded ${initialHanzi.length} characters instantly!`)
-        }
-        
-        setLoading(false)
-        console.log(`🎉 All characters loaded instantly!`)
-        
       } catch (error) {
-        console.error('Error:', error)
+        console.error('Error loading initial tile:', error)
+      } finally {
         setLoading(false)
       }
     }
 
-    fetchInitialHanzi()
+    loadInitialTile()
+  }, [viewMode])
+
+  // Preload character details on hover
+  const preloadCharacterDetails = useCallback(async (char: string) => {
+    if (detailCache.has(char) || preloadQueue.has(char)) return
+    
+    preloadQueue.add(char)
+    
+    try {
+      const response = await fetch(`/api/hanzi/detail?char=${encodeURIComponent(char)}`)
+      const data = await response.json()
+      
+      if (data && !data.error) {
+        detailCache.set(char, data)
+        console.log(`💾 Cached details for: ${char}`)
+      }
+    } catch (error) {
+      console.error(`Error preloading ${char}:`, error)
+    } finally {
+      preloadQueue.delete(char)
+    }
+  }, [])
+
+  // Get color for hanzi based on view mode
+  const getHanziColor = useCallback((item: HanziGridItem) => {
+    if (viewMode === 'pronunciation') {
+      return item.has_pinyin 
+        ? 'bg-green-100 text-green-800 border-green-200'
+        : 'bg-gray-100 text-gray-600 border-gray-200'
+    } else {
+      return item.has_definition 
+        ? 'bg-blue-100 text-blue-800 border-blue-200'
+        : 'bg-gray-100 text-gray-600 border-gray-200'
+    }
+  }, [viewMode])
+
+  // Handle hanzi click with smart caching
+  const handleHanziClick = useCallback(async (item: HanziGridItem) => {
+    // If we have cached data, use it immediately
+    if (detailCache.has(item.char)) {
+      const cachedHanzi = detailCache.get(item.char)!
+      setSelectedHanzi(cachedHanzi)
+      return
+    }
+    
+    // Otherwise, fetch the full data
+    try {
+      const response = await fetch(`/api/hanzi/detail?char=${encodeURIComponent(item.char)}`)
+      const data = await response.json()
+      
+      if (data && !data.error) {
+        detailCache.set(item.char, data)
+        setSelectedHanzi(data)
+      } else {
+        // Fallback to basic data
+        setSelectedHanzi({
+          char: item.char,
+          kdefinition: item.has_definition ? 'Loading...' : undefined,
+          kmandarin: item.has_pinyin ? ['Loading...'] : undefined
+        } as ChineseHanzi)
+      }
+    } catch (error) {
+      console.error(`Error fetching details for ${item.char}:`, error)
+      setSelectedHanzi({
+        char: item.char,
+        kdefinition: item.has_definition ? 'Error loading' : undefined,
+        kmandarin: item.has_pinyin ? ['Error loading'] : undefined
+      } as ChineseHanzi)
+    }
+  }, [])
+
+  // Handle mouse enter for tooltip and preloading
+  const handleMouseEnter = useCallback((item: HanziGridItem, event: React.MouseEvent) => {
+    const rect = event.currentTarget.getBoundingClientRect()
+    setTooltip({
+      hanzi: item,
+      x: rect.left + rect.width / 2,
+      y: rect.top - 10
+    })
+    
+    // Preload character details after a short delay
+    if (preloadTimeoutRef.current) {
+      clearTimeout(preloadTimeoutRef.current)
+    }
+    
+    preloadTimeoutRef.current = setTimeout(() => {
+      preloadCharacterDetails(item.char)
+    }, 200) // 200ms delay
+  }, [preloadCharacterDetails])
+
+  // Handle mouse leave
+  const handleMouseLeave = useCallback(() => {
+    setTooltip(null)
+    if (preloadTimeoutRef.current) {
+      clearTimeout(preloadTimeoutRef.current)
+    }
   }, [])
 
   // Cleanup timeouts on unmount
@@ -87,155 +160,25 @@ export default function HanziPosterClient() {
     }
   }, [])
 
-
-  // Preload character details on hover
-  const preloadCharacterDetails = useCallback(async (char: string) => {
-    if (characterCache.has(char) || preloadQueue.has(char)) return
-    
-    preloadQueue.add(char)
-    
-    try {
-      const supabase = createClientBrowser()
-      const { data, error } = await supabase
-        .from('hanzi_characters')
-        .select('*')
-        .eq('char', char)
-        .single()
-      
-      if (data && !error) {
-        characterCache.set(char, data)
-        console.log(`💾 Cached details for: ${char}`)
-      }
-    } catch (error) {
-      console.error(`Error preloading ${char}:`, error)
-    } finally {
-      preloadQueue.delete(char)
-    }
-  }, [])
-
-  // Get color for hanzi based on view mode
-  const getHanziColor = useCallback((hanzi: ChineseHanzi) => {
-    if (viewMode === 'pronunciation') {
-      if (hanzi.kmandarin && hanzi.kmandarin.length > 0) {
-        return 'bg-green-100 text-green-800 border-green-200'
-      }
-      return 'bg-gray-100 text-gray-600 border-gray-200'
-    } else {
-      if (hanzi.kdefinition) {
-        return 'bg-blue-100 text-blue-800 border-blue-200'
-      }
-      return 'bg-gray-100 text-gray-600 border-gray-200'
-    }
-  }, [viewMode])
-
-  // Handle hanzi click with smart caching
-  const handleHanziClick = useCallback(async (hanzi: ChineseHanzi) => {
-    // If we have cached data, use it immediately
-    if (characterCache.has(hanzi.char)) {
-      const cachedHanzi = characterCache.get(hanzi.char)!
-      setSelectedHanzi(cachedHanzi)
-      return
-    }
-    
-    // Otherwise, fetch the full data
-    try {
-      const supabase = createClientBrowser()
-      const { data, error } = await supabase
-        .from('hanzi_characters')
-        .select('*')
-        .eq('char', hanzi.char)
-        .single()
-      
-      if (data && !error) {
-        characterCache.set(hanzi.char, data)
-        setSelectedHanzi(data)
-      } else {
-        setSelectedHanzi(hanzi) // Fallback to basic data
-      }
-    } catch (error) {
-      console.error(`Error fetching details for ${hanzi.char}:`, error)
-      setSelectedHanzi(hanzi) // Fallback to basic data
-    }
-  }, [])
-
-  // Handle mouse enter for tooltip and preloading
-  const handleMouseEnter = useCallback((hanzi: ChineseHanzi, event: React.MouseEvent) => {
-    const rect = event.currentTarget.getBoundingClientRect()
-    setTooltip({
-      hanzi,
-      x: rect.left + rect.width / 2,
-      y: rect.top - 10
-    })
-    
-    // Preload character details after a short delay
-    if (preloadTimeoutRef.current) {
-      clearTimeout(preloadTimeoutRef.current)
-    }
-    
-    preloadTimeoutRef.current = setTimeout(() => {
-      preloadCharacterDetails(hanzi.char)
-    }, 300) // 300ms delay to avoid excessive requests
-  }, [preloadCharacterDetails])
-
-  // Handle mouse leave
-  const handleMouseLeave = useCallback(() => {
-    setTooltip(null)
-    if (preloadTimeoutRef.current) {
-      clearTimeout(preloadTimeoutRef.current)
-    }
-  }, [])
-
-  // Memoized grid rendering for performance
-  const hanziGrid = useMemo(() => {
-    if (loading) {
-      return <HanziSkeleton />
-    }
-
-    const gridCols = condensedView === 'super-condensed' 
-      ? 'grid-cols-16 sm:grid-cols-20 md:grid-cols-24 lg:grid-cols-28 xl:grid-cols-32 2xl:grid-cols-40'
-      : 'grid-cols-12 sm:grid-cols-16 md:grid-cols-20 lg:grid-cols-24 xl:grid-cols-28 2xl:grid-cols-32'
-
-    const gap = condensedView === 'super-condensed' ? 'gap-0.5 sm:gap-1' : 'gap-1 sm:gap-2'
-
-    return (
-      <div className={`grid ${gridCols} ${gap} w-max mx-auto`}>
-        {hanzi.map((h, index) => (
-          <button
-            key={`${h.char}-${index}`}
-            onClick={() => handleHanziClick(h)}
-            onMouseEnter={(e) => handleMouseEnter(h, e)}
-            onMouseLeave={handleMouseLeave}
-            className={`
-              aspect-square border-2 transition-all duration-200 hover:scale-105 hover:z-10 relative cursor-pointer
-              ${getHanziColor(h)}
-              ${condensedView === 'super-condensed' ? 'text-xs' : 'text-sm sm:text-base'}
-              font-medium flex items-center justify-center chinese-font-extended
-            `}
-          >
-            {h.char}
-          </button>
-        ))}
-      </div>
-    )
-  }, [hanzi, loading, condensedView, getHanziColor, handleHanziClick, handleMouseEnter, handleMouseLeave])
-
-
-
-
   if (loading) {
     return (
       <div className="bg-white min-h-screen">
-        <div className="max-w-7xl mx-auto px-4 sm:px-8 py-16">
-          <div className="text-center mb-8">
-            <div className="w-12 h-12 bg-gray-200 animate-pulse mx-auto mb-4"></div>
-            <div className="h-8 bg-gray-200 animate-pulse w-64 mx-auto mb-2"></div>
-            <div className="h-4 bg-gray-200 animate-pulse w-96 mx-auto"></div>
+        <div className="w-full px-4 sm:px-8">
+          <div className="text-center py-16">
+            <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-black mx-auto"></div>
+            <p className="mt-4 text-gray-600">Loading characters...</p>
           </div>
-          <HanziSkeleton />
         </div>
       </div>
     )
   }
+
+  const gridCols = condensedView === 'super-condensed' 
+    ? 'grid-cols-16 sm:grid-cols-20 md:grid-cols-24 lg:grid-cols-28 xl:grid-cols-32 2xl:grid-cols-40'
+    : 'grid-cols-12 sm:grid-cols-16 md:grid-cols-20 lg:grid-cols-24 xl:grid-cols-28 2xl:grid-cols-32'
+
+  const gap = condensedView === 'super-condensed' ? 'gap-0.5 sm:gap-1' : 'gap-1 sm:gap-2'
+  const fontSize = condensedView === 'super-condensed' ? 'text-xs' : 'text-sm sm:text-base'
 
   return (
     <div className="bg-white min-h-screen">
@@ -243,7 +186,6 @@ export default function HanziPosterClient() {
         {/* Header */}
         <div className="text-center py-16">
           <div className="flex items-center justify-center space-x-4 mb-3 sm:mb-6">
-            {/* Sharp geometric logo */}
             <div className="w-12 h-12 bg-black relative">
               <div className="absolute inset-0 bg-white" style={{ clipPath: 'polygon(0 0, 100% 0, 80% 100%, 0 100%)' }}></div>
               <div className="absolute inset-0 bg-black" style={{ clipPath: 'polygon(20% 0, 100% 0, 100% 100%, 0 100%)' }}></div>
@@ -256,11 +198,9 @@ export default function HanziPosterClient() {
           <p className="text-gray-600 tracking-wide">
             Explore Chinese characters with definitions and pronunciations.
           </p>
-          {!loading && (
-            <p className="text-sm text-gray-500 mt-2">
-              Showing {hanzi.length.toLocaleString()} characters
-            </p>
-          )}
+          <p className="text-sm text-gray-500 mt-2">
+            Showing {tiles.length.toLocaleString()} of {totalCount.toLocaleString()} characters
+          </p>
         </div>
         
         {/* View Toggle */}
@@ -314,22 +254,45 @@ export default function HanziPosterClient() {
               CONDENSED
             </button>
           </div>
-
-
         </div>
 
         {/* Main Content */}
         <div className="flex flex-col lg:flex-row gap-8">
           {/* Hanzi Grid */}
           <div className="flex-1 overflow-x-auto">
-            {hanziGrid}
+            <div className={`grid ${gridCols} ${gap} w-max mx-auto`}>
+              {tiles.map((item, index) => (
+                <button
+                  key={`${item.char}-${index}`}
+                  onClick={() => handleHanziClick(item)}
+                  onMouseEnter={(e) => handleMouseEnter(item, e)}
+                  onMouseLeave={handleMouseLeave}
+                  className={`
+                    aspect-square border-2 transition-all duration-200 hover:scale-105 hover:z-10 relative cursor-pointer
+                    ${getHanziColor(item)}
+                    ${fontSize}
+                    font-medium flex items-center justify-center chinese-font-extended
+                  `}
+                >
+                  {item.char}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Details Card */}
           <DetailsCard
             selectedHanzi={selectedHanzi}
             viewMode={viewMode}
-            getHanziColor={getHanziColor}
+            getHanziColor={(hanzi) => {
+              // Convert ChineseHanzi to HanziGridItem for color calculation
+              const item: HanziGridItem = {
+                char: hanzi.char,
+                has_definition: !!hanzi.kdefinition,
+                has_pinyin: !!(hanzi.kmandarin && hanzi.kmandarin.length > 0)
+              }
+              return getHanziColor(item)
+            }}
           />
         </div>
 
@@ -344,18 +307,16 @@ export default function HanziPosterClient() {
             }}
           >
             <div className="font-bold">{tooltip.hanzi.char}</div>
-            {viewMode === 'definition' && tooltip.hanzi.kdefinition && (
-              <div>{tooltip.hanzi.kdefinition}</div>
+            {viewMode === 'definition' && tooltip.hanzi.has_definition && (
+              <div>Has definition</div>
             )}
-            {viewMode === 'pronunciation' && tooltip.hanzi.kmandarin && tooltip.hanzi.kmandarin.length > 0 && (
-              <div>{tooltip.hanzi.kmandarin[0]}</div>
+            {viewMode === 'pronunciation' && tooltip.hanzi.has_pinyin && (
+              <div>Has pronunciation</div>
             )}
             <div className="absolute top-full left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-2 border-r-2 border-t-2 border-transparent border-t-black"></div>
           </div>
         )}
       </div>
-
-
     </div>
   )
 }
