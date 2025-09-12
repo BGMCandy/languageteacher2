@@ -40,20 +40,20 @@ export default function HanziPosterDebug() {
         {error && <p className="text-red-600"><strong>Error:</strong> {error}</p>}
       </div>
 
-      {data && (
+      {data && typeof data === 'object' ? (
         <div className="mb-4">
           <h2 className="text-xl font-semibold mb-2">API Response:</h2>
           <pre className="bg-gray-100 p-4 rounded overflow-auto">
             {JSON.stringify(data, null, 2)}
           </pre>
         </div>
-      )}
+      ) : null}
 
-      {data?.items && (
+      {(data as { items?: unknown[] })?.items && (
         <div>
           <h2 className="text-xl font-semibold mb-2">Characters:</h2>
           <div className="grid grid-cols-10 gap-2">
-            {data.items.map((item: { char: string }, index: number) => (
+            {(data as { items: { char: string }[] }).items.map((item: { char: string }, index: number) => (
               <div
                 key={index}
                 className="aspect-square border-2 border-gray-300 flex items-center justify-center text-lg font-medium"

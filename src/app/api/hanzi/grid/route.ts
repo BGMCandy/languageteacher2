@@ -10,19 +10,12 @@ export async function GET(request: NextRequest) {
 
     const supabase = createClientBrowser()
 
-    // Build the query based on view mode
-    let query = supabase
+    // Build the query - show all characters for now
+    const query = supabase
       .from('hanzi_characters')
       .select('char, kdefinition, kmandarin')
       .order('char')
       .range(offset, offset + limit - 1)
-
-    // Apply view-specific filtering
-    if (view === 'definition') {
-      query = query.not('kdefinition', 'is', null)
-    } else if (view === 'pronunciation') {
-      query = query.not('kmandarin', 'is', null)
-    }
 
     const { data, error } = await query
 
@@ -42,7 +35,6 @@ export async function GET(request: NextRequest) {
     const { count } = await supabase
       .from('hanzi_characters')
       .select('*', { count: 'exact', head: true })
-      .not('kdefinition', 'is', null)
 
     return NextResponse.json({
       items,

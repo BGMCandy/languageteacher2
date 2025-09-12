@@ -142,7 +142,7 @@ export default function HanziPosterOptimized() {
   }, [viewMode])
 
   // Handle hanzi click with smart caching
-  const handleHanziClick = useCallback(async (item: HanziGridItem, index: number) => {
+  const handleHanziClick = useCallback(async (item: HanziGridItem) => {
     // If we have cached data, use it immediately
     if (detailCache.has(item.char)) {
       const cachedHanzi = detailCache.get(item.char)!
@@ -264,7 +264,7 @@ export default function HanziPosterOptimized() {
                 return (
                   <button
                     key={itemIndex}
-                    onClick={() => handleHanziClick(item, itemIndex)}
+                    onClick={() => handleHanziClick(item)}
                     onMouseEnter={(e) => handleMouseEnter(item, itemIndex, e)}
                     onMouseLeave={handleMouseLeave}
                     className={`

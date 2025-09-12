@@ -23,6 +23,8 @@ export default function HanziPosterSimple() {
   const [viewMode, setViewMode] = useState<'definition' | 'pronunciation'>('definition')
   const [condensedView, setCondensedView] = useState<'comfortable' | 'super-condensed'>('comfortable')
   const [totalCount, setTotalCount] = useState(0)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [hasMore, setHasMore] = useState(true)
   
   const preloadTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined)
 
@@ -33,7 +35,7 @@ export default function HanziPosterSimple() {
         setLoading(true)
         console.log('🚀 Loading initial hanzi characters...')
         
-        const response = await fetch(`/api/hanzi/grid?offset=0&limit=2400&view=${viewMode}`)
+        const response = await fetch(`/api/hanzi/grid?offset=0&limit=10000&view=${viewMode}`)
         const data = await response.json()
         
         console.log('API Response:', data)
@@ -41,7 +43,8 @@ export default function HanziPosterSimple() {
         if (data.items) {
           setTiles(data.items)
           setTotalCount(data.total)
-          console.log(`⚡ Loaded ${data.items.length} characters!`)
+          setHasMore(data.hasMore)
+          console.log(`⚡ Loaded ${data.items.length} characters! Total: ${data.total}`)
         } else {
           console.error('No items in response:', data)
         }
@@ -75,6 +78,29 @@ export default function HanziPosterSimple() {
       preloadQueue.delete(char)
     }
   }, [])
+
+  // Load more characters
+  const loadMoreCharacters = useCallback(async () => {
+    if (loadingMore || !hasMore) return
+    
+    try {
+      setLoadingMore(true)
+      const response = await fetch(`/api/hanzi/grid?offset=${tiles.length}&limit=10000&view=${viewMode}`)
+      const data = await response.json()
+      
+      if (data.items && data.items.length > 0) {
+        setTiles(prev => [...prev, ...data.items])
+        setHasMore(data.hasMore)
+        console.log(`📦 Loaded ${data.items.length} more characters! Total loaded: ${tiles.length + data.items.length}`)
+      } else {
+        setHasMore(false)
+      }
+    } catch (error) {
+      console.error('Error loading more characters:', error)
+    } finally {
+      setLoadingMore(false)
+    }
+  }, [tiles.length, viewMode, loadingMore, hasMore])
 
   // Get color for hanzi based on view mode
   const getHanziColor = useCallback((item: HanziGridItem) => {
@@ -182,7 +208,7 @@ export default function HanziPosterSimple() {
 
   return (
     <div className="bg-white min-h-screen">
-      <div className="w-full px-4 sm:px-8">
+      <div className="w-full px-4 sm:px-8 pb-16">
         {/* Header */}
         <div className="text-center py-16">
           <div className="flex items-center justify-center space-x-4 mb-3 sm:mb-6">
@@ -278,6 +304,19 @@ export default function HanziPosterSimple() {
                 </button>
               ))}
             </div>
+            
+            {/* Load More Button */}
+            {hasMore && (
+              <div className="flex justify-center mt-8 mb-4">
+                <button
+                  onClick={loadMoreCharacters}
+                  disabled={loadingMore}
+                  className="px-6 py-3 bg-black text-white font-medium tracking-wider border-2 border-black hover:bg-white hover:text-black transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {loadingMore ? 'Loading...' : 'Load More Characters'}
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Details Card */}
