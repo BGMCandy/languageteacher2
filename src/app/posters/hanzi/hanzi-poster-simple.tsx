@@ -128,20 +128,21 @@ export default function HanziPosterSimple() {
       setLoadingMore(true)
       console.log(`🔄 Loading characters for Grade ${grade}...`)
       
-      // Load a larger batch to get more characters from this specific grade
-      const response = await fetch(`/api/hanzi/grid?offset=${tiles.length}&limit=5000&view=${viewMode}`)
+      // Load characters specifically for this grade using the new grade parameter
+      const response = await fetch(`/api/hanzi/grid?offset=0&limit=1000&grade=${grade}&view=${viewMode}`)
       const data = await response.json()
       
       if (data.items && data.items.length > 0) {
         setTiles(prev => {
-          const newTiles = [...prev, ...data.items]
-          const gradeCharacters = newTiles.filter(item => item.grade_level === grade)
-          console.log(`📦 Loaded ${data.items.length} more characters! Found ${gradeCharacters.length} Grade ${grade} characters`)
+          // Remove any existing characters from this grade to avoid duplicates
+          const filteredTiles = prev.filter(item => item.grade_level !== grade)
+          const newTiles = [...filteredTiles, ...data.items]
+          console.log(`📦 Loaded ${data.items.length} Grade ${grade} characters! Total characters: ${newTiles.length}`)
           return newTiles
         })
         setHasMore(data.hasMore)
       } else {
-        setHasMore(false)
+        console.log(`⚠️ No characters found for Grade ${grade}`)
       }
     } catch (error) {
       console.error(`Error loading Grade ${grade} characters:`, error)

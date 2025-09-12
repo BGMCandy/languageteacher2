@@ -24,7 +24,7 @@ export default function Header() {
 
         {/* Desktop Navigation */}
         <nav className="hidden md:flex items-center">
-          <div className="grid grid-cols-6 w-full gap-3">
+          <div className="grid grid-cols-7 w-full gap-3">
             <Link 
               href="/quiz" 
               className={`btn-2  ${
@@ -56,6 +56,14 @@ export default function Header() {
               }`}
             >
               CHARACTERS
+            </Link>
+            <Link 
+              href="/phrases" 
+              className={`btn-2  ${
+                isActive('/phrases') ? 'border-b-2 border-black' : ''
+              }`}
+            >
+              PHRASES
             </Link>
             <Link 
               href="/progress" 
@@ -168,6 +176,17 @@ export default function Header() {
                   QUIZ
                 </Link>
                 <Link
+                  href="/posters"
+                  className={`block w-full px-6 py-4 text-lg font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
+                    isActive('/posters') 
+                      ? 'bg-black text-white border-black shadow-lg' 
+                      : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  POSTERS
+                </Link>
+                <Link
                   href="/dictionary"
                   className={`block w-full px-6 py-4 text-lg font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
                     isActive('/dictionary') 
@@ -177,6 +196,17 @@ export default function Header() {
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
                   DICTIONARY
+                </Link>
+                <Link
+                  href="/phrases"
+                  className={`block w-full px-6 py-4 text-lg font-medium tracking-wider transition-all duration-200 border-2 text-center rounded-none ${
+                    isActive('/phrases') 
+                      ? 'bg-black text-white border-black shadow-lg' 
+                      : 'text-black border-black hover:bg-black hover:text-white hover:shadow-lg'
+                  }`}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  PHRASES
                 </Link>
                 <Link
                   href="/progress"

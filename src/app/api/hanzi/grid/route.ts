@@ -6,13 +6,22 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const offset = parseInt(searchParams.get('offset') || '0')
     const limit = parseInt(searchParams.get('limit') || '2400')
+    const grade = searchParams.get('grade') // New parameter for grade-specific loading
 
     const supabase = createClientBrowser()
 
     // Build the query - sort by kGradeLevel from properties JSON
-    const query = supabase
+    let query = supabase
       .from('hanzi_characters')
       .select('char, kdefinition, kmandarin, properties')
+
+    // If grade is specified, filter by that grade
+    if (grade) {
+      query = query.eq('properties->>kGradeLevel', grade)
+    }
+
+    // Apply ordering and pagination
+    query = query
       .order('properties->kGradeLevel', { ascending: true, nullsLast: true })
       .range(offset, offset + limit - 1)
 
@@ -37,9 +46,15 @@ export async function GET(request: NextRequest) {
     }) || []
 
     // Get total count for pagination
-    const { count } = await supabase
+    let countQuery = supabase
       .from('hanzi_characters')
       .select('*', { count: 'exact', head: true })
+    
+    if (grade) {
+      countQuery = countQuery.eq('properties->>kGradeLevel', grade)
+    }
+    
+    const { count } = await countQuery
 
     return NextResponse.json({
       items,
