@@ -6,15 +6,14 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const offset = parseInt(searchParams.get('offset') || '0')
     const limit = parseInt(searchParams.get('limit') || '2400')
-    const view = searchParams.get('view') || 'definition'
 
     const supabase = createClientBrowser()
 
-    // Build the query - show all characters for now
+    // Build the query - sort by kGradeLevel from properties JSON
     const query = supabase
       .from('hanzi_characters')
-      .select('char, kdefinition, kmandarin')
-      .order('char')
+      .select('char, kdefinition, kmandarin, properties')
+      .order('properties->kGradeLevel', { ascending: true, nullsLast: true })
       .range(offset, offset + limit - 1)
 
     const { data, error } = await query
@@ -24,12 +23,18 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: 'Failed to fetch hanzi data' }, { status: 500 })
     }
 
-    // Transform data to include precomputed flags
-    const items = data?.map(item => ({
-      char: item.char,
-      has_definition: !!item.kdefinition,
-      has_pinyin: !!(item.kmandarin && item.kmandarin.length > 0)
-    })) || []
+    // Transform data to include precomputed flags and grade level
+    const items = data?.map(item => {
+      const properties = item.properties as Record<string, unknown>;
+      const gradeLevel = properties?.kGradeLevel ? parseInt(String(properties.kGradeLevel)) : null;
+      
+      return {
+        char: item.char,
+        has_definition: !!item.kdefinition,
+        has_pinyin: !!(item.kmandarin && item.kmandarin.length > 0),
+        grade_level: gradeLevel
+      };
+    }) || []
 
     // Get total count for pagination
     const { count } = await supabase

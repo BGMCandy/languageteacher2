@@ -131,21 +131,123 @@ export default function DetailsCard({
                 Technical Information
                 <span className="ml-2 text-xs text-gray-500 group-open:hidden">(click to expand)</span>
               </summary>
-              <div className="space-y-1 mt-2">
-                {Object.entries(selectedHanzi.properties).slice(0, 3).map(([key, value]) => (
-                  <div key={key} className="text-xs text-gray-600">
-                    <span className="font-medium">{key.replace(/^k/, '').replace(/([A-Z])/g, ' $1').trim()}:</span>
-                    <span className="ml-1">
-                      {Array.isArray(value) ? value.join(', ') : String(value)}
-                    </span>
-                  </div>
-                ))}
-                {/* Unicode info - very small */}
-                {selectedHanzi.codepoint && (
-                  <div className="text-xs text-gray-500 pt-1 border-t border-gray-200">
-                    Unicode: U+{selectedHanzi.codepoint.toString(16).toUpperCase()}
+              <div className="space-y-2 mt-3">
+                {/* Grade Level */}
+                {selectedHanzi.properties.kGradeLevel != null && (
+                  <div className="text-xs text-gray-600">
+                    <span className="font-medium">Grade Level:</span>
+                    <span className="ml-1 text-blue-600 font-semibold">Grade {String(selectedHanzi.properties.kGradeLevel)}</span>
                   </div>
                 )}
+
+                {/* KangXi Dictionary */}
+                {selectedHanzi.properties.kKangXi != null && (
+                  <div className="text-xs text-gray-600">
+                    <span className="font-medium">KangXi:</span>
+                    <span className="ml-1">{String(selectedHanzi.properties.kKangXi)}</span>
+                  </div>
+                )}
+
+                {/* Four Corner Code */}
+                {selectedHanzi.properties.kFourCornerCode != null && (
+                  <div className="text-xs text-gray-600">
+                    <span className="font-medium">Four Corner:</span>
+                    <span className="ml-1 font-mono">{String(selectedHanzi.properties.kFourCornerCode)}</span>
+                  </div>
+                )}
+
+                {/* Cangjie Input Method */}
+                {selectedHanzi.properties.kCangjie != null && (
+                  <div className="text-xs text-gray-600">
+                    <span className="font-medium">Cangjie:</span>
+                    <span className="ml-1 font-mono">{String(selectedHanzi.properties.kCangjie)}</span>
+                  </div>
+                )}
+
+                {/* Japanese Readings */}
+                {selectedHanzi.properties.kJapanese != null && (
+                  <div className="text-xs text-gray-600">
+                    <span className="font-medium">Japanese:</span>
+                    <span className="ml-1">{String(selectedHanzi.properties.kJapanese)}</span>
+                  </div>
+                )}
+
+                {/* Korean Readings */}
+                {selectedHanzi.properties.kKorean != null && (
+                  <div className="text-xs text-gray-600">
+                    <span className="font-medium">Korean:</span>
+                    <span className="ml-1">{String(selectedHanzi.properties.kKorean)}</span>
+                  </div>
+                )}
+
+                {/* Vietnamese Readings */}
+                {selectedHanzi.properties.kVietnamese != null && (
+                  <div className="text-xs text-gray-600">
+                    <span className="font-medium">Vietnamese:</span>
+                    <span className="ml-1">{String(selectedHanzi.properties.kVietnamese)}</span>
+                  </div>
+                )}
+
+                {/* Big Five Encoding */}
+                {selectedHanzi.properties.kBigFive != null && (
+                  <div className="text-xs text-gray-600">
+                    <span className="font-medium">Big Five:</span>
+                    <span className="ml-1 font-mono">{String(selectedHanzi.properties.kBigFive)}</span>
+                  </div>
+                )}
+
+                {/* CNS Encoding */}
+                {selectedHanzi.properties.kCNS1986 != null && (
+                  <div className="text-xs text-gray-600">
+                    <span className="font-medium">CNS 1986:</span>
+                    <span className="ml-1 font-mono">{String(selectedHanzi.properties.kCNS1986)}</span>
+                  </div>
+                )}
+
+                {/* GB Encoding */}
+                {selectedHanzi.properties.kGB0 != null && (
+                  <div className="text-xs text-gray-600">
+                    <span className="font-medium">GB 2312:</span>
+                    <span className="ml-1 font-mono">{String(selectedHanzi.properties.kGB0)}</span>
+                  </div>
+                )}
+
+                {/* Hanyu Pinyin */}
+                {selectedHanzi.properties.kHanyuPinyin != null && (
+                  <div className="text-xs text-gray-600">
+                    <span className="font-medium">Hanyu Pinyin:</span>
+                    <span className="ml-1">{String(selectedHanzi.properties.kHanyuPinyin)}</span>
+                  </div>
+                )}
+
+                {/* Tang Dynasty Pronunciation */}
+                {selectedHanzi.properties.kTang != null && (
+                  <div className="text-xs text-gray-600">
+                    <span className="font-medium">Tang Dynasty:</span>
+                    <span className="ml-1">{String(selectedHanzi.properties.kTang)}</span>
+                  </div>
+                )}
+
+                {/* Fanqie (Traditional Chinese Phonetic System) */}
+                {selectedHanzi.properties.kFanqie != null && (
+                  <div className="text-xs text-gray-600">
+                    <span className="font-medium">Fanqie:</span>
+                    <span className="ml-1">{String(selectedHanzi.properties.kFanqie)}</span>
+                  </div>
+                )}
+
+                {/* Unicode info */}
+                {selectedHanzi.codepoint && (
+                  <div className="text-xs text-gray-500 pt-2 border-t border-gray-200">
+                    <span className="font-medium">Unicode:</span>
+                    <span className="ml-1 font-mono">U+{selectedHanzi.codepoint.toString(16).toUpperCase()}</span>
+                  </div>
+                )}
+
+                {/* Show count of total properties */}
+                <div className="text-xs text-gray-400 pt-1 italic">
+                  Showing {Math.min(12, Object.keys(selectedHanzi.properties).length)} of {Object.keys(selectedHanzi.properties).length} properties
+                </div>
               </div>
             </details>
           </div>

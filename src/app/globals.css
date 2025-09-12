@@ -1,6 +1,6 @@
 /* Optimized font loading - only load weights we actually use */
 /* Fonts are now loaded via Next.js font optimization */
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&family=Noto+Serif+TC:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;700&family=Noto+Serif+SC:wght@400;700&family=Noto+Serif+TC:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;700&display=swap');
 @import "tailwindcss";
 
@@ -185,6 +185,43 @@ body {
 }
 
 /* Chinese Font Classes - Added for hanzi poster */
+.chinese-font-extended {
+  font-family: 
+    'Noto Sans SC', 
+    'Noto Serif SC', 
+    'PingFang SC', 
+    'Hiragino Sans GB', 
+    'Microsoft YaHei', 
+    'WenQuanYi Micro Hei', 
+    'WenQuanYi Zen Hei', 
+    'ST Heiti', 
+    'SimHei', 
+    'SimSun', 
+    'Arial Unicode MS', 
+    'Lucida Grande', 
+    'sans-serif';
+  font-display: swap;
+  /* Ensure proper fallback for unrenderable characters */
+  font-feature-settings: "liga" 1, "kern" 1;
+  text-rendering: optimizeLegibility;
+}
+
+/* Special handling for unrenderable characters */
+.chinese-font-extended::before {
+  content: '';
+  display: none;
+}
+
+/* Show Unicode code point for unrenderable characters */
+.chinese-character-unrenderable {
+  font-family: monospace;
+  font-size: 0.7em;
+  color: #666;
+  background: #f0f0f0;
+  padding: 2px 4px;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+}
 
 /* Line clamp utilities for blog excerpts */
 .line-clamp-3 {
