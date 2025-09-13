@@ -15,6 +15,20 @@ type KD2Char = {
   reading_meaning?: { rmgroup?: { reading?: Array<{ '#text': string, '@_r_type': string }>, meaning?: Array<string | { '@_m_lang': string, '#text': string }> } }
 }
 
+type KD2Row = {
+  kanji: string
+  grade: number | null
+  jlpt: number | null
+  strokes: number | null
+  frequency_rank: number | null
+  jouyou: boolean
+  on_readings: string[]
+  kun_readings: string[]
+  meanings_en: string[]
+  radicals: null
+  raw: KD2Char
+}
+
 async function load(file: string) {
   const xml = await fs.readFile(file, 'utf8')
   const p = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_', textNodeName: '#text' })
@@ -25,7 +39,7 @@ async function load(file: string) {
 function toRow(c: KD2Char) {
   const kanji = c.literal
   const grade = typeof c.misc?.grade === 'number' ? c.misc!.grade : null
-  const jlpt  = typeof (c.misc as any)?.jlpt  === 'number' ? (c.misc as any).jlpt : null
+  const jlpt  = typeof c.misc?.jlpt === 'number' ? c.misc.jlpt : null
   const sc    = c.misc?.stroke_count
   const strokes = Array.isArray(sc) ? sc[0] : (typeof sc === 'number' ? sc : null)
   const freq  = typeof c.misc?.freq === 'number' ? c.misc!.freq : null
@@ -49,7 +63,7 @@ function toRow(c: KD2Char) {
   }
 
   // Handle meanings - can be string or object with language attribute
-  const meaningsRaw = (rm?.meaning ?? []) as Array<any> | string
+  const meaningsRaw = (rm?.meaning ?? []) as Array<string | { '#text': string }> | string
   
   // Handle both array and string cases
   let meanings_en: string[]
@@ -78,11 +92,11 @@ function toRow(c: KD2Char) {
     kun_readings: kun,
     meanings_en: meanings_en.length > 0 ? meanings_en : ['(no meaning)'],
     radicals: null,
-    raw: c as any
+    raw: c
   }
 }
 
-async function upsertBatch(rows: any[]) {
+async function upsertBatch(rows: KD2Row[]) {
   const { error } = await sb.from('kanjidic2').upsert(rows, { onConflict: 'kanji' })
   if (error) throw error
 }

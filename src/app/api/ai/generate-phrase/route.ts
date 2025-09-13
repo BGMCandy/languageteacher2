@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
     const characterList = characters.slice(0, 20).map(c => c.char).join(', ')
     const topicContext = topic ? ` about "${topic}"` : ''
     
-    const prompt = language === 'zh' 
+    const _prompt = language === 'zh' 
       ? `Generate a Chinese phrase${topicContext} using only these characters: ${characterList}. 
          Requirements:
          - Use 2-${maxLength} characters from the provided list
@@ -115,7 +115,7 @@ export async function POST(request: NextRequest) {
 
     // For now, we'll use a simple fallback system
     // In production, you'd call OpenAI/Claude API here
-    const generatedPhrase = generateFallbackPhrase(language, level, characters, topic, maxLength)
+    const generatedPhrase = generateFallbackPhrase(language, level, characters, topic)
 
     return NextResponse.json(generatedPhrase)
 
@@ -130,8 +130,7 @@ function generateFallbackPhrase(
   language: 'zh' | 'ja', 
   level: number, 
   characters: CharacterInfo[], 
-  topic?: string,
-  maxLength: number = 4
+  _topic?: string,
 ) {
   const availableChars = characters.slice(0, 10).map(c => c.char)
   

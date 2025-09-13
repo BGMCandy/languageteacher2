@@ -41,7 +41,7 @@ export default function PhraseRequestForm({ onSubmit, loading = false }: PhraseR
   };
 
   const addPredefinedSet = (setName: keyof typeof predefinedCharSets) => {
-    const newChars = [...new Set([...formData.include_chars, ...predefinedCharSets[setName]])];
+    const newChars = [...new Set([...(formData.include_chars || []), ...predefinedCharSets[setName]])];
     setFormData(prev => ({ ...prev, include_chars: newChars }));
     setCustomChars(newChars.join(''));
   };
@@ -183,11 +183,11 @@ export default function PhraseRequestForm({ onSubmit, loading = false }: PhraseR
           />
           
           {/* Character Preview */}
-          {formData.include_chars.length > 0 && (
+          {(formData.include_chars?.length || 0) > 0 && (
             <div className="mt-2">
               <p className="text-sm text-gray-600 mb-1">Selected characters:</p>
               <div className="flex flex-wrap gap-1">
-                {formData.include_chars.map((char, index) => (
+                {(formData.include_chars || []).map((char, index) => (
                   <span
                     key={index}
                     className="px-2 py-1 bg-green-100 text-green-800 text-sm rounded"

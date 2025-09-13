@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useParams, useSearchParams } from 'next/navigation'
 
 interface GeneratedPhrase {
@@ -43,7 +43,7 @@ export default function StudySessionPage() {
   const [savedPhrases, setSavedPhrases] = useState<GeneratedPhrase[]>([])
 
   // Generate a new phrase
-  const generateNewPhrase = async () => {
+  const generateNewPhrase = useCallback(async () => {
     setSession(prev => ({ ...prev, loading: true, error: null }))
     setShowAnswer(false)
 
@@ -65,14 +65,14 @@ export default function StudySessionPage() {
 
       const phrase = await response.json()
       setSession(prev => ({ ...prev, currentPhrase: phrase, loading: false }))
-    } catch (error) {
+    } catch {
       setSession(prev => ({ 
         ...prev, 
         error: 'Failed to generate phrase. Please try again.',
         loading: false 
       }))
     }
-  }
+  }, [language, level, topic])
 
   // Save phrase to database
   const savePhrase = async () => {
@@ -103,7 +103,7 @@ export default function StudySessionPage() {
       } else {
         throw new Error('Failed to save phrase')
       }
-    } catch (error) {
+    } catch {
       setSession(prev => ({ 
         ...prev, 
         error: 'Failed to save phrase. Please try again.' 
@@ -114,7 +114,7 @@ export default function StudySessionPage() {
   // Load initial phrase
   useEffect(() => {
     generateNewPhrase()
-  }, [])
+  }, [generateNewPhrase])
 
   const isChinese = language === 'zh'
   const languageName = isChinese ? 'Chinese' : 'Japanese'

@@ -121,7 +121,6 @@ export class BackgroundJobs {
    */
   async cleanupOldLogs(daysToKeep: number = 90): Promise<{ deleted: number; errors: number }> {
     let deleted = 0;
-    let errors = 0;
 
     try {
       const cutoffDate = new Date();
@@ -216,7 +215,7 @@ export class BackgroundJobs {
       // Only update if quality checks have changed
       const currentChecks = phrase.quality_checks || {};
       const hasChanges = Object.keys(newQualityChecks).some(
-        key => currentChecks[key] !== newQualityChecks[key]
+        key => (currentChecks as Record<string, unknown>)[key] !== (newQualityChecks as Record<string, unknown>)[key]
       );
 
       return hasChanges ? newQualityChecks : null;

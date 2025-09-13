@@ -20,7 +20,7 @@ export class PhraseValidator {
     this.validatePhraseStructure(phrase, errors);
     
     // Validate character requirements
-    this.validateCharacterRequirements(phrase, request, errors, warnings);
+    this.validateCharacterRequirements(phrase, request, errors);
     
     // Validate length constraints
     this.validateLengthConstraints(phrase, request, errors, warnings);
@@ -69,14 +69,12 @@ export class PhraseValidator {
   private static validateCharacterRequirements(
     phrase: GeneratedPhrase, 
     request: CanonicalPhraseRequest, 
-    errors: string[], 
-    warnings: string[]
+    errors: string[]
   ): void {
     if (request.include_chars.length === 0) return;
 
     const phraseChars = new Set(phrase.phrase);
     const missingChars: string[] = [];
-    const extraChars: string[] = [];
 
     // Check for required characters
     for (const requiredChar of request.include_chars) {

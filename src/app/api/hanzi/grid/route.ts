@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
 
     // Apply ordering and pagination
     query = query
-      .order('properties->kGradeLevel', { ascending: true, nullsLast: true })
+      .order('properties->kGradeLevel', { ascending: true, nullsFirst: false })
       .range(offset, offset + limit - 1)
 
     const { data, error } = await query

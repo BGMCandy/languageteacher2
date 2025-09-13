@@ -24,7 +24,7 @@ export default function HanziPosterSimple() {
   const [viewMode, setViewMode] = useState<'definition' | 'pronunciation'>('definition')
   const [condensedView, setCondensedView] = useState<'comfortable' | 'super-condensed'>('comfortable')
   const [gradeFilter, setGradeFilter] = useState<number | null>(null)
-  const [totalCount, setTotalCount] = useState(0)
+  const [, setTotalCount] = useState(0)
   const [loadingMore, setLoadingMore] = useState(false)
   const [hasMore, setHasMore] = useState(true)
   
@@ -95,7 +95,7 @@ export default function HanziPosterSimple() {
         setTiles(prev => {
           const newTiles = [...prev, ...data.items]
           console.log(`📦 Loaded ${data.items.length} more characters! Total loaded: ${newTiles.length}`)
-          console.log(`📊 New characters grade distribution:`, data.items.reduce((acc: Record<string, number>, item: any) => {
+          console.log(`📊 New characters grade distribution:`, data.items.reduce((acc: Record<string, number>, item: { grade_level?: string }) => {
             const grade = item.grade_level || 'null'
             acc[grade] = (acc[grade] || 0) + 1
             return acc
@@ -249,12 +249,6 @@ export default function HanziPosterSimple() {
     )
   }
 
-  const gridCols = condensedView === 'super-condensed' 
-    ? 'grid-cols-16 sm:grid-cols-20 md:grid-cols-24 lg:grid-cols-28 xl:grid-cols-32 2xl:grid-cols-40'
-    : 'grid-cols-12 sm:grid-cols-16 md:grid-cols-20 lg:grid-cols-24 xl:grid-cols-28 2xl:grid-cols-32'
-
-  const gap = condensedView === 'super-condensed' ? 'gap-0.5 sm:gap-1' : 'gap-1 sm:gap-2'
-  const fontSize = condensedView === 'super-condensed' ? 'text-xs' : 'text-sm sm:text-base'
 
   return (
     <div className="bg-white">

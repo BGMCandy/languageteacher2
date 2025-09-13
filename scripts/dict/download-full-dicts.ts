@@ -64,8 +64,9 @@ async function main() {
       
       await downloadFile(dataset.url, dataset.filename, dataset.size)
       
-    } catch (error: any) {
-      console.error(`❌ Failed to download ${dataset.name}:`, error.message)
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error'
+      console.error(`❌ Failed to download ${dataset.name}:`, errorMessage)
       console.log(`   Manual download: ${dataset.url}`)
     }
   }

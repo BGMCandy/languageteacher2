@@ -1,5 +1,15 @@
 // lib/services/errorHandler.ts
 
+// TypeScript types for error objects
+interface OpenAIError extends Error {
+  code?: string;
+  status?: number;
+}
+
+interface SupabaseError extends Error {
+  code?: string;
+}
+
 export interface ErrorContext {
   operation: string;
   userId?: string;
@@ -97,7 +107,7 @@ export class ErrorHandler {
   /**
    * Get fallback phrase for when generation fails
    */
-  static getFallbackPhrase(level: string = '1', _type: string = 'phrase'): Record<string, unknown> {
+  static getFallbackPhrase(level: string = '1'): Record<string, unknown> {
     const fallbackPhrases = {
       '1': {
         phrase: '你好',
@@ -173,33 +183,32 @@ export class ErrorHandler {
     if (!errorDetails.retryable) return false;
     if (attemptCount >= 3) return false; // Max 3 retries
 
-    // Exponential backoff: 1s, 2s, 4s
-    const delay = Math.pow(2, attemptCount) * 1000;
-    return new Promise(resolve => setTimeout(resolve, delay)).then(() => true);
+    // Return true to indicate retry should happen (delay handled elsewhere)
+    return true;
   }
 
   // Type guards
-  private static isOpenAIError(error: unknown): error is Error & { code?: string; status?: number } {
+  private static isOpenAIError(error: unknown): error is OpenAIError {
     return error instanceof Error && (
       error.message.includes('OpenAI') ||
       error.message.includes('assistant') ||
       error.message.includes('API key') ||
-      error.code === 'insufficient_quota' ||
-      error.status === 429 ||
-      error.status === 500 ||
-      error.status === 502 ||
-      error.status === 503
+      (error as OpenAIError).code === 'insufficient_quota' ||
+      (error as OpenAIError).status === 429 ||
+      (error as OpenAIError).status === 500 ||
+      (error as OpenAIError).status === 502 ||
+      (error as OpenAIError).status === 503
     );
   }
 
-  private static isSupabaseError(error: unknown): error is Error & { code?: string } {
+  private static isSupabaseError(error: unknown): error is SupabaseError {
     return error instanceof Error && (
       error.message.includes('Supabase') ||
       error.message.includes('database') ||
       error.message.includes('connection') ||
-      error.code?.startsWith('PGRST') ||
-      error.code?.startsWith('23505') // Unique constraint violation
-    );
+      (error as SupabaseError).code?.startsWith('PGRST') ||
+      (error as SupabaseError).code?.startsWith('23505') // Unique constraint violation
+    ) || false;
   }
 
   private static isValidationError(error: unknown): error is Error {

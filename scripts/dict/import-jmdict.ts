@@ -16,27 +16,54 @@ type JMEntry = {
   tags?:  { common?: boolean, freq?: string[] }
 }
 
+type JMEntryRaw = {
+  id: string
+  kanji?: Array<{ text: string }>
+  kana?: Array<{ text: string; common?: boolean }>
+  sense?: Array<{
+    gloss?: Array<{ text: string }>
+    partOfSpeech?: string[]
+    misc?: string[]
+  }>
+}
+
+type JMData = {
+  words?: JMEntryRaw[]
+} | JMEntryRaw[]
+
+type JMRow = {
+  seq: number
+  headwords: string[]
+  readings: string[]
+  glosses_en: string[]
+  is_common: boolean
+  pos_tags: string[]
+  freq_tags: string[]
+  search_text: string
+  raw: JMEntryRaw
+}
+
 async function load(path: string): Promise<JMEntry[]> {
   const txt = await fs.readFile(path, 'utf8')
   return JSON.parse(txt)
 }
 
-function toRow(entry: any) {
+function toRow(entry: JMEntryRaw): JMRow | null {
   const seq = parseInt(entry.id)
   if (isNaN(seq)) return null
   
   // Extract kanji and kana from the new structure
-  const kanji = entry.kanji?.map((k: any) => k.text) || []
-  const kana = entry.kana?.map((k: any) => k.text) || []
+  const kanji = entry.kanji?.map((k) => k.text) || []
+  const kana = entry.kana?.map((k) => k.text) || []
   
   // Extract sense information
   const sense = entry.sense?.[0] || {}
-  const glosses = sense.gloss?.map((g: any) => g.text) || []
+  const glosses = sense.gloss?.map((g) => g.text) || []
   const pos = sense.partOfSpeech || []
   const misc = sense.misc || []
   
   // Check if it's a common word
-  const isCommon = entry.kana?.some((k: any) => k.common) || false
+  const isCommon = entry.kana?.some((k) => k.common) || false
   
   // Extract frequency tags from misc
   const freqTags = misc.filter((m: string) => m.startsWith('ichi') || m.startsWith('news') || m.startsWith('spec'))
@@ -57,7 +84,7 @@ function toRow(entry: any) {
   }
 }
 
-async function upsertBatch(rows: any[]) {
+async function upsertBatch(rows: JMRow[]) {
   const { error } = await sb.from('jmdict_entries').upsert(rows, { onConflict: 'seq' })
   if (error) throw error
 }
@@ -66,11 +93,11 @@ async function main() {
   const filePath = process.argv[2] || './data/dict/sample-jmdict.json'
   console.log(`📚 Importing JMdict from: ${filePath}`)
   
-  const data = JSON.parse(await fs.readFile(filePath, 'utf8'))
+  const data: JMData = JSON.parse(await fs.readFile(filePath, 'utf8'))
   
   // Handle both old sample format and new full format
-  let entries: any[]
-  if (data.words && Array.isArray(data.words)) {
+  let entries: JMEntryRaw[]
+  if (data && typeof data === 'object' && 'words' in data && Array.isArray(data.words)) {
     // New full format
     entries = data.words
     console.log(`📖 Found ${entries.length} words in full JMdict format`)

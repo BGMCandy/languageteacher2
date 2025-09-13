@@ -3,6 +3,10 @@ import OpenAI from 'openai'
 import { ENV } from '@/lib/env'
 import { CanonicalPhraseRequest } from './phraseRequestNormalizer'
 
+// TypeScript types for OpenAI Assistant API
+
+
+
 export interface GeneratedPhrase {
   phrase: string;
   translation_en: string;
@@ -82,7 +86,9 @@ export class OpenAIClient {
       console.log('Assistant API: Added message to thread, message ID:', message.id);
 
       // Create and run the assistant
-      const run = await (this.client.beta.threads.runs as any).create(thread.id, {
+      const run = await (this.client.beta.threads.runs as unknown as { 
+        create: (threadId: string, params: { assistant_id: string }) => Promise<{ id: string; status: string }> 
+      }).create(thread.id, {
         assistant_id: this.assistantId
       });
       console.log('Assistant API: Created run, run ID:', run.id);
@@ -102,7 +108,7 @@ export class OpenAIClient {
       });
       console.log('Assistant API: Retrieved messages, count:', messagesPage.data.length);
 
-      const assistantMessage = messagesPage.data.find(msg => msg.role === 'assistant');
+      const assistantMessage = messagesPage.data.find((msg) => msg.role === 'assistant');
       
       if (!assistantMessage) {
         console.error('No assistant message found');
@@ -114,8 +120,13 @@ export class OpenAIClient {
       
       // Concatenate all text blocks (as recommended)
       responseText = assistantMessage.content
-        .filter((b: any) => b.type === 'text')
-        .map((b: any) => b.text.value)
+        .filter((b) => b.type === 'text')
+        .map((b) => {
+          if (b.type === 'text') {
+            return b.text.value;
+          }
+          return '';
+        })
         .join('\n');
         
       modelUsed = 'gpt-4-assistant'; // Indicate Assistant API was used
@@ -178,8 +189,8 @@ export class OpenAIClient {
     const generationTime = Date.now() - startTime;
 
     return {
-      meta: parsedResponse.meta as any,
-      items: parsedResponse.items as any,
+      meta: parsedResponse.meta as { request: Record<string, unknown>; generated_at: string },
+      items: parsedResponse.items as GeneratedPhrase[],
       model_used: modelUsed,
       generation_time_ms: generationTime
     };
@@ -252,12 +263,14 @@ ${existingPhrases.length > 0 ? '- Create NEW and DIFFERENT phrases that vary fro
   /**
    * Wait for assistant run to complete
    */
-  private async waitForCompletion(threadId: string, runId: string, maxWaitMs: number = 30000): Promise<any> {
+  private async waitForCompletion(threadId: string, runId: string, maxWaitMs: number = 30000): Promise<{ id: string; status: string }> {
     const startTime = Date.now();
     
     while (Date.now() - startTime < maxWaitMs) {
       try {
-        const run = await (this.client.beta.threads.runs as any).retrieve(threadId, runId);
+        const run = await (this.client.beta.threads.runs as unknown as { 
+          retrieve: (threadId: string, runId: string) => Promise<{ id: string; status: string }> 
+        }).retrieve(threadId, runId);
         
         if (run.status === 'completed' || run.status === 'failed' || run.status === 'cancelled') {
           return run;
@@ -301,7 +314,7 @@ ${existingPhrases.length > 0 ? '- Create NEW and DIFFERENT phrases that vary fro
         this.validatePhrase(phrase);
       }
 
-      return parsed;
+      return parsed as { meta: Record<string, unknown>; items: GeneratedPhrase[] };
     } catch (error) {
       console.error('Failed to parse assistant response:', error);
       console.error('Response text:', responseText);
@@ -312,7 +325,7 @@ ${existingPhrases.length > 0 ? '- Create NEW and DIFFERENT phrases that vary fro
   /**
    * Robust JSON extraction with multiple fallback strategies
    */
-  private extractJsonBlock(s: string): any {
+  private extractJsonBlock(s: string): Record<string, unknown> | null {
     // Try fast path - direct JSON
     try { 
       return JSON.parse(s); 
@@ -358,7 +371,7 @@ ${existingPhrases.length > 0 ? '- Create NEW and DIFFERENT phrases that vary fro
       }
     }
 
-    if (typeof phrase.phrase !== 'string' || (phrase.phrase as string).length === 0) {
+    if (typeof phrase.phrase !== 'string' || phrase.phrase.length === 0) {
       throw new Error('Invalid phrase: must be non-empty string');
     }
 
@@ -366,7 +379,8 @@ ${existingPhrases.length > 0 ? '- Create NEW and DIFFERENT phrases that vary fro
       throw new Error('Invalid pinyin: must be strings');
     }
 
-    if (!phrase.level || typeof (phrase.level as any).confidence !== 'number' || (phrase.level as any).confidence < 0 || (phrase.level as any).confidence > 1) {
+    const level = phrase.level as { confidence: number };
+    if (!phrase.level || typeof level.confidence !== 'number' || level.confidence < 0 || level.confidence > 1) {
       throw new Error('level.confidence must be a number between 0 and 1');
     }
 
